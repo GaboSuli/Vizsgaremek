@@ -1,4 +1,7 @@
 # Vizsgaremek
+Beliczky Gábor
+Németh Zalán
+Papp Ákos
 
 # Feladat leírás 
 Egy online naplózási szolgáltatás, ami átláthatobbá teszi a költségvetéseidet vagy csoportodét, illetve statisztikákat, árkövetést, bróker árkövetést és weboldalakra kuponokat mutat.
