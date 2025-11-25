@@ -1,6 +1,6 @@
 # Vizsgaremek
-Beliczky Gábor
-Németh Zalán
+Beliczky Gábor,
+Németh Zalán,
 Papp Ákos
 
 # Feladat leírás 
