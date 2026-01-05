@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('veves_lista', function (Blueprint $table) {
+        Schema::create('csoport_tagsag', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
             $table->timestamps();
             $table->unsignedBigInteger('felhasznalo_id');
             $table->foreign('felhasznalo_id')->references('id')->on('users');
-            $table->unsignedBigInteger('csoport_id')->nullable();
+            $table->unsignedBigInteger('csoport_id');
             $table->foreign('csoport_id')->references('id')->on('csoportok');
+            $table->integer('jogosultsag_szint');
+            $table->string('becenev');
         });
     }
 
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('veves_lista');
+        Schema::dropIfExists('csoport_tagsag');
     }
 };

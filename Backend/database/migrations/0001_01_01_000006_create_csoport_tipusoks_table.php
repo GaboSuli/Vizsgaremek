@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('csoportok', function (Blueprint $table) {
+        Schema::create('csoport_tipusok', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
-            $table->timestamps();
-            $table->unsignedBigInteger('csoport_tipus_id');
-            $table->foreign('csoport_tipus_id')->references('id')->on('csoport_tipusok');
             $table->string('megnevezes');
-            $table->string('keszito_felhasznalo_id');
         });
     }
 
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('csoportok');
+        Schema::dropIfExists('csoport_tipusok');
     }
 };

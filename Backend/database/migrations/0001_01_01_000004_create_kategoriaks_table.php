@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('csoport_tipusok', function (Blueprint $table) {
+        Schema::create('kategoriak', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
             $table->string('megnevezes');
         });
@@ -22,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('csoport_tipusok');
+        Schema::dropIfExists('kategoriak');
     }
 };

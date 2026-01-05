@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kupon', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
             $table->timestamps();
             $table->date('kezdesi_datum');
@@ -19,7 +20,7 @@ return new class extends Migration
             $table->string('kod');
             $table->integer('kedvezmeny_szazalek');
             $table->string('hasznalasi_hely');
-            $table->unsignedBigInteger('feltolto_kuponos_id');
+            $table->foreignId('feltolto_kuponos_id');
             $table->foreign('feltolto_kuponos_id')->references('id')->on('users');
         });
     }

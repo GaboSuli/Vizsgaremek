@@ -12,25 +12,31 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
             $table->string('nev');
             $table->string('becenev');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->unsignedBigInteger('beallitasok_id');
-            $table->foreign('beallitasok_id')->references('id')->on('beallitasok');
+            $table->unsignedBigInteger('tema_id');
+            $table->foreign('tema_id')->references('id')->on('temak');
+            $table->boolean('kuponok')->default(true);
+            $table->boolean('termekArKovetes')->default(true);
+            $table->boolean('brokerArKovetes')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
 
         Schema::create('sessions', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->string('id')->primary();
             $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();

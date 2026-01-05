@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mennyiseg_tipusok', function (Blueprint $table) {
+        Schema::create('temak', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
-            $table->string('mertekegyseg');
+            $table->string('megnevezes');
         });
     }
 
@@ -22,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mennyiseg_tipusok');
+        Schema::dropIfExists('temak');
     }
 };

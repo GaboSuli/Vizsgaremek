@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('veves_objekt', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
             $table->unsignedBigInteger('veves_lista_id');
             $table->foreign('veves_lista_id')->references('id')->on('veves_lista');
