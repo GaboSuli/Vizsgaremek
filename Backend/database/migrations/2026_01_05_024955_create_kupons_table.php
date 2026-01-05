@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('kod');
             $table->integer('kedvezmeny_szazalek');
             $table->string('hasznalasi_hely');
-            $table->integer('feltolto_kuponos_id');
+            $table->unsignedBigInteger('feltolto_kuponos_id');
+            $table->foreign('feltolto_kuponos_id')->references('id')->on('users');
         });
     }
 

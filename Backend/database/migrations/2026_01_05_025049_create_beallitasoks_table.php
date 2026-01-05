@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('beallitasok', function (Blueprint $table) {
             $table->id();
-            $table->integer('tema_id');
+            $table->unsignedBigInteger('tema_id');
+            $table->foreign('tema_id')->references('id')->on('temak');
             $table->boolean('kuponok')->default(true);
             $table->boolean('termekArKovetes')->default(true);
             $table->boolean('brokerArKovetes')->default(true);

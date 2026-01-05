@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('alkategoriak', function (Blueprint $table) {
             $table->id();
             $table->string('megnevezes');
-            $table->integer('kategoria_id');
-            $table->integer('mennyiseg_tipus_id');
+            $table->unsignedBigInteger('kategoria_id');
+            $table->foreign('kategoria_id')->references('id')->on('kategoriak');
+            $table->unsignedBigInteger('mennyiseg_tipus_id');
+            $table->foreign('mennyiseg_tipus_id')->references('id')->on('mennyiseg_tipusok');
         });
     }
 

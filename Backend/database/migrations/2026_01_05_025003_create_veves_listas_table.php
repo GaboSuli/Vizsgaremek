@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('veves_lista', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->integer('felhasznalo_id');
-            $table->integer('csoport_id')->nullable();
+            $table->unsignedBigInteger('felhasznalo_id');
+            $table->foreign('felhasznalo_id')->references('id')->on('users');
+            $table->unsignedBigInteger('csoport_id')->nullable();
+            $table->foreign('csoport_id')->references('id')->on('csoportok');
         });
     }
 

@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('veves_objekt', function (Blueprint $table) {
             $table->id();
-            $table->integer('veves_lista_id');
-            $table->integer('alKategoria_id');
+            $table->unsignedBigInteger('veves_lista_id');
+            $table->foreign('veves_lista_id')->references('id')->on('veves_lista');
+            $table->unsignedBigInteger('alKategoria_id');
+            $table->foreign('alKategoria_id')->references('id')->on('alkategoriak');
             $table->integer('ar');
             $table->integer('mennyiseg');
         });

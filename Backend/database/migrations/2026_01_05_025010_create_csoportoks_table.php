@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('csoportok', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->integer('csoport_tipus_id');
+            $table->unsignedBigInteger('csoport_tipus_id');
+            $table->foreign('csoport_tipus_id')->references('id')->on('csoport_tipusok');
             $table->string('megnevezes');
-            $table->string('kesito_felhasznalo_id')
+            $table->string('keszito_felhasznalo_id');
         });
     }
 

@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class mennyisegTipusok extends Model
 {
-    //
+    function Alkategoriak()
+    {
+    }
 }
