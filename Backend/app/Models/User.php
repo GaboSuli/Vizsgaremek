@@ -45,4 +45,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    function kupon()
+    {
+        return $this->hasMany(Kupon::class,'feltolto_kuponos_id');
+    }
+    function vevesLista()
+    {
+        return $this->hasMany(VevesLista::class,'felhasznalo_id');
+    }
+    function beallitasok()
+    {
+        return $this->belongsTo(Beallitasok::class,'beallitasok_id');
+    }
+    function csoportok()
+    {
+        return  $this->hasMany(Csoportok::class,'keszito_felhasznalo_id');
+    }
+    function csoportTagsag()
+    {
+        return $this->hasMany(CsoportTagsag::class,'felhasznalo_id');
+    }
 }
