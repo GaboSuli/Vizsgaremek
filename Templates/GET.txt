@@ -1,0 +1,27 @@
+GET
+- egy felhasználó összes vevési listája
+- egy felhasználó egy megadott vevési listája
+- egy felhasználó csoportjai
+- egy csoport összes vevési listája
+- egy csoport egy megadott vevési listája
+- egy alkategória átlag árának havi váltakozása
+- összes alkategória jelenlegi átlagára
+- összes kupon
+- felhasználó nyilvános adatai
+POST
+- felhasználó létrehozása
+- csoport létrehozása
+- kupon létrehozása
+- vevési objektum létrehozása
+- vevési lista létrehozása
+PUT
+- felhasználó módosítása
+- csoport módosítása
+- kupon módosítása
+
+DELETE
+- felhasználö törlése
+- vevési objektum törlése
+- vevési lista törlése
+- csoport törlése
+- kupon törlése

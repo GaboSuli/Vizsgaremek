@@ -1,0 +1,21 @@
+{
+    "VevesiLista":
+    [
+        {
+            "id": 1,
+            "Megnevezes":"Valam",
+            "Alkategoria":"Valami",
+            "Ar":125,
+            "MennyisegTipusMertekegyseg": "Dkg",
+            "Mennyiseg":10
+        },
+        {
+            "id": 2,
+            "Megnevezes":"H2O",
+            "Alkategoria":"ásványviz",
+            "Ar":532532,
+            "MennyisegTipusMertekegyseg": "Liter",
+            "Mennyiseg":532
+        }
+    ]
+}
