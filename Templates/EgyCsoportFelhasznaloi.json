@@ -5,6 +5,156 @@
             "Nev":"zsigi",
             "Becenev":"zsigmond",
             "ProfilKepURL":"zsigmondzsigi.png"
+        },
+        {
+            "Nev":"Kovács Anna",
+            "Becenev":"anna",
+            "ProfilKepURL":"kovacs_anna.jpg"
+        },
+        {
+            "Nev":"Nagy Péter",
+            "Becenev":"peti",
+            "ProfilKepURL":"nagy_peter.png"
+        },
+        {
+            "Nev":"Szabó László",
+            "Becenev":"laci",
+            "ProfilKepURL":"szabo_laszlo.jpg"
+        },
+        {
+            "Nev":"Tóth Éva",
+            "Becenev":"eva",
+            "ProfilKepURL":"toth_eva.png"
+        },
+        {
+            "Nev":"Horváth Bence",
+            "Becenev":"bence",
+            "ProfilKepURL":"horvath_bence.jpg"
+        },
+        {
+            "Nev":"Molnár Dóra",
+            "Becenev":"dora",
+            "ProfilKepURL":"molnar_dora.png"
+        },
+        {
+            "Nev":"Kiss Gábor",
+            "Becenev":"gabi",
+            "ProfilKepURL":"kiss_gabor.jpg"
+        },
+        {
+            "Nev":"Balogh Réka",
+            "Becenev":"reka",
+            "ProfilKepURL":"balogh_reka.png"
+        },
+        {
+            "Nev":"Farkas István",
+            "Becenev":"istvan",
+            "ProfilKepURL":"farkas_istvan.jpg"
+        },
+        {
+            "Nev":"Papp Mária",
+            "Becenev":"mari",
+            "ProfilKepURL":"papp_maria.png"
+        },
+        {
+            "Nev":"Varga Tamás",
+            "Becenev":"tomi",
+            "ProfilKepURL":"varga_tamas.jpg"
+        },
+        {
+            "Nev":"Lakatos Júlia",
+            "Becenev":"juli",
+            "ProfilKepURL":"lakatos_julia.png"
+        },
+        {
+            "Nev":"Szűcs Zoltán",
+            "Becenev":"zoli",
+            "ProfilKepURL":"szucs_zoltan.jpg"
+        },
+        {
+            "Nev":"Kocsis Rita",
+            "Becenev":"rita",
+            "ProfilKepURL":"kocsis_rita.png"
+        },
+        {
+            "Nev":"Szekeres András",
+            "Becenev":"andris",
+            "ProfilKepURL":"szekeres_andras.jpg"
+        },
+        {
+            "Nev":"Horváth-Nagy Lili",
+            "Becenev":"lili",
+            "ProfilKepURL":"horvath_nagy_lili.png"
+        },
+        {
+            "Nev":"Rácz Dávid",
+            "Becenev":"david",
+            "ProfilKepURL":"racz_david.jpg"
+        },
+        {
+            "Nev":"Oláh Beáta",
+            "Becenev":"beata",
+            "ProfilKepURL":"olah_beata.png"
+        },
+        {
+            "Nev":"Simon Gergely",
+            "Becenev":"gergő",
+            "ProfilKepURL":"simon_gergely.jpg"
+        },
+        {
+            "Nev":"Török Noémi",
+            "Becenev":"noemi",
+            "ProfilKepURL":"torok_noemi.png"
+        },
+        {
+            "Nev":"Bognár Levente",
+            "Becenev":"levi",
+            "ProfilKepURL":"bognar_levente.jpg"
+        },
+        {
+            "Nev":"Sipos Katalin",
+            "Becenev":"kati",
+            "ProfilKepURL":"sipos_katalin.png"
+        },
+        {
+            "Nev":"Urbán Roland",
+            "Becenev":"roland",
+            "ProfilKepURL":"urban_roland.jpg"
+        },
+        {
+            "Nev":"Mátyás Erika",
+            "Becenev":"erika",
+            "ProfilKepURL":"matyas_erika.png"
+        },
+        {
+            "Nev":"Pálinkás Ádám",
+            "Becenev":"adam",
+            "ProfilKepURL":"palinkas_adam.jpg"
+        },
+        {
+            "Nev":"Kis Zsófia",
+            "Becenev":"zsofi",
+            "ProfilKepURL":"kis_zsofia.png"
+        },
+        {
+            "Nev":"Gerő Kristóf",
+            "Becenev":"kristof",
+            "ProfilKepURL":"gero_kristof.jpg"
+        },
+        {
+            "Nev":"Lőrincz Eszter",
+            "Becenev":"eszter",
+            "ProfilKepURL":"lorincz_eszter.png"
+        },
+        {
+            "Nev":"Iványi Márk",
+            "Becenev":"mark",
+            "ProfilKepURL":"ivanyi_mark.jpg"
+        },
+        {
+            "Nev":"Dékány Lilla",
+            "Becenev":"lilla",
+            "ProfilKepURL":"dekany_lilla.png"
         }
     ]
 }
