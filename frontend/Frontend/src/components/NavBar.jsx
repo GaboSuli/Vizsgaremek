@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 
 function Navigation() {
     return(
-        <Navbar bg="info" variant="dark">
+        <Navbar bg="info" variant="dark" id="navbar">
             <Container>
                 <Navbar.Brand href="#home">Az oldal neve</Navbar.Brand>
                 <Nav className="me-auto">
