@@ -4,8 +4,10 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+
 import Navigation from './NavBar.jsx';
 import './Foldal.css';
+import Labjegyzet from './Labjegyzet.jsx';
 
 function Foldal() {
     return (
@@ -79,6 +81,9 @@ function Foldal() {
                         <small className="text-muted">Megjegyzés: ez a főoldal kizárólag tájékoztató és navigációs célokat szolgál; nem kezel érzékeny vagy felhasználóspecifikus adatokat.</small>
                     </Col>
                 </Row>
+            </Container>
+            <Container>
+                <Labjegyzet />
             </Container>
         </>
     );
