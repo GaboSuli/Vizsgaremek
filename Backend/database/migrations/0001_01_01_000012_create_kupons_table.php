@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('kezdesi_datum');
             $table->date('lejarasi_datum');
             $table->string('kod');
-            $table->integer('kedvezmeny_szazalek');
+            $table->float('kedvezmeny_szazalek');
             $table->string('hasznalasi_hely');
             $table->foreignId('feltolto_kuponos_id');
             $table->foreign('feltolto_kuponos_id')->references('id')->on('users');

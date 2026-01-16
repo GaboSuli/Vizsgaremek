@@ -40,11 +40,15 @@ class VevesListaController extends Controller
     {
         $resp = VevesLista::where("felhasznalo_id",'=',$id)->with("vevesobjektum")->with("user")->get();
         return response()->json($resp);
-
     }
     public function show2(string $id)
     {
-        $resp = VevesLista::find($id)->with("vevesobjektum")->get();
+        $resp = VevesLista::where("id",'=',$id)->with("vevesobjektum")->get();
+        return response()->json($resp);
+    }
+    public function show3(string $id)
+    {
+        $resp = VevesLista::where("csoport_id",'=',$id)->with("vevesobjektum")->with("user")->get();
         return response()->json($resp);
     }
     /**
