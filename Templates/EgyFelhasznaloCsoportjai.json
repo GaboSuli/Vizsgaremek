@@ -5,7 +5,181 @@
             "Megnevezes":"s",
             "CsoportTipus":"Cég",
             "Letrehozo":"Én",
-            "LetrehozasDatuma": "2025-05-05"
+            "LetrehozasDatuma":"2025-05-05"
+        },
+        {
+            "Megnevezes":"Fejlesztés - Mobil",
+            "CsoportTipus":"Projekt",
+            "Letrehozo":"Kovács Anna",
+            "LetrehozasDatuma":"2024-02-14"
+        },
+        {
+            "Megnevezes":"Marketing csapat",
+            "CsoportTipus":"Csapat",
+            "Letrehozo":"Nagy Péter",
+            "LetrehozasDatuma":"2023-11-01"
+        },
+        {
+            "Megnevezes":"HR - Toborzás",
+            "CsoportTipus":"Osztály",
+            "Letrehozo":"Szabó László",
+            "LetrehozasDatuma":"2024-06-20"
+        },
+        {
+            "Megnevezes":"Design lab",
+            "CsoportTipus":"Közösség",
+            "Letrehozo":"Tóth Éva",
+            "LetrehozasDatuma":"2023-09-12"
+        },
+        {
+            "Megnevezes":"Adat és BI",
+            "CsoportTipus":"Osztály",
+            "Letrehozo":"Horváth Bence",
+            "LetrehozasDatuma":"2024-01-30"
+        },
+        {
+            "Megnevezes":"Ügyfélszolgálat",
+            "CsoportTipus":"Cég",
+            "Letrehozo":"Molnár Dóra",
+            "LetrehozasDatuma":"2022-12-05"
+        },
+        {
+            "Megnevezes":"DevOps",
+            "CsoportTipus":"Csapat",
+            "Letrehozo":"Kiss Gábor",
+            "LetrehozasDatuma":"2024-04-08"
+        },
+        {
+            "Megnevezes":"Satellit Projektek",
+            "CsoportTipus":"Projekt",
+            "Letrehozo":"Balogh Réka",
+            "LetrehozasDatuma":"2023-07-19"
+        },
+        {
+            "Megnevezes":"Kutatás és Fejlesztés",
+            "CsoportTipus":"Osztály",
+            "Letrehozo":"Farkas István",
+            "LetrehozasDatuma":"2021-10-03"
+        },
+        {
+            "Megnevezes":"Üzleti Elemzés",
+            "CsoportTipus":"Közösség",
+            "Letrehozo":"Papp Mária",
+            "LetrehozasDatuma":"2024-03-27"
+        },
+        {
+            "Megnevezes":"Cloud Innováció",
+            "CsoportTipus":"Projekt",
+            "Letrehozo":"Varga Tamás",
+            "LetrehozasDatuma":"2025-01-06"
+        },
+        {
+            "Megnevezes":"Juniorok Mentoring",
+            "CsoportTipus":"Közösség",
+            "Letrehozo":"Lakatos Júlia",
+            "LetrehozasDatuma":"2023-05-22"
+        },
+        {
+            "Megnevezes":"Adminisztráció",
+            "CsoportTipus":"Csapat",
+            "Letrehozo":"Szűcs Zoltán",
+            "LetrehozasDatuma":"2022-08-15"
+        },
+        {
+            "Megnevezes":"Partner Kapcsolatok",
+            "CsoportTipus":"Cég",
+            "Letrehozo":"Kocsis Rita",
+            "LetrehozasDatuma":"2024-09-09"
+        },
+        {
+            "Megnevezes":"Értékesítés - B2B",
+            "CsoportTipus":"Osztály",
+            "Letrehozo":"Szekeres András",
+            "LetrehozasDatuma":"2023-03-11"
+        },
+        {
+            "Megnevezes":"Biztonság",
+            "CsoportTipus":"Csapat",
+            "Letrehozo":"Horváth-Nagy Lili",
+            "LetrehozasDatuma":"2024-10-02"
+        },
+        {
+            "Megnevezes":"Minőségbiztosítás",
+            "CsoportTipus":"Osztály",
+            "Letrehozo":"Rácz Dávid",
+            "LetrehozasDatuma":"2022-04-28"
+        },
+        {
+            "Megnevezes":"Szabadúszó közösség",
+            "CsoportTipus":"Közösség",
+            "Letrehozo":"Oláh Beáta",
+            "LetrehozasDatuma":"2023-12-18"
+        },
+        {
+            "Megnevezes":"Hackathon 2024",
+            "CsoportTipus":"Projekt",
+            "Letrehozo":"Simon Gergely",
+            "LetrehozasDatuma":"2024-05-10"
+        },
+        {
+            "Megnevezes":"Fenntarthatóság",
+            "CsoportTipus":"Közösség",
+            "Letrehozo":"Török Noémi",
+            "LetrehozasDatuma":"2021-06-30"
+        },
+        {
+            "Megnevezes":"Intern Program",
+            "CsoportTipus":"Projekt",
+            "Letrehozo":"Bognár Levente",
+            "LetrehozasDatuma":"2024-07-01"
+        },
+        {
+            "Megnevezes":"Rendszerintegráció",
+            "CsoportTipus":"Csapat",
+            "Letrehozo":"Sipos Katalin",
+            "LetrehozasDatuma":"2023-01-16"
+        },
+        {
+            "Megnevezes":"Képzés és Fejlődés",
+            "CsoportTipus":"Osztály",
+            "Letrehozo":"Urbán Roland",
+            "LetrehozasDatuma":"2022-11-11"
+        },
+        {
+            "Megnevezes":"UX Kutatás",
+            "CsoportTipus":"Közösség",
+            "Letrehozo":"Mátyás Erika",
+            "LetrehozasDatuma":"2024-08-21"
+        },
+        {
+            "Megnevezes":"Adatvédelem",
+            "CsoportTipus":"Csapat",
+            "Letrehozo":"Pálinkás Ádám",
+            "LetrehozasDatuma":"2023-02-02"
+        },
+        {
+            "Megnevezes":"Nemzetközi Projekt",
+            "CsoportTipus":"Projekt",
+            "Letrehozo":"Kis Zsófia",
+            "LetrehozasDatuma":"2024-12-12"
+        },
+        {
+            "Megnevezes":"Könyvelés",
+            "CsoportTipus":"Osztály",
+            "Letrehozo":"Gerő Kristóf",
+            "LetrehozasDatuma":"2021-01-05"
+        },
+        {
+            "Megnevezes":"Teszt automatizálás",
+            "CsoportTipus":"Csapat",
+            "Letrehozo":"Lőrincz Eszter",
+            "LetrehozasDatuma":"2023-08-29"
+        },
+        {
+            "Megnevezes":"Lokális meetup",
+            "CsoportTipus":"Közösség",
+            "Letrehozo":"Iványi Márk",
+            "LetrehozasDatuma":"2024-11-07"
         }
     ]
 }
