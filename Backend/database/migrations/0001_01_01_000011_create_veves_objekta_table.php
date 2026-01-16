@@ -19,8 +19,9 @@ return new class extends Migration
             $table->unsignedBigInteger('alKategoria_id');
             $table->foreign('alKategoria_id')->references('id')->on('alkategoriak');
             $table->string('megnevezes');
-            $table->integer('ar');
-            $table->integer('mennyiseg');
+            $table->float('ar');
+            $table->float('mennyiseg');
+            $table->boolean("elfogadott_statisztikara")->default(false);
         });
     }
 
