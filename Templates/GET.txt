@@ -1,9 +1,11 @@
 GET
-- egy felhasználó összes vevési listája
-- egy felhasználó egy megadott vevési listája
+- egy felhasználó összes vevési listája (http://127.0.0.1:8000/api/felhasznalo/{id}/vevesiListak)
+
+- egy megadott vevési listája 
+(http://127.0.0.1:8000/api/vevesiListak/1)
+
 - egy felhasználó csoportjai
 - egy csoport összes vevési listája
-- egy csoport egy megadott vevési listája
 - egy alkategória átlag árának havi váltakozása
 - összes alkategória jelenlegi átlagára
 - összes kupon

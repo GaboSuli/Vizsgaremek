@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CsoportTagsag extends Model
 {
+    protected $table = "csoport_tagsag";
     function user()
     {
         return $this->belongsTo(User::class,'felhasznalo_id');

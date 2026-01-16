@@ -53,10 +53,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(VevesLista::class,'felhasznalo_id');
     }
-    function beallitasok()
-    {
-        return $this->belongsTo(Beallitasok::class,'beallitasok_id');
-    }
     function csoportok()
     {
         return  $this->hasMany(Csoportok::class,'keszito_felhasznalo_id');

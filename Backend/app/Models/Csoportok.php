@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Csoportok extends Model
 {
+    
+    protected $table = "csoportok";
     function csoportTipus()
     {
         return $this->belongsTo(CsoportTipusok::class,'csoport_tipus_id');

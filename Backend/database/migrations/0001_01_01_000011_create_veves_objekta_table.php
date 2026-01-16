@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreign('veves_lista_id')->references('id')->on('veves_lista');
             $table->unsignedBigInteger('alKategoria_id');
             $table->foreign('alKategoria_id')->references('id')->on('alkategoriak');
+            $table->string('megnevezes');
             $table->integer('ar');
             $table->integer('mennyiseg');
         });

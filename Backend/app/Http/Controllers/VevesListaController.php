@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\VevesLista;
 use App\Http\Controllers\Controller;
+use DB;
 use Illuminate\Http\Request;
 
 class VevesListaController extends Controller
@@ -35,11 +36,17 @@ class VevesListaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(VevesLista $vevesLista)
+    public function show1(string $id)
     {
-        //
-    }
+        $resp = VevesLista::where("felhasznalo_id",'=',$id)->with("vevesobjektum")->with("user")->get();
+        return response()->json($resp);
 
+    }
+    public function show2(string $id)
+    {
+        $resp = VevesLista::find($id)->with("vevesobjektum")->get();
+        return response()->json($resp);
+    }
     /**
      * Show the form for editing the specified resource.
      */
