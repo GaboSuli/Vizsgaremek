@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Alkategoriak extends Model
 {
+    protected $table = "alkategoriak";
     function kategoriak()
     {
         return $this->belongsTo(Kategoriak::class,'kategoria_id');

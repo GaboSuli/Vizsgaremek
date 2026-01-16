@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class VevesLista extends Model
 {
+    protected $table = "veves_lista";
     function user()
     {
         return $this->belongsTo(User::class,'felhasznalo_id');

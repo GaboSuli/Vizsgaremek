@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class VevesObjektum extends Model
 {
+    protected $table = "veves_objekt";
     function alKategoria()
     {
         return $this->belongsTo(Alkategoriak::class,'alkategoria_id');
