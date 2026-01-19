@@ -1,0 +1,47 @@
+.alkategoria-monthly-stats {
+  padding: 20px 0;
+}
+
+.stat-card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card .card-body {
+  padding: 1.5rem;
+}
+
+.stat-card h5 {
+  margin-top: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.stat-card small {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.chart-card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+}
+
+.chart-card .card-body {
+  padding: 2rem;
+}
+
+h2 {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
