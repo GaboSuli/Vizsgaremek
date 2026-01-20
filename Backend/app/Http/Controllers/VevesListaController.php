@@ -39,17 +39,38 @@ class VevesListaController extends Controller
     public function show1(string $id)
     {
         $resp = VevesLista::where("felhasznalo_id",'=',$id)->with("vevesobjektum")->with("user")->get();
-        return response()->json($resp);
+        if (empty($resp))
+        {
+            return response()->json(['message'=>"Nincs ilyen vevés lista."]);
+        }
+        else
+        {
+            return response()->json($resp);
+        }
     }
     public function show2(string $id)
     {
         $resp = VevesLista::where("id",'=',$id)->with("vevesobjektum")->get();
-        return response()->json($resp);
+        if (empty($resp))
+        {
+            return response()->json(['message'=>"Nincs ilyen vevés lista."]);
+        }
+        else
+        {
+            return response()->json($resp);
+        }
     }
     public function show3(string $id)
     {
         $resp = VevesLista::where("csoport_id",'=',$id)->with("vevesobjektum")->with("user")->get();
-        return response()->json($resp);
+         if (empty($resp))
+        {
+            return response()->json(['message'=>"Nincs ilyen vevés lista."]);
+        }
+        else
+        {
+            return response()->json($resp);
+        }
     }
     /**
      * Show the form for editing the specified resource.

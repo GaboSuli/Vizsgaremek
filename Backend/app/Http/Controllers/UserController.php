@@ -4,9 +4,70 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash; 
+
 
 class UserController extends Controller
 {
+    public function register(Request $request)
+    {
+        //Validálás
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            //e-mail egyedi legyen a user táblában
+            //e-mail formailag helyes
+            'email' => 'required|email|unique:users',
+            //confirmed: a jelszót meg kell erősíteni
+            'password' => 'required|min:8|confirmed',
+        ]);
+        //user létrehozása
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            //Hash a jelszót titkosítja
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        $token = $user->createToken('api-token')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ], 201);
+    }
+
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (!Auth::attempt($credentials)) {
+            return response()->json([
+                'message' => 'Hibás email vagy jelszó'
+            ], 401);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        $token = $user->createToken('api-token')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Sikeres kijelentkezés'
+        ]);
+    }
     public function index()
     {
         //
@@ -34,7 +95,26 @@ class UserController extends Controller
     public function show(string $id)
     {
         $resp = User::where("id",'=',$id)->with("csoportok")->get();
-        return response()->json($resp);
+        if (empty($resp))
+        {
+            return response()->json(['message'=>"Nincs ilyen felhasználó."]);
+        }
+        else
+        {
+            return response()->json($resp);
+        }
+    }
+    public function show2(string $id)
+    {
+        $resp = User::find($id);
+        if (empty($resp))
+        {
+            return response()->json(['message'=>"Nincs ilyen felhasználó."]);
+        }
+        else
+        {
+            return response()->json($resp);
+        }
     }
 
     /**

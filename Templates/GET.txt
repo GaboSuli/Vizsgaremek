@@ -3,18 +3,42 @@ GET
 (http://127.0.0.1:8000/api/felhasznalo/{id}/vevesiListak)
 
 - egy megadott vevési listája 
-(http://127.0.0.1:8000/api/vevesiListak/{id})
+(http://127.0.0.1:8000/api/vevesiLista/{id})
 
 - egy felhasználó csoportjai
 (http://127.0.0.1:8000/api/felhasznalo/{id}/csoportjai)
 
 - egy csoport összes vevési listája
+(http://127.0.0.1:8000/api/csoport/{id}/vevesiListak)
+
 - egy alkategória átlag árának havi váltakozása
 - összes alkategória jelenlegi átlagára
 - összes kupon
+(http://127.0.0.1:8000/api/kuponok/get)
+
 - felhasználó nyilvános adatai
+(http://127.0.0.1:8000/api/felhasznalo/{id})
+
 POST
+
 - felhasználó létrehozása
+(http://127.0.0.1:8000/api/felhasznalo/register)
+{
+ "name":"",
+ "email":"",
+ "password":"",
+ "password_confirmation":""
+}
+
+
+- felhasználó login
+(http://127.0.0.1:8000/api/felhasznalo/login)
+{
+ "email":"",
+ "password":""
+}
+
+
 - csoport létrehozása
 - kupon létrehozása
 - vevési objektum létrehozása

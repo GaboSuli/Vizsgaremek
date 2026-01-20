@@ -13,7 +13,8 @@ class KuponController extends Controller
      */
     public function index()
     {
-        //
+        $resp = Kupon::all();
+        return response()->json($resp);
     }
 
     /**

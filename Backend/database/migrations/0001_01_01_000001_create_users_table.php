@@ -19,8 +19,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->unsignedBigInteger('tema_id');
+            $table->unsignedBigInteger('tema_id')->default(1);
             $table->foreign('tema_id')->references('id')->on('temak');
+            $table->string('profilkep_url')->default("user.png");
             $table->boolean('kuponok')->default(true);
             $table->boolean('termekArKovetes')->default(true);
             $table->boolean('brokerArKovetes')->default(true);
