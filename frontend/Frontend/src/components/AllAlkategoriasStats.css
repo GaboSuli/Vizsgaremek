@@ -1,38 +1,59 @@
 .all-alkategorias-stats {
-  padding: 20px 0;
+  padding: 2rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.all-alkategorias-stats h2 {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  margin-top: 0;
+  font-size: 2rem;
 }
 
 .stat-card {
   border: none;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  background: white;
+  height: 100%;
 }
 
 .stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .stat-card .card-body {
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .stat-card h5 {
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   font-weight: 600;
   color: #333;
+  font-size: 1.75rem;
+  margin-bottom: 0;
+  word-break: break-word;
 }
 
 .stat-card small {
   font-size: 0.85rem;
   font-weight: 500;
+  color: #6c757d;
+  margin-bottom: 0.25rem;
 }
 
 .chart-card {
   border: none;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: white;
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
@@ -41,16 +62,42 @@
   padding: 2rem;
 }
 
+.chart-card canvas {
+  max-height: 500px;
+}
+
 .table-responsive {
-  border-radius: 4px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .table {
   margin-bottom: 0;
+  background-color: white;
 }
 
 .table thead {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table th {
+  font-weight: 600;
+  color: #333;
+  padding: 1rem;
+  text-align: left;
+}
+
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.table tbody tr:hover {
   background-color: #f8f9fa;
+  transition: background-color 0.2s ease;
 }
 
 .table code {
@@ -58,15 +105,166 @@
   padding: 0.25rem 0.5rem;
   border-radius: 3px;
   color: #d63384;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
-h2 {
-  color: #333;
-  font-weight: 600;
+.table .text-end {
+  font-weight: 500;
+  color: #0d6efd;
+}
+
+.table .text-muted {
+  color: #6c757d !important;
+  font-style: italic;
+}
+
+.form-group {
   margin-bottom: 1.5rem;
 }
 
 .form-label {
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 0.5rem;
+  color: #333;
+  font-size: 0.95rem;
 }
+
+.form-control {
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+  padding: 0.75rem;
+  background-color: white;
+  color: #333;
+}
+
+.form-control:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  background-color: white;
+}
+
+.form-control::placeholder {
+  color: #999;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.btn.me-2 {
+  margin-right: 0.5rem !important;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+}
+
+.btn-outline-primary {
+  color: #0d6efd;
+  border-color: #0d6efd;
+  background-color: white;
+}
+
+.btn-outline-primary:hover {
+  color: white;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 1.5rem;
+}
+
+.card-title {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.25rem;
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .all-alkategorias-stats {
+    padding: 1rem 0;
+  }
+
+  .all-alkategorias-stats h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    margin-bottom: 1rem;
+  }
+
+  .stat-card .card-body {
+    padding: 1rem;
+  }
+
+  .stat-card h5 {
+    font-size: 1.25rem;
+  }
+
+  .chart-card .card-body {
+    padding: 1rem;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table tbody,
+  .table tr,
+  .table td {
+    display: block;
+    width: 100%;
+  }
+
+  .table tr {
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+  }
+
+  .table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    border: none;
+    padding: 0.5rem 1rem;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 6px;
+    font-weight: 600;
+    text-align: left;
+    width: 45%;
+  }
+}
+

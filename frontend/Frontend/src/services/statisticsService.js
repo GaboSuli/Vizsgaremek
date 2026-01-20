@@ -1,18 +1,56 @@
 /**
- * Statistics Service - JSON fájlok betöltése és feldolgozása
+ * Statistics Service - Statisztikai adatok feldolgozása
  */
 
-const TEMPLATES_PATH = '/Templates';
+// Adatok közvetlenül az objektumokba ágyazva
+const alkategoriaHaviData = {
+  "2025-05": {
+    "Mikor": "2025-05",
+    "AtlagAr": 50
+  },
+  "2025-06": {
+    "Mikor": "2025-06",
+    "AtlagAr": 60
+  },
+  "2025-07": {
+    "Mikor": "2025-07",
+    "AtlagAr": 70
+  },
+  "Jelen": {
+    "Mikor": "Jelen",
+    "AtlagAr": 1000000000000000000
+  }
+};
+
+const osszesAlkategoriasData = {
+  "Alk1": {
+    "Megnevezes": "Víz",
+    "AtlagAr": 5001515515522515,
+    "Mertekegyseg": "Liter"
+  },
+  "Alk2": {
+    "Megnevezes": "Olaj",
+    "AtlagAr": 2500000000000000,
+    "Mertekegyseg": "Liter"
+  },
+  "Alk3": {
+    "Megnevezes": "Liszt",
+    "AtlagAr": 1500000000000000,
+    "Mertekegyseg": "kg"
+  },
+  "Alk4": {
+    "Megnevezes": "Cukor",
+    "AtlagAr": 2000000000000000,
+    "Mertekegyseg": "kg"
+  }
+};
 
 /**
  * Alkategória havi átlagár-változásának lekérése
  */
 export const getAlkategoriaMonthlyStats = async () => {
   try {
-    const response = await fetch(`${TEMPLATES_PATH}/AlkategoriaHaviArAtlag.json`);
-    if (!response.ok) throw new Error('Fájl betöltése sikertelen');
-    
-    const allData = await response.json();
+    const allData = alkategoriaHaviData;
 
     const monthlyData = [];
     for (const key in allData) {
@@ -75,10 +113,7 @@ export const getAlkategoriaMonthlyStats = async () => {
  */
 export const getAllAlkategoriasStats = async () => {
   try {
-    const response = await fetch(`${TEMPLATES_PATH}/OsszesAlkategoriaAtlagAra.json`);
-    if (!response.ok) throw new Error('Fájl betöltése sikertelen');
-    
-    const allData = await response.json();
+    const allData = osszesAlkategoriasData;
 
     const transformedData = [];
     const chartColors = [
