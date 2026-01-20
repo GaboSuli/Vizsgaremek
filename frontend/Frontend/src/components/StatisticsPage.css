@@ -1,0 +1,168 @@
+.statistics-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+/* Hero Section */
+.statistics-hero {
+  background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+  color: white;
+  padding: 4rem 1rem;
+  text-align: center;
+  box-shadow: 0 8px 16px rgba(13, 110, 253, 0.2);
+  margin-bottom: 3rem;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  font-weight: 300;
+  opacity: 0.95;
+  margin-bottom: 0;
+}
+
+/* Content Sections */
+.statistics-content {
+  padding: 2rem 0;
+}
+
+.statistics-section {
+  padding: 3rem 0;
+  background: white;
+  border-top: 1px solid #e9ecef;
+}
+
+.statistics-section:nth-child(even) {
+  background: #f8f9fa;
+}
+
+/* Section Titles */
+.statistics-section h2 {
+  text-align: center;
+  color: #333;
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+}
+
+.price-trends-section {
+  background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.category-section {
+  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+/* Cards Enhancement */
+.stat-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Spacing */
+.user-statistics {
+  padding: 2rem 0;
+  background: transparent;
+  min-height: auto;
+}
+
+.alkategoria-monthly-stats,
+.all-alkategorias-stats {
+  padding: 2rem 0;
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .statistics-section {
+    padding: 2rem 0;
+  }
+
+  .statistics-hero {
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .statistics-page {
+    min-height: auto;
+  }
+
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .statistics-hero {
+    padding: 1.5rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .statistics-content {
+    padding: 1rem 0;
+  }
+
+  .statistics-section {
+    padding: 1.5rem 0;
+  }
+}
+
+/* Scroll smooth */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Loading state */
+.statistics-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.statistics-section {
+  animation: fadeInUp 0.5s ease;
+}

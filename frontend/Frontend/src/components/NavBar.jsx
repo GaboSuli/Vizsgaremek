@@ -1,23 +1,30 @@
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
+import { Navbar, Nav, Container, Badge } from 'react-bootstrap'
+import './NavBar.css'
 
 function Navigation({ onNavigate }) {
-    return(
-        <Navbar bg="info" variant="dark" id="navbar" sticky="top">
+    return (
+        <Navbar bg="white" expand="lg" sticky="top" className="navbar-custom">
             <Container>
-                <Navbar.Brand href="#home" onClick={() => onNavigate && onNavigate('home')}>VevesBazar</Navbar.Brand>
-                <Nav className="me-auto">
-                    <Nav.Link href="#home" onClick={() => onNavigate && onNavigate('home')}>Főoldal</Nav.Link>
-                    <Nav.Link href="#statisztika" onClick={() => onNavigate && onNavigate('stats')}>Statisztika</Nav.Link>
-                    <Nav.Link href="#koltsegvetes">Költségvetés</Nav.Link>
-                    <Nav.Link href="#atterkovetes">Átlagos termék árkövetés</Nav.Link>
-                    <Nav.Link href="#piac-kovetes">Piac követés</Nav.Link>
-                    <Nav.Link href="#csoportletrehozasa">Csoport létrehozás</Nav.Link>
-                    <Nav.Link href="#beallitasok">Beállítások</Nav.Link>
-                </Nav>
+                <Navbar.Brand href="#home" onClick={() => onNavigate && onNavigate('home')} className="navbar-brand">
+                    💰 BudgetApp
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="ms-auto">
+                        <Nav.Link href="#home" onClick={() => onNavigate && onNavigate('home')} className="nav-link-custom">
+                            Főoldal
+                        </Nav.Link>
+                        <Nav.Link href="#lista" onClick={() => onNavigate && onNavigate('lista')} className="nav-link-custom">
+                            Bevásárlás
+                        </Nav.Link>
+                        <Nav.Link href="#stats" onClick={() => onNavigate && onNavigate('stats')} className="nav-link-custom">
+                            Statisztika
+                        </Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
             </Container>
         </Navbar>
     )
 }
-export default Navigation;
+
+export default Navigation

@@ -1,23 +1,30 @@
 
 import './App.css'
 import React, { useState } from 'react'
-import Navigation from './components/NavBar.jsx'
+import Sidebar from './components/Sidebar.jsx'
 import LandingPage from './components/LandingPage.jsx'
-import AlkategoriaMonthlyStats from './components/AlkategoriaMonthlyStats.jsx'
-import AllAlkategoriasStats from './components/AllAlkategoriasStats.jsx'
+import StatisticsPage from './components/StatisticsPage.jsx'
+import VevesiListePage from './components/VevesiListePage.jsx'
+import KuponPage from './components/KuponPage.jsx'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
+  const [collapsed, setCollapsed] = useState(false)
+  const [active, setActive] = useState('home')
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page)
+    setActive(page)
+  }
 
   const renderPage = () => {
     switch(currentPage) {
       case 'stats':
-        return (
-          <div className="page-wrapper">
-            <AlkategoriaMonthlyStats />
-            <AllAlkategoriasStats />
-          </div>
-        )
+        return <StatisticsPage />
+      case 'lista':
+        return <VevesiListePage />
+      case 'kupon':
+        return <KuponPage />
       case 'home':
       default:
         return <LandingPage />
@@ -25,10 +32,18 @@ function App() {
   }
 
   return (
-    <>
-      <Navigation onNavigate={setCurrentPage} />
-      {renderPage()}
-    </>
+    <div className="app-layout">
+      <Sidebar 
+        collapsed={collapsed}
+        onToggle={() => setCollapsed(s => !s)}
+        active={active}
+        onNavigate={() => {}}
+        onPageChange={handlePageChange}
+      />
+      <main className={`main-content ${collapsed ? 'sidebar-collapsed' : ''}`}>
+        {renderPage()}
+      </main>
+    </div>
   )
 }
 

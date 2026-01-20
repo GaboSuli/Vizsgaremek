@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Foldal.css';
+import { getAllAlkategoriasStats } from '../services/statisticsService';
 
 function StatCard({ value, label }) {
   return (
@@ -11,14 +12,44 @@ function StatCard({ value, label }) {
 }
 
 export default function StatsSection() {
+  const [stats, setStats] = useState({
+    totalCategories: '—',
+    averagePrice: '—',
+    minPrice: '—',
+    maxPrice: '—'
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const result = await getAllAlkategoriasStats();
+        if (result.success && result.statistics) {
+          setStats({
+            totalCategories: result.statistics.totalCategories,
+            averagePrice: result.statistics.averagePrice?.toLocaleString() + ' Ft',
+            minPrice: result.statistics.minPrice?.toLocaleString() + ' Ft',
+            maxPrice: result.statistics.maxPrice?.toLocaleString() + ' Ft'
+          });
+        }
+      } catch (error) {
+        console.error('Hiba a statisztikák betöltéskor:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadStats();
+  }, []);
+
   return (
     <section id="stats" className="stats-section">
       <h2>Statisztikák – gyors áttekintés</h2>
       <div className="stats-grid">
-        <StatCard value="+12%" label="Átlagos árváltozás (hó)" />
-        <StatCard value="1,234" label="Összes bevásárlólista" />
-        <StatCard value="523" label="Aktív kuponok" />
-        <StatCard value="89" label="Közösségi csoportok" />
+        <StatCard value={stats.totalCategories} label="Alkategóriák száma" />
+        <StatCard value={stats.averagePrice} label="Átlagár" />
+        <StatCard value={stats.minPrice} label="Legalacsonyabb ár" />
+        <StatCard value={stats.maxPrice} label="Legmagasabb ár" />
       </div>
     </section>
   );

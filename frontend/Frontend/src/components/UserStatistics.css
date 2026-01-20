@@ -1,0 +1,293 @@
+.user-statistics {
+  padding: 2rem 0;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.page-title {
+  color: #333;
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* User Info Card */
+.user-info-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: white;
+  padding: 1.5rem;
+}
+
+.user-name {
+  font-weight: 700;
+  color: #333;
+  font-size: 1.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.user-email {
+  color: #0d6efd;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.user-stats-quick {
+  display: flex;
+  gap: 2rem;
+  justify-content: flex-end;
+}
+
+.quick-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.quick-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #0d6efd;
+}
+
+.quick-label {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+/* Stat Cards */
+.stat-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: white;
+}
+
+.stat-card .card-body {
+  padding: 2rem;
+}
+
+.card-subtitle {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+/* Budget Overview */
+.budget-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.budget-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #0d6efd;
+}
+
+.budget-label {
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.budget-amount {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.budget-amount.text-primary {
+  color: #0d6efd !important;
+}
+
+.budget-amount.text-danger {
+  color: #dc3545 !important;
+}
+
+.budget-amount.text-success {
+  color: #28a745 !important;
+}
+
+/* Savings Overview */
+.savings-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.savings-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+}
+
+.savings-label {
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.savings-amount {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #28a745;
+}
+
+.savings-percentage {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #28a745;
+}
+
+.savings-coupons {
+  font-weight: 600;
+  color: #0d6efd;
+  font-size: 1rem;
+}
+
+/* Chart Cards */
+.chart-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: white;
+  margin-bottom: 1.5rem;
+}
+
+.chart-card .card-header {
+  background-color: #f8f9fa;
+  border: none;
+  border-radius: 12px 12px 0 0;
+  padding: 1.5rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.chart-card .card-header h5 {
+  color: #333;
+  font-weight: 600;
+}
+
+.chart-card .card-body {
+  padding: 2rem;
+}
+
+.chart-card canvas {
+  max-height: 400px;
+}
+
+/* Stat Box Grid */
+.stat-box {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: white;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.stat-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.stat-box .card-body {
+  padding: 1.5rem;
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.stat-title {
+  color: #6c757d;
+  font-weight: 500;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  color: #0d6efd;
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Progress Bar */
+.progress {
+  height: 8px;
+  border-radius: 10px;
+  background-color: #e9ecef;
+}
+
+.progress-bar {
+  border-radius: 10px;
+  transition: width 0.6s ease;
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+  .user-stats-quick {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    justify-content: flex-start;
+  }
+
+  .page-title {
+    font-size: 1.8rem;
+  }
+
+  .user-name {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .user-statistics {
+    padding: 1rem 0;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .user-info-card .card-body {
+    padding: 1rem;
+  }
+
+  .user-stats-quick {
+    margin-top: 1rem;
+  }
+
+  .quick-stat {
+    flex: 1;
+  }
+
+  .chart-card .card-body {
+    padding: 1rem;
+  }
+
+  .budget-item,
+  .savings-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+}

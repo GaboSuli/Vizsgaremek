@@ -2,15 +2,22 @@ import React from 'react';
 import './Foldal.css';
 
 const navItems = [
+  { id: 'home', label: 'Főoldal', icon: 'home', page: true },
   { id: 'about', label: 'Rólunk', icon: 'users' },
   { id: 'features', label: 'Funkciók', icon: 'sparkles' },
   { id: 'how', label: 'Hogyan működik', icon: 'steps' },
-  { id: 'stats', label: 'Statisztikák', icon: 'chart' },
+  { id: 'stats', label: 'Statisztikák', icon: 'chart', page: true },
+  { id: 'lista', label: 'Bevásárlás', icon: 'shopping', page: true },
+  { id: 'kupon', label: 'Kuponok', icon: 'ticket', page: true },
   { id: 'contact', label: 'Kapcsolat', icon: 'mail' },
 ];
 
 function Icon({ name }) {
   switch (name) {
+    case 'home':
+      return (
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      );
     case 'users':
       return (
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -27,6 +34,14 @@ function Icon({ name }) {
       return (
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 3v18h18"/><path d="M7 14V7"/><path d="M12 14v-4"/><path d="M17 14v-7"/></svg>
       );
+    case 'shopping':
+      return (
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      );
+    case 'ticket':
+      return (
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 4.5C2 3.12 3.12 2 4.5 2h15C20.88 2 22 3.12 22 4.5v6c-1 0-2 1-2 2s1 2 2 2v6c0 1.38-1.12 2.5-2.5 2.5h-15C3.12 22 2 20.88 2 19.5v-6c1 0 2-1 2-2s-1-2-2-2v-6z"/><line x1="6" y1="9" x2="18" y2="9"/><line x1="6" y1="15" x2="18" y2="15"/></svg>
+      );
     case 'mail':
       return (
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 8l9 6 9-6"/><path d="M21 8v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"/></svg>
@@ -36,11 +51,21 @@ function Icon({ name }) {
   }
 }
 
-export default function Sidebar({ collapsed, onToggle, active, onNavigate }) {
+export default function Sidebar({ collapsed, onToggle, active, onNavigate, onPageChange }) {
+  const handleNavClick = (item) => {
+    if (item.page) {
+      // Navigáció az oldal szinten
+      onPageChange && onPageChange(item.id);
+    } else {
+      // Navigáció a lap szinten
+      onNavigate(item.id);
+    }
+  };
+
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`} aria-label="Oldalsó navigáció">
       <div className="sidebar-top">
-        <div className="logo" onClick={() => onNavigate('hero')}>
+        <div className="logo" onClick={() => handleNavClick({ id: 'home', page: true })}>
           <div className="logo-mark">VB</div>
           {!collapsed && <div className="logo-text">VevesBazar</div>}
         </div>
@@ -52,7 +77,7 @@ export default function Sidebar({ collapsed, onToggle, active, onNavigate }) {
           <button
             key={item.id}
             className={`nav-item ${active === item.id ? 'active' : ''}`}
-            onClick={() => onNavigate(item.id)}
+            onClick={() => handleNavClick(item)}
             aria-current={active === item.id ? 'page' : undefined}
           >
             <span className="nav-icon"><Icon name={item.icon} /></span>

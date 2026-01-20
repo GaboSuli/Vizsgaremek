@@ -333,8 +333,160 @@ a:hover{
   gap: 1rem;
 }
 
-.stat-card{ padding: 1rem; text-align: center; }
-.stat-value{ font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+.stat-card{ 
+  padding: 1.5rem; 
+  text-align: center; 
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.08);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(13, 110, 253, 0.15);
+}
+
+.stat-value{ 
+  font-size: 1.6rem; 
+  font-weight: 700; 
+  color: var(--accent); 
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Price Change Section */
+.price-change-section {
+  background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 100%);
+  padding: 3rem 1rem;
+  margin: 2rem 0;
+}
+
+.price-change-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.price-change-section h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.price-change-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.price-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.08);
+  transition: all 0.3s ease;
+}
+
+.price-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(13, 110, 253, 0.15);
+}
+
+.price-icon {
+  font-size: 2.5rem;
+}
+
+.price-card h3 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.price-card p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.price-card.trend-up {
+  border-left: 4px solid #28a745;
+}
+
+.price-card.trend-down {
+  border-left: 4px solid #dc3545;
+}
+
+.price-card.price-range {
+  border-left: 4px solid #0d6efd;
+}
+
+.price-card.current-price {
+  border-left: 4px solid #ffc107;
+}
+
+/* Monthly Timeline */
+.monthly-timeline {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.08);
+}
+
+.monthly-timeline h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.timeline-items {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.timeline-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 100px;
+  padding: 1rem;
+  background: #f8fbff;
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.timeline-item:hover {
+  background: #e8f0ff;
+  transform: translateY(-2px);
+}
+
+.timeline-month {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.timeline-price {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 1rem;
+}
 
 .site-footer{ text-align: center; padding: 2rem 0; color: var(--muted); }
 

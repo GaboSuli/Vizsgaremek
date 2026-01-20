@@ -12,7 +12,6 @@ import Labjegyzet from './Labjegyzet.jsx';
 function Foldal() {
     return (
         <>
-            <Navigation />
 
             <Container className="mt-4 landing-container">
                 <Row className="align-items-center">
