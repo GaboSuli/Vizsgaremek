@@ -417,7 +417,15 @@ a:hover{
 .price-card p {
   font-size: 0.9rem;
   color: var(--muted);
-  margin: 0;
+  margin: 0 0 0.5rem 0;
+}
+
+.price-card .date-info {
+  display: block;
+  font-size: 0.8rem;
+  color: #999;
+  font-weight: 500;
+  text-transform: capitalize;
 }
 
 .price-card.trend-up {
@@ -428,12 +436,12 @@ a:hover{
   border-left: 4px solid #dc3545;
 }
 
-.price-card.price-range {
-  border-left: 4px solid #0d6efd;
+.price-card.inflation-up {
+  border-left: 4px solid #fd7e14;
 }
 
-.price-card.current-price {
-  border-left: 4px solid #ffc107;
+.price-card.inflation-down {
+  border-left: 4px solid #20c997;
 }
 
 /* Monthly Timeline */
@@ -463,7 +471,7 @@ a:hover{
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  min-width: 100px;
+  min-width: 140px;
   padding: 1rem;
   background: #f8fbff;
   border-radius: 8px;
@@ -480,12 +488,29 @@ a:hover{
   font-weight: 600;
   color: #333;
   font-size: 0.9rem;
+  margin-bottom: 0.5rem;
 }
 
-.timeline-price {
+.timeline-values {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+}
+
+.timeline-eur {
   font-weight: 700;
-  color: var(--accent);
-  font-size: 1rem;
+  color: #0d6efd;
+}
+
+.timeline-usd {
+  font-weight: 700;
+  color: #6f42c1;
+}
+
+.timeline-inflation {
+  font-weight: 700;
+  color: #fd7e14;
 }
 
 .site-footer{ text-align: center; padding: 2rem 0; color: var(--muted); }
