@@ -8,6 +8,7 @@ const navItems = [
   { id: 'how', label: 'Hogyan működik', icon: 'steps' },
   { id: 'stats', label: 'Statisztikák', icon: 'chart', page: true },
   { id: 'lista', label: 'Bevásárlás', icon: 'shopping', page: true },
+  { id: 'shopping', label: 'Bevásárlólista', icon: 'cart', page: true },
   { id: 'kupon', label: 'Kuponok', icon: 'ticket', page: true },
   { id: 'contact', label: 'Kapcsolat', icon: 'mail' },
 ];
@@ -41,6 +42,10 @@ function Icon({ name }) {
     case 'ticket':
       return (
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 4.5C2 3.12 3.12 2 4.5 2h15C20.88 2 22 3.12 22 4.5v6c-1 0-2 1-2 2s1 2 2 2v6c0 1.38-1.12 2.5-2.5 2.5h-15C3.12 22 2 20.88 2 19.5v-6c1 0 2-1 2-2s-1-2-2-2v-6z"/><line x1="6" y1="9" x2="18" y2="9"/><line x1="6" y1="15" x2="18" y2="15"/></svg>
+      );
+    case 'cart':
+      return (
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
       );
     case 'mail':
       return (

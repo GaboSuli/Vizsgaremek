@@ -6,6 +6,7 @@ import LandingPage from './components/LandingPage.jsx'
 import StatisticsPage from './components/StatisticsPage.jsx'
 import VevesiListePage from './components/VevesiListePage.jsx'
 import KuponPage from './components/KuponPage.jsx'
+import ShoppingListPage from './components/ShoppingListPage.jsx'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
@@ -25,6 +26,8 @@ function App() {
         return <VevesiListePage />
       case 'kupon':
         return <KuponPage />
+      case 'shopping':
+        return <ShoppingListPage />
       case 'home':
       default:
         return <LandingPage />
