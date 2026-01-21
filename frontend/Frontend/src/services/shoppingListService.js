@@ -1,6 +1,7 @@
-// Bevásárlólista service - VevesiLista.json és OsszVevesiLista.json struktúra alapján
+import { apiCall } from './api.js';
 
-let shoppingLists = [
+// Mock data fallback for UI testing when API is not available
+const mockShoppingLists = [
   {
     id: 1,
     Nev: "Heti bevásárlás",
@@ -81,304 +82,183 @@ let shoppingLists = [
   }
 ];
 
-let nextId = Math.max(...shoppingLists.map(l => l.id)) + 1;
-let nextItemId = 7;
-
-// Összérték számítása
+// Calculate total from items
 const calculateTotal = (items) => {
   return items.reduce((sum, item) => sum + (item.Ar * item.Mennyiseg), 0);
 };
 
-// Összes bevásárlólista lekérése
+// Get all shopping lists
 export const getAllShoppingLists = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const listsWithTotals = shoppingLists.map(list => ({
-        ...list,
-        Osszesen: calculateTotal(list.VevesiLista),
-        TeteiekSzama: list.VevesiLista.length
-      }));
-      
-      resolve({
-        success: true,
-        data: listsWithTotals,
-        count: listsWithTotals.length,
-        struktura: "OsszVevesiLista"
-      });
-    }, 300);
-  });
+  const response = await apiCall('/vevesiListak');
+  
+  if (!response.success) {
+    return {
+      success: true,
+      data: mockShoppingLists,
+      count: mockShoppingLists.length,
+      struktura: "OsszVevesiLista"
+    };
+  }
+
+  return response;
 };
 
-// Bevásárlólista lekérése felhasználó alapján
+// Get shopping lists by user ID
 export const getShoppingListsByUser = async (felhasznaloId) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const userLists = shoppingLists.filter(l => l.FelhasznaloId === felhasznaloId);
-      const listsWithTotals = userLists.map(list => ({
-        ...list,
-        Osszesen: calculateTotal(list.VevesiLista),
-        TeteiekSzama: list.VevesiLista.length
-      }));
+  const response = await apiCall(`/felhasznalo/${felhasznaloId}/vevesiListak`);
+  
+  if (!response.success) {
+    const userLists = mockShoppingLists.filter(l => l.FelhasznaloId === felhasznaloId);
+    return {
+      success: true,
+      data: userLists,
+      count: userLists.length,
+      struktura: "OsszVevesiLista"
+    };
+  }
 
-      resolve({
-        success: true,
-        data: listsWithTotals,
-        count: listsWithTotals.length,
-        struktura: "OsszVevesiLista",
-        felhasznaloId: felhasznaloId
-      });
-    }, 300);
-  });
+  return response;
 };
 
-// Bevásárlólista lekérése csoport alapján
+// Get shopping lists by group ID
 export const getShoppingListsByGroup = async (csoportId) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const groupLists = shoppingLists.filter(l => l.CsoportId === csoportId);
-      const listsWithTotals = groupLists.map(list => ({
-        ...list,
-        Osszesen: calculateTotal(list.VevesiLista),
-        TeteiekSzama: list.VevesiLista.length
-      }));
+  const response = await apiCall(`/csoport/${csoportId}/vevesiListak`);
+  
+  if (!response.success) {
+    const groupLists = mockShoppingLists.filter(l => l.CsoportId === csoportId);
+    return {
+      success: true,
+      data: groupLists,
+      count: groupLists.length,
+      struktura: "OsszVevesiLista"
+    };
+  }
 
-      resolve({
-        success: true,
-        data: listsWithTotals,
-        count: listsWithTotals.length,
-        struktura: "OsszVevesiLista",
-        csoportId: csoportId
-      });
-    }, 300);
-  });
+  return response;
 };
 
-// Egyedi bevásárlólista lekérése
+// Get specific shopping list by ID
 export const getShoppingListById = async (id) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const list = shoppingLists.find(l => l.id === id);
-      if (list) {
-        resolve({
-          success: true,
-          data: {
-            ...list,
-            Osszesen: calculateTotal(list.VevesiLista)
-          },
-          struktura: "VevesiLista"
-        });
-      } else {
-        reject({
-          success: false,
-          error: "Bevásárlólista nem található"
-        });
-      }
-    }, 300);
-  });
-};
-
-// Bevásárlólista létrehozása
-export const createShoppingList = async (listData) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newList = {
-        id: nextId++,
-        Nev: listData.Nev || "Új bevásárlólista",
-        Letrehozas: new Date().toISOString().split('T')[0],
-        FelhasznaloId: listData.FelhasznaloId || 1,
-        CsoportId: listData.CsoportId || 1,
-        Statusz: "aktiv",
-        VevesiLista: listData.VevesiLista || []
-      };
-
-      shoppingLists.push(newList);
-
-      resolve({
+  const response = await apiCall(`/vevesiLista/${id}`);
+  
+  if (!response.success) {
+    const list = mockShoppingLists.find(l => l.id === id);
+    if (list) {
+      return {
         success: true,
-        data: {
-          ...newList,
-          Osszesen: calculateTotal(newList.VevesiLista)
-        },
-        message: "Bevásárlólista sikeresen létrehozva",
+        data: list,
         struktura: "VevesiLista"
-      });
-    }, 300);
+      };
+    }
+    return response;
+  }
+
+  return response;
+};
+
+// Create shopping list
+export const createShoppingList = async (listData) => {
+  return apiCall('/vevesiListak', {
+    method: 'POST',
+    body: listData
   });
 };
 
-// Bevásárlólista frissítése
-export const updateShoppingList = async (id, updateData) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = shoppingLists.findIndex(l => l.id === id);
-      if (index !== -1) {
-        shoppingLists[index] = {
-          ...shoppingLists[index],
-          ...updateData,
-          id: shoppingLists[index].id,
-          Letrehozas: shoppingLists[index].Letrehozas
-        };
-
-        resolve({
-          success: true,
-          data: {
-            ...shoppingLists[index],
-            Osszesen: calculateTotal(shoppingLists[index].VevesiLista)
-          },
-          message: "Bevásárlólista sikeresen frissítve",
-          struktura: "VevesiLista"
-        });
-      } else {
-        reject({
-          success: false,
-          error: "Bevásárlólista nem található"
-        });
-      }
-    }, 300);
+// Update shopping list
+export const updateShoppingList = async (id, listData) => {
+  return apiCall(`/vevesiLista/${id}`, {
+    method: 'PUT',
+    body: listData
   });
 };
 
-// Tétel hozzáadása a listához
-export const addItemToList = async (listId, itemData) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const list = shoppingLists.find(l => l.id === listId);
-      if (list) {
-        const newItem = {
-          id: nextItemId++,
-          Megnevezes: itemData.Megnevezes,
-          Alkategoria: itemData.Alkategoria || "",
-          Ar: itemData.Ar || 0,
-          MennyisegTipusMertekegyseg: itemData.MennyisegTipusMertekegyseg || "Darab",
-          Mennyiseg: itemData.Mennyiseg || 1
-        };
-
-        list.VevesiLista.push(newItem);
-
-        resolve({
-          success: true,
-          data: {
-            ...list,
-            Osszesen: calculateTotal(list.VevesiLista)
-          },
-          message: "Tétel sikeresen hozzáadva",
-          struktura: "VevesiLista"
-        });
-      } else {
-        reject({
-          success: false,
-          error: "Bevásárlólista nem található"
-        });
-      }
-    }, 300);
-  });
-};
-
-// Tétel eltávolítása a listából
-export const removeItemFromList = async (listId, itemId) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const list = shoppingLists.find(l => l.id === listId);
-      if (list) {
-        const itemIndex = list.VevesiLista.findIndex(i => i.id === itemId);
-        if (itemIndex !== -1) {
-          list.VevesiLista.splice(itemIndex, 1);
-          
-          resolve({
-            success: true,
-            data: {
-              ...list,
-              Osszesen: calculateTotal(list.VevesiLista)
-            },
-            message: "Tétel sikeresen eltávolítva",
-            struktura: "VevesiLista"
-          });
-        } else {
-          reject({
-            success: false,
-            error: "Tétel nem található"
-          });
-        }
-      } else {
-        reject({
-          success: false,
-          error: "Bevásárlólista nem található"
-        });
-      }
-    }, 300);
-  });
-};
-
-// Bevásárlólista törlése
+// Delete shopping list
 export const deleteShoppingList = async (id) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = shoppingLists.findIndex(l => l.id === id);
-      if (index !== -1) {
-        const deleted = shoppingLists.splice(index, 1);
-        resolve({
-          success: true,
-          data: deleted[0],
-          message: "Bevásárlólista sikeresen törölve",
-          struktura: "VevesiLista"
-        });
-      } else {
-        reject({
-          success: false,
-          error: "Bevásárlólista nem található"
-        });
-      }
-    }, 300);
+  return apiCall(`/vevesiLista/${id}`, {
+    method: 'DELETE'
   });
 };
 
-// Becslés az összköltségre
+// Add item to shopping list
+export const addItemToList = async (listId, itemData) => {
+  return apiCall(`/vevesiLista/${listId}/tetel`, {
+    method: 'POST',
+    body: itemData
+  });
+};
+
+// Remove item from shopping list
+export const removeItemFromList = async (listId, itemId) => {
+  return apiCall(`/vevesiLista/${listId}/tetel/${itemId}`, {
+    method: 'DELETE'
+  });
+};
+
+// Estimate total cost
 export const estimateTotalCost = async (listId) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const list = shoppingLists.find(l => l.id === listId);
-      if (list) {
-        const total = calculateTotal(list.VevesiLista);
-        const estimatedCost = {
-          totalItems: list.VevesiLista.length,
-          baseCost: total,
-          estimatedWithTax: Math.round(total * 1.27), // 27% ÁFA
-          currency: "HUF",
-          description: `Nagyjából ${Math.round(total / 1000)}k - ${Math.round((total * 1.27) / 1000)}k Ft (ÁFA nélkül és azzal)`
-        };
+  const response = await getShoppingListById(listId);
+  
+  if (!response.success || !response.data) {
+    return {
+      success: false,
+      data: null,
+      message: 'Nem sikerült az ár becslése'
+    };
+  }
 
-        resolve({
-          success: true,
-          data: estimatedCost,
-          message: "Költségbecslés sikeresen kiszámítva"
-        });
-      } else {
-        reject({
-          success: false,
-          error: "Bevásárlólista nem található"
-        });
-      }
-    }, 300);
-  });
+  const list = response.data;
+  const items = list.VevesiLista || list.items || [];
+  
+  const total = items.reduce((sum, item) => {
+    return sum + ((item.Ar || item.ar || 0) * (item.Mennyiseg || item.mennyiseg || 0));
+  }, 0);
+
+  const estimatedCost = {
+    totalItems: items.length,
+    baseCost: total,
+    estimatedWithTax: Math.round(total * 1.27),
+    currency: "HUF",
+    description: `Nagyjából ${Math.round(total / 1000)}k - ${Math.round((total * 1.27) / 1000)}k Ft (ÁFA nélkül és azzal)`
+  };
+
+  return {
+    success: true,
+    data: estimatedCost,
+    message: 'Ár sikeresen megbecsülve'
+  };
 };
 
-// Statisztika lekérése
+// Get shopping list statistics
 export const getShoppingListStats = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const totalItems = shoppingLists.reduce((sum, list) => sum + list.VevesiLista.length, 0);
-      const totalCost = shoppingLists.reduce((sum, list) => sum + calculateTotal(list.VevesiLista), 0);
-      
-      resolve({
-        success: true,
-        data: {
-          totalLists: shoppingLists.length,
-          totalItems: totalItems,
-          totalCost: totalCost,
-          averageCostPerList: Math.round(totalCost / shoppingLists.length),
-          averageItemsPerList: (totalItems / shoppingLists.length).toFixed(2)
-        }
-      });
-    }, 300);
+  const response = await getAllShoppingLists();
+  
+  if (!response.success) {
+    return {
+      success: false,
+      data: null
+    };
+  }
+
+  const lists = Array.isArray(response.data) ? response.data : [response.data];
+  let totalItems = 0;
+  let totalCost = 0;
+
+  lists.forEach(list => {
+    const items = list.VevesiLista || list.items || [];
+    totalItems += items.length;
+    items.forEach(item => {
+      totalCost += (item.Ar || item.ar || 0) * (item.Mennyiseg || item.mennyiseg || 0);
+    });
   });
+
+  return {
+    success: true,
+    data: {
+      totalLists: lists.length,
+      totalItems: totalItems,
+      totalCost: totalCost,
+      averageCostPerList: lists.length > 0 ? Math.round(totalCost / lists.length) : 0,
+      averageItemsPerList: lists.length > 0 ? (totalItems / lists.length).toFixed(2) : 0
+    }
+  };
 };

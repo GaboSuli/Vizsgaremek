@@ -1,7 +1,9 @@
 
 import './App.css'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { isAuthenticated } from './services/authService.js'
 import Sidebar from './components/Sidebar.jsx'
+import LoginPage from './components/LoginPage.jsx'
 import LandingPage from './components/LandingPage.jsx'
 import StatisticsPage from './components/StatisticsPage.jsx'
 import VevesiListePage from './components/VevesiListePage.jsx'
@@ -12,6 +14,15 @@ function App() {
   const [currentPage, setCurrentPage] = useState('home')
   const [collapsed, setCollapsed] = useState(false)
   const [active, setActive] = useState('home')
+  const [authenticated, setAuthenticated] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const isAuth = isAuthenticated()
+    setAuthenticated(isAuth)
+    setLoading(false)
+  }, [])
 
   const handlePageChange = (page) => {
     setCurrentPage(page)
@@ -32,6 +43,14 @@ function App() {
       default:
         return <LandingPage />
     }
+  }
+
+  if (loading) {
+    return <div className="loading">Betöltés...</div>
+  }
+
+  if (!authenticated) {
+    return <LoginPage />
   }
 
   return (
