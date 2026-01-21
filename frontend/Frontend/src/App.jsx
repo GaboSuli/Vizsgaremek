@@ -1,7 +1,7 @@
 
 import './App.css'
 import React, { useState, useEffect } from 'react'
-import { isAuthenticated } from './services/authService.js'
+import { isAuthenticated, getStoredUserInfo } from './services/authService.js'
 import Sidebar from './components/Sidebar.jsx'
 import LoginPage from './components/LoginPage.jsx'
 import LandingPage from './components/LandingPage.jsx'
@@ -9,6 +9,7 @@ import StatisticsPage from './components/StatisticsPage.jsx'
 import VevesiListePage from './components/VevesiListePage.jsx'
 import KuponPage from './components/KuponPage.jsx'
 import ShoppingListPage from './components/ShoppingListPage.jsx'
+import AdminPage from './components/AdminPage.jsx'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
@@ -21,6 +22,23 @@ function App() {
     // Check if user is authenticated
     const isAuth = isAuthenticated()
     setAuthenticated(isAuth)
+    
+    // If authenticated, check role and set page accordingly
+    if (isAuth) {
+      const userInfo = getStoredUserInfo()
+      
+      // Check if user is admin (email contains 'admin' or role is admin)
+      const isAdmin = userInfo?.email?.includes('admin') || userInfo?.role === 'admin' || userInfo?.type === 'admin'
+      
+      if (isAdmin) {
+        setCurrentPage('admin')
+        setActive('admin')
+      } else {
+        setCurrentPage('home')
+        setActive('home')
+      }
+    }
+    
     setLoading(false)
   }, [])
 
@@ -39,6 +57,8 @@ function App() {
         return <KuponPage />
       case 'shopping':
         return <ShoppingListPage />
+      case 'admin':
+        return <AdminPage />
       case 'home':
       default:
         return <LandingPage />

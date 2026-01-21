@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { loginUser, registerUser } from '../services/authService.js';
+import { loginUser, registerUser, setStoredUserInfo } from '../services/authService.js';
 import './LoginPage.css';
 
 export default function LoginPage() {
@@ -36,12 +36,32 @@ export default function LoginPage() {
         });
 
         if (response.success) {
+          // Store user info from response
+          if (response.data) {
+            setStoredUserInfo(response.data);
+          }
           setSuccess('Sikeresen bejelentkeztél!');
           setTimeout(() => {
             window.location.href = '/';
           }, 1000);
         } else {
-          setError(response.message || 'Sikertelen bejelentkezés');
+          // Jobb error üzenet
+          const errorMsg = response.message || 'Sikertelen bejelentkezés';
+          
+          // Backend nem elérhető
+          if (errorMsg.includes('Backend szerver nem elérhető') || response.status === 503) {
+            setError(
+              '❌ BACKEND SZERVER NEM FUTNAK!\n\n' +
+              'Lépések:\n' +
+              '1. Nyisd meg a PowerShell-t\n' +
+              '2. Futtasd: cd Backend && php artisan serve\n' +
+              '3. Várj, amíg a szerver indul (localhost:8000)\n' +
+              '4. Újra próbáld a bejelentkezést\n\n' +
+              'QUICK_START.md fájl lásd a projekt gyökerében'
+            );
+          } else {
+            setError(errorMsg);
+          }
         }
       } else {
         if (formData.password !== formData.passwordConfirm) {

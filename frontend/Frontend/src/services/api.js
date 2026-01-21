@@ -1,5 +1,5 @@
 // API configuration - Backend endpoint
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = 'http://localhost:8000/api';
 
 // Helper function to get auth token from localStorage
 const getAuthToken = () => {
@@ -80,10 +80,33 @@ export const apiCall = async (endpoint, options = {}) => {
     };
   } catch (error) {
     console.error('API Error:', error);
+    
+    // Connection refused - Backend nem fut
+    if (error.message.includes('Failed to fetch') || !navigator.onLine) {
+      return {
+        success: false,
+        data: null,
+        message: '❌ Backend szerver nem elérhető!\n\nEllenőrizd:\n1. Backend fut-e? (php artisan serve)\n2. A port 8000-en hallgatja-e?\n3. Nyitva van-e a Backend terminál?\n\nQUICK_START.md fájl olvasásához kattints a projekt gyökerében',
+        status: 503
+      };
+    }
+
+    // Network error
+    if (error instanceof TypeError) {
+      return {
+        success: false,
+        data: null,
+        message: `Hálózati hiba: ${error.message}`,
+        status: 0
+      };
+    }
+
+    // Generic error
     return {
       success: false,
       data: null,
-      message: error.message || 'Hálózati hiba'
+      message: error.message || 'Ismeretlen hiba történt',
+      status: 0
     };
   }
 };
