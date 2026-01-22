@@ -49,6 +49,39 @@ export const getUserGroups = async (id) => {
   return apiCall(`/felhasznalo/${id}/csoportjai`);
 };
 
+// Get user data within a specific group
+export const getUserInGroup = async (userId, groupId) => {
+  const groupsResponse = await getUserGroups(userId);
+
+  if (!groupsResponse.success) {
+    return groupsResponse;
+  }
+
+  const userGroups = groupsResponse.data;
+  const groupData = userGroups.find(group => group.id === parseInt(groupId));
+
+  if (!groupData) {
+    return {
+      success: false,
+      data: null,
+      message: 'Felhasználó nem tagja ennek a csoportnak'
+    };
+  }
+
+  // Extract and format data according to EgyFelhasznaloEgyCsoportAdatai.json
+  const userInGroupData = {
+    Becenev: groupData.pivot.becenev,
+    JogosultsagSzint: groupData.pivot.jogosultsag_szint,
+    CsatlakozasDatuma: groupData.pivot.created_at.split('T')[0] // Extract date part
+  };
+
+  return {
+    success: true,
+    data: userInGroupData,
+    message: 'Sikeres lekérdezés'
+  };
+};
+
 // Check if user is authenticated
 export const isAuthenticated = () => {
   return !!localStorage.getItem('auth_token');
