@@ -15,7 +15,6 @@ class UserController extends Controller
         //Validálás
         $validated = $request->validate([
             'nev' => 'required|string|max:255',
-            'becenev' => 'required|string|max:255',
             //e-mail egyedi legyen a user táblában
             //e-mail formailag helyes
             'email' => 'required|email|unique:users',
@@ -25,7 +24,7 @@ class UserController extends Controller
         //user létrehozása
         $user = User::create([
             'nev' => $validated['nev'],
-            'becenev' => $validated['becenev'],
+            'becenev' => $validated['nev'],
             'email' => $validated['email'],
             //Hash a jelszót titkosítja
             'password' => Hash::make($validated['password']),
