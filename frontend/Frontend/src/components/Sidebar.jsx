@@ -11,6 +11,7 @@ const navItems = [
   { id: 'shopping', label: 'Bevásárlólista', icon: 'cart', page: true },
   { id: 'kupon', label: 'Kuponok', icon: 'ticket', page: true },
   { id: 'contact', label: 'Kapcsolat', icon: 'mail' },
+  { id: 'admin', label: 'Admin Panel', icon: 'settings', page: true },
 ];
 
 function Icon({ name }) {
@@ -50,6 +51,10 @@ function Icon({ name }) {
     case 'mail':
       return (
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 8l9 6 9-6"/><path d="M21 8v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"/></svg>
+      );
+    case 'settings':
+      return (
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m3.08 3.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m3.08-3.08l4.24-4.24M19.78 19.78l-4.24-4.24m-3.08-3.08l-4.24-4.24"/></svg>
       );
     default:
       return null;

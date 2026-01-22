@@ -17,6 +17,17 @@ body {
   background-color: #f5f5f5;
 }
 
+.loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+}
+
 .page-wrapper {
   min-height: 100vh;
   padding: 2rem 1rem;
