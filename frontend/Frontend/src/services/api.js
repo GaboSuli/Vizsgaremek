@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 // API configuration - Backend endpoint
 const API_BASE_URL = 'http://localhost:8000/api';
 
@@ -10,27 +12,48 @@ const getAuthToken = () => {
 export const setAuthToken = (token) => {
   if (token) {
     localStorage.setItem('auth_token', token);
+    // Add token to axios default headers
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   } else {
     localStorage.removeItem('auth_token');
+    delete axiosInstance.defaults.headers.common['Authorization'];
   }
 };
 
-// Helper function to get common headers
-const getHeaders = (includeAuth = true) => {
-  const headers = {
+// Create axios instance with default config
+export const axiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-  };
+  }
+});
 
-  if (includeAuth) {
+// Add request interceptor to include auth token
+axiosInstance.interceptors.request.use(
+  (config) => {
     const token = getAuthToken();
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
+);
 
-  return headers;
-};
+// Add response interceptor to handle 401 errors
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      setAuthToken(null);
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Generic API call function
 export const apiCall = async (endpoint, options = {}) => {
@@ -41,58 +64,47 @@ export const apiCall = async (endpoint, options = {}) => {
     customHeaders = {}
   } = options;
 
-  const url = `${API_BASE_URL}${endpoint}`;
-  const headers = { ...getHeaders(includeAuth), ...customHeaders };
-
   try {
     const config = {
       method,
-      headers
+      headers: customHeaders
     };
 
     if (body) {
-      config.body = JSON.stringify(body);
+      config.data = body;
     }
 
-    const response = await fetch(url, config);
+    // If auth is not needed, create temporary instance without auth
+    const instance = includeAuth ? axiosInstance : axios.create({
+      baseURL: API_BASE_URL,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        ...customHeaders
+      }
+    });
 
-    // Handle 401 Unauthorized - clear token and redirect to login
-    if (response.status === 401) {
-      setAuthToken(null);
-      window.location.href = '/login';
-    }
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        data: null,
-        message: data.message || 'Hiba történt az API hívás során',
-        status: response.status
-      };
-    }
+    const response = await instance(endpoint, config);
 
     return {
       success: true,
-      data: data.data || data,
-      message: data.message || 'Sikeres'
+      data: response.data.data || response.data,
+      message: response.data.message || 'Sikeres'
     };
   } catch (error) {
     console.error('API Error:', error);
-    
-    // Connection refused - Backend nem fut
-    if (error.message.includes('Failed to fetch') || !navigator.onLine) {
-      return {
-        success: false,
-        data: null,
-        message: '❌ Backend szerver nem elérhető!\n\nEllenőrizd:\n1. Backend fut-e? (php artisan serve)\n2. A port 8000-en hallgatja-e?\n3. Nyitva van-e a Backend terminál?\n\nQUICK_START.md fájl olvasásához kattints a projekt gyökerében',
-        status: 503
-      };
-    }
 
-    // Network error
-    if (error instanceof TypeError) {
+    // Handle network errors
+    if (!error.response) {
+      if (!navigator.onLine) {
+        return {
+          success: false,
+          data: null,
+          message: '❌ Backend szerver nem elérhető!\n\nEllenőrizd:\n1. Backend fut-e? (php artisan serve)\n2. A port 8000-en hallgatja-e?\n3. Nyitva van-e a Backend terminál?\n\nQUICK_START.md fájl olvasásához kattints a projekt gyökerében',
+          status: 503
+        };
+      }
+
       return {
         success: false,
         data: null,
@@ -101,12 +113,12 @@ export const apiCall = async (endpoint, options = {}) => {
       };
     }
 
-    // Generic error
+    // Handle HTTP error responses
     return {
       success: false,
       data: null,
-      message: error.message || 'Ismeretlen hiba történt',
-      status: 0
+      message: error.response.data?.message || 'Hiba történt az API hívás során',
+      status: error.response.status
     };
   }
 };
