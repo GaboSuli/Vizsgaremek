@@ -13,19 +13,13 @@ Route::get("/csoport/{id}/vevesiListak", [VevesListaController::class, 'show3'])
 Route::get("/felhasznalo/{id}/csoportjai", [UserController::class, 'show']);
 Route::get("/felhasznalo/{id}", action: [UserController::class, 'show2']);
 Route::get('/kuponok/get',[KuponController::class, 'index']);
+Route::post('/kuponok/create', [KuponController::class, 'store']);
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-
 Route::post('/felhasznalo/register', action: [UserController::class, 'register']);
-
-
 Route::post('/felhasznalo/login', [UserController::class, 'login']) ->name('login');
-
-
-
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/felhasznalo/logout', [UserController::class, 'logout']);
-    Route::post('/me', [UserController::class, 'me']);
 });

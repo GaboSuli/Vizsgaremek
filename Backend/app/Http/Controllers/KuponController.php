@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kupon;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class KuponController extends Controller
 {
@@ -30,7 +31,29 @@ class KuponController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'kezdesi_datum' => 'required|date',
+            'lejarasi_datum' => 'required|date',
+            'kod' => 'required|string',
+            'kedvezmeny' => 'required|string',
+            'megjegyzes' => 'string',
+            'hasznalasi_hely' => 'required|string',
+            'feltolto_kuponos_id' => 'required|exists:user,id'
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
+        }
+        $newRec = new Kupon();
+        $newRec->kezdesi_datum = $request->kezdesi_datum;
+        $newRec->lejarasi_datum = $request->lejarasi_datum;
+        $newRec->kod = $request->kod;
+        $newRec->kedvezmeny = $request->kedvezmeny;
+        $newRec->megjegyzes = $request->megjegyzes;
+        $newRec->hasznalasi_hely = $request->hasznalasi_hely;
+        $newRec->feltolto_kuponos_id = $request->feltolto_kuponos_id;
+        $newRec->save();
+        return response()->json(['message'=>'sikeres feltöltes'],201);
     }
 
     /**
