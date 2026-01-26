@@ -143,7 +143,7 @@ export default function ContactPage() {
               Ha sürgős ügyben keres minket, használhatja az alábbi email címeket:
             </p>
             <ul>
-              <li><strong>Támogatás:</strong> support@vevesbazar.hu</li>
+              <li><strong>Támogatás:</strong> cashentis@gmail.com</li>
               <li><strong>Fejlesztők:</strong> dev@vevesbazar.hu</li>
             </ul>
           </div>
