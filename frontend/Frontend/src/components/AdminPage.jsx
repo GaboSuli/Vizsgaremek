@@ -161,7 +161,7 @@ export default function AdminPage() {
                   <div className="status-icon">✅</div>
                   <div className="status-info">
                     <h3>Adatbázis</h3>
-                    <p>SQLite (database.sqlite)</p>
+                    <p>Mysql (database.mysql2)</p>
                     <span className="status-message">Konfigurálva</span>
                   </div>
                 </div>

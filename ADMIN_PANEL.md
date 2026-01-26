@@ -23,7 +23,7 @@ Jelszó:   Admin@123
 ### 1. Dashboard
 - **Szerver Status** - Backend szerver állapota
 - **Frontend Status** - Frontend alkalmazás állapota
-- **Adatbázis Status** - SQLite adatbázis információ
+- **Adatbázis Status** - Mysql adatbázis információ
 - **Autentifikáció Status** - Sanctum token rendszer
 - **Gyors Linkek** - Közvetlen navigáció a szerverekhez
 
