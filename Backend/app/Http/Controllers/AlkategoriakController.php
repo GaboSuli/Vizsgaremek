@@ -13,7 +13,8 @@ class AlkategoriakController extends Controller
      */
     public function index()
     {
-        //
+        $stats = Alkategoriak::with("vevesobjektum")->with("vevesLista")->get();
+        return response()->json($stats,200);
     }
 
     /**

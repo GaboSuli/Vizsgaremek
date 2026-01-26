@@ -11,8 +11,16 @@ GET
 - egy csoport összes vevési listája
 (http://127.0.0.1:8000/api/csoport/{id}/vevesiListak)
 
+- összes alkategória átlag árának havi váltakozása
+(http://127.0.0.1:8000/api/statisztika/get)
+
 - egy alkategória átlag árának havi váltakozása
-- összes alkategória jelenlegi átlagára
+(http://127.0.0.1:8000/api/statisztika/get/{id})
+
+- összes alkategória jelenlegi átlagára ebben az évben
+
+(http://127.0.0.1:8000/api/statisztika/get/{ev})
+
 - összes kupon
 (http://127.0.0.1:8000/api/kuponok/get)
 

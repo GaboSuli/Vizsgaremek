@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\mennyisegTipusok;
 use App\Models\VevesObjektum;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Integer;
 
 class VevesObjektumController extends Controller
 {
@@ -13,7 +15,31 @@ class VevesObjektumController extends Controller
      */
     public function index()
     {
-        //
+        $stats = VevesObjektum::with("alKategoria")->with("vevesLista")->get();
+        $statisztika = array();
+        $endResult = array();
+        foreach ($stats as $key => $temp) {
+            if ($temp->elfogadott_statisztikara === 1)
+            {
+                $arrayKey = $temp->alKategoria->megnevezes.";".$temp->vevesLista->created_at->format('y-m');
+                $mertekegyseg = mennyisegTipusok::find($temp->alKategoria->mennyiseg_tipus_id)->mertekegyseg;
+                if (!array_key_exists($arrayKey,$statisztika))
+                {
+                    $statisztika[$arrayKey] = [$temp->ar,$temp->mennyiseg,$mertekegyseg];
+                }
+                else
+                {
+                    $statisztika[$arrayKey][0] += $temp->ar;
+                    $statisztika[$arrayKey][1] += $temp->mennyiseg; 
+                }
+            }
+        }
+        foreach ($statisztika as $key => $item)
+        {
+            $tempAdatok = explode(";",$key);
+            array_push($endResult, array("Alkategoria"=>$tempAdatok[0],"Datum"=>$tempAdatok[1],"KiszamoltAtlag"=>($item[0]/$item[1]),"Mertekegyseg"=>$item[2]));
+        }
+        return response()->json($endResult,200);
     }
 
     /**
@@ -35,11 +61,75 @@ class VevesObjektumController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(VevesObjektum $vevesObjektum)
+    public function show(string $id)
     {
-        //
+        $stats = VevesObjektum::where("alKategoria_id","=",$id)->with("alKategoria")->with("vevesLista")->get();
+        $statisztika = array();
+        $endResult = array();
+        foreach ($stats as $key => $temp) {
+            if ($temp->elfogadott_statisztikara === 1)
+            {
+                $arrayKey = $temp->alKategoria->megnevezes.";".$temp->vevesLista->created_at->format('y-m');
+                $mertekegyseg = mennyisegTipusok::find($temp->alKategoria->mennyiseg_tipus_id)->mertekegyseg;
+                if (!array_key_exists($arrayKey,$statisztika))
+                {
+                    $statisztika[$arrayKey] = [$temp->ar,$temp->mennyiseg,$mertekegyseg];
+                }
+                else
+                {
+                    $statisztika[$arrayKey][0] += $temp->ar;
+                    $statisztika[$arrayKey][1] += $temp->mennyiseg; 
+                }
+            }
+        }
+        foreach ($statisztika as $key => $item)
+        {
+            $tempAdatok = explode(";",$key);
+            array_push($endResult, array("Alkategoria"=>$tempAdatok[0],"Datum"=>$tempAdatok[1],"KiszamoltAtlag"=>($item[0]/$item[1]),"Mertekegyseg"=>$item[2]));
+        }
+        return response()->json($endResult,200);
     }
-
+public function show2(int $ev)
+    {
+        $stats = VevesObjektum::with("alKategoria")->with("vevesLista")->get();
+        $statisztika = array();
+        $endResult = array();
+        $keresettEv = 0;
+        if ($ev > 2000)
+        {
+            $keresettEv = $ev-2000;
+        }
+        elseif ($ev < 100 and $ev > 0)
+        {
+            $keresettEv = $ev;
+        }
+        if ($keresettEv === 0)
+        {
+            return response()->json(["Hiba"=>"Hibás év megadás. Vagy 1-100-ig, vagy 2000 fölötti számot adj meg."],400);
+        }
+        foreach ($stats as $key => $temp) {
+            if ($temp->elfogadott_statisztikara === 1 and intval($temp->vevesLista->created_at->format('y')) === $keresettEv)
+            {
+                $arrayKey = $temp->alKategoria->megnevezes.";".$temp->vevesLista->created_at->format('y');
+                $mertekegyseg = mennyisegTipusok::find($temp->alKategoria->mennyiseg_tipus_id)->mertekegyseg;
+                if (!array_key_exists($arrayKey,$statisztika))
+                {
+                    $statisztika[$arrayKey] = [$temp->ar,$temp->mennyiseg,$mertekegyseg];
+                }
+                else
+                {
+                    $statisztika[$arrayKey][0] += $temp->ar;
+                    $statisztika[$arrayKey][1] += $temp->mennyiseg; 
+                }
+            }
+        }
+        foreach ($statisztika as $key => $item)
+        {
+            $tempAdatok = explode(";",$key);
+            array_push($endResult, array("Alkategoria"=>$tempAdatok[0],"Datum"=>$tempAdatok[1],"KiszamoltAtlag"=>($item[0]/$item[1]),"Mertekegyseg"=>$item[2]));
+        }
+        return response()->json($endResult,200);
+    }
     /**
      * Show the form for editing the specified resource.
      */

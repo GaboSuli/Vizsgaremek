@@ -18,6 +18,6 @@ class Alkategoriak extends Model
     
     function vevesobjektum()
     {
-        return $this->hasMany(VevesObjektum::class,'alkategoria_id');
+        return $this->hasMany(VevesObjektum::class,'alKategoria_id');
     }
 }
