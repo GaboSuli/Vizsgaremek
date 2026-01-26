@@ -10,6 +10,7 @@ import VevesiListePage from './components/VevesiListePage.jsx'
 import KuponPage from './components/KuponPage.jsx'
 import ShoppingListPage from './components/ShoppingListPage.jsx'
 import AdminPage from './components/AdminPage.jsx'
+import ContactPage from './components/ContactPage.jsx'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
@@ -59,6 +60,8 @@ function App() {
         return <ShoppingListPage />
       case 'admin':
         return <AdminPage />
+      case 'contact':
+        return <ContactPage />
       case 'home':
       default:
         return <LandingPage />

@@ -10,7 +10,7 @@ const navItems = [
   { id: 'lista', label: 'Bevásárlás', icon: 'shopping', page: true },
   { id: 'shopping', label: 'Bevásárlólista', icon: 'cart', page: true },
   { id: 'kupon', label: 'Kuponok', icon: 'ticket', page: true },
-  { id: 'contact', label: 'Kapcsolat', icon: 'mail' },
+  { id: 'contact', label: 'Kapcsolat', icon: 'mail', page: true },
   { id: 'admin', label: 'Admin Panel', icon: 'settings', page: true },
 ];
 

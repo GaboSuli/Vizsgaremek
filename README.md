@@ -33,3 +33,5 @@ https://dbdiagram.io/d/68c7d646ce69eed1117db4a3
 
 # Weblap Design terv?
 https://www.figma.com/make/e8wanJNoeFDFZ8AKVD8gp4/Budget-Tracking-Webpage?t=uISZIXNqsgRRS6Kg-6
+# Email Cím!: cashentis@gmail.com
+# Jelszó: cAshEntIs0126!?

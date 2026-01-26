@@ -2,11 +2,25 @@ import { apiCall, setAuthToken } from './api.js';
 
 // User registration
 export const registerUser = async (userData) => {
-  return apiCall('/felhasznalo/register', {
+  const response = await apiCall('/felhasznalo/register', {
     method: 'POST',
     body: userData,
     includeAuth: false
   });
+  if (response.success && response.data?.user) {
+    // Transform to public data structure
+    const publicData = {
+      Nev: response.data.user.nev || response.data.user.name,
+      Becenev: response.data.user.becenev || response.data.user.name,
+      ProfilKepURL: response.data.user.profilkep_url || 'user.png'
+    };
+    return {
+      success: true,
+      data: publicData,
+      message: 'Felhasználó sikeresen létrehozva'
+    };
+  }
+  return response;
 };
 
 // User login
@@ -39,14 +53,97 @@ export const logoutUser = () => {
   };
 };
 
-// Get user by ID
+// Get user by ID (returns public data)
 export const getUserById = async (id) => {
-  return apiCall(`/felhasznalo/${id}`);
+  const response = await apiCall(`/felhasznalo/${id}`);
+  if (response.success && response.data) {
+    // Transform to public data structure
+    const publicData = {
+      Nev: response.data.nev || response.data.Nev,
+      Becenev: response.data.becenev || response.data.Becenev,
+      ProfilKepURL: response.data.profilkep_url || response.data.ProfilKepURL || 'user.png'
+    };
+    return {
+      success: true,
+      data: publicData,
+      message: 'Felhasználó adatok sikeresen lekérdezve'
+    };
+  }
+  return response;
+};
+
+// Update user
+export const updateUser = async (id, userData) => {
+  const response = await apiCall(`/felhasznalo/${id}`, {
+    method: 'PUT',
+    body: userData
+  });
+  if (response.success && response.data) {
+    // Transform to public data structure
+    const publicData = {
+      Nev: response.data.nev || response.data.Nev,
+      Becenev: response.data.becenev || response.data.Becenev,
+      ProfilKepURL: response.data.profilkep_url || response.data.ProfilKepURL || 'user.png'
+    };
+    return {
+      success: true,
+      data: publicData,
+      message: 'Felhasználó sikeresen módosítva'
+    };
+  }
+  return response;
+};
+
+// Delete user
+export const deleteUser = async (id) => {
+  const response = await apiCall(`/felhasznalo/${id}`, {
+    method: 'DELETE'
+  });
+  if (response.success) {
+    return {
+      success: true,
+      message: 'Felhasználó sikeresen törölve'
+    };
+  }
+  return response;
 };
 
 // Get user's groups
 export const getUserGroups = async (id) => {
   return apiCall(`/felhasznalo/${id}/csoportjai`);
+};
+
+// Get user data within a specific group
+export const getUserInGroup = async (userId, groupId) => {
+  const groupsResponse = await getUserGroups(userId);
+
+  if (!groupsResponse.success) {
+    return groupsResponse;
+  }
+
+  const userGroups = groupsResponse.data;
+  const groupData = userGroups.find(group => group.id === parseInt(groupId));
+
+  if (!groupData) {
+    return {
+      success: false,
+      data: null,
+      message: 'Felhasználó nem tagja ennek a csoportnak'
+    };
+  }
+
+  // Extract and format data according to EgyFelhasznaloEgyCsoportAdatai.json
+  const userInGroupData = {
+    Becenev: groupData.pivot.becenev,
+    JogosultsagSzint: groupData.pivot.jogosultsag_szint,
+    CsatlakozasDatuma: groupData.pivot.created_at.split('T')[0] // Extract date part
+  };
+
+  return {
+    success: true,
+    data: userInGroupData,
+    message: 'Sikeres lekérdezés'
+  };
 };
 
 // Check if user is authenticated
