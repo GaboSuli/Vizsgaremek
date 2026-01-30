@@ -16,6 +16,9 @@ Route::get("/csoport/{id}/vevesiListak", [VevesListaController::class, 'show3'])
 Route::get("/felhasznalo/{id}/csoportjai", [UserController::class, 'show']);
 Route::get("/felhasznalo/{id}", action: [UserController::class, 'show2']);
 Route::get( '/statisztika/all',[VevesObjektumController::class, 'index']);
+Route::get( '/felhasznalo/{id}/osszKoltesei',[VevesObjektumController::class, 'show3']);
+Route::get( '/felhasznalo/{id}/eHaviKoltesei',[VevesObjektumController::class, 'show4']);
+Route::get( '/felhasznalo/{id}/eEviKoltesei',[VevesObjektumController::class, 'show5']);
 Route::get( '/statisztika/id/{id}',[VevesObjektumController::class, 'show']);
 Route::get( '/statisztika/ev/{ev}',[VevesObjektumController::class, 'show2']);
 Route::get('/kuponok/get',[KuponController::class, 'index']);
