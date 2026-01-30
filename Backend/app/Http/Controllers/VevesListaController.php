@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\VevesLista;
 use App\Http\Controllers\Controller;
 use DB;
+use Illuminate\Container\Attributes\Database;
 use Illuminate\Http\Request;
 
 class VevesListaController extends Controller
@@ -72,6 +73,7 @@ class VevesListaController extends Controller
             return response()->json($resp);
         }
     }
+    
     /**
      * Show the form for editing the specified resource.
      */
