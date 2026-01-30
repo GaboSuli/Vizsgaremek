@@ -12,7 +12,13 @@ GET
 (http://127.0.0.1:8000/api/csoport/{id}/vevesiListak)
 
 - egy felhasználó összes költségei alkategoriák szerint
+(http://127.0.0.1:8000/api/felhasznalo/{id}/osszKoltesei)
 
+- egy felhasználó összes költsége ebben a hónapban
+(http://127.0.0.1:8000/api/felhasznalo/{id}/eHaviKoltesei)
+
+- egy felhasználó összes költsége ebben az évben
+(http://127.0.0.1:8000/api/felhasznalo/{id}/eEviKoltesei)
 
 - összes alkategória átlag árának havi váltakozása
 (http://127.0.0.1:8000/api/statisztika/all)
