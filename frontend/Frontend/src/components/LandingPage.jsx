@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Hero from './Hero';
 import AboutSection from './AboutSection';
 import FeaturesSection from './FeaturesSection';
@@ -8,11 +8,7 @@ import StatsSection from './StatsSection';
 import './Foldal.css';
 
 export default function LandingPage() {
-  const [collapsed, setCollapsed] = useState(false);
-  const [active, setActive] = useState('about');
-
   const handleNavigate = (id) => {
-    setActive(id);
     const section = document.getElementById(id);
     if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
