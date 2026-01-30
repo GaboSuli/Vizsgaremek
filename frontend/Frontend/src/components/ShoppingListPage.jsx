@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Table, Badge, Spinner, Alert, Modal, Form, InputGroup } from 'react-bootstrap';
 import {
   getAllShoppingLists,
-  getShoppingListById,
   createShoppingList,
   updateShoppingList,
   addItemToList,

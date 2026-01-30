@@ -1,6 +1,6 @@
 
 import './App.css'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { isAuthenticated, getStoredUserInfo } from './services/authService.js'
 import Sidebar from './components/Sidebar.jsx'
 import LoginPage from './components/LoginPage.jsx'
@@ -11,37 +11,36 @@ import KuponPage from './components/KuponPage.jsx'
 import ShoppingListPage from './components/ShoppingListPage.jsx'
 import AdminPage from './components/AdminPage.jsx'
 import ContactPage from './components/ContactPage.jsx'
+import UserManagementPage from './components/UserManagementPage.jsx'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home')
-  const [collapsed, setCollapsed] = useState(false)
-  const [active, setActive] = useState('home')
-  const [authenticated, setAuthenticated] = useState(false)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Check if user is authenticated
+  const { authenticated, initialPage, initialActive } = useMemo(() => {
     const isAuth = isAuthenticated()
-    setAuthenticated(isAuth)
-    
-    // If authenticated, check role and set page accordingly
+    let page = 'home'
+    let activeTab = 'home'
+
     if (isAuth) {
       const userInfo = getStoredUserInfo()
-      
+
       // Check if user is admin (email contains 'admin' or role is admin)
       const isAdmin = userInfo?.email?.includes('admin') || userInfo?.role === 'admin' || userInfo?.type === 'admin'
-      
+
       if (isAdmin) {
-        setCurrentPage('admin')
-        setActive('admin')
-      } else {
-        setCurrentPage('home')
-        setActive('home')
+        page = 'admin'
+        activeTab = 'admin'
       }
     }
-    
-    setLoading(false)
+
+    return {
+      authenticated: isAuth,
+      initialPage: page,
+      initialActive: activeTab
+    }
   }, [])
+
+  const [currentPage, setCurrentPage] = useState(initialPage)
+  const [collapsed, setCollapsed] = useState(false)
+  const [active, setActive] = useState(initialActive)
 
   const handlePageChange = (page) => {
     setCurrentPage(page)
@@ -62,15 +61,15 @@ function App() {
         return <AdminPage />
       case 'contact':
         return <ContactPage />
+      case 'user':
+        return <UserManagementPage />
       case 'home':
       default:
         return <LandingPage />
     }
   }
 
-  if (loading) {
-    return <div className="loading">Betöltés...</div>
-  }
+
 
   if (!authenticated) {
     return <LoginPage />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './AdminPage.css';
 
 const API_URL = 'http://localhost:8000';
@@ -7,7 +7,7 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [serverStatus, setServerStatus] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [apiEndpoints, setApiEndpoints] = useState([
+  const apiEndpoints = [
     {
       method: 'POST',
       endpoint: '/felhasznalo/register',
@@ -53,11 +53,7 @@ export default function AdminPage() {
       endpoint: '/kuponok/get',
       description: 'Összes kupon'
     }
-  ]);
-
-  useEffect(() => {
-    checkServerStatus();
-  }, []);
+  ];
 
   const checkServerStatus = async () => {
     try {
@@ -84,7 +80,7 @@ export default function AdminPage() {
           message: `Backend hiba: ${response.status}`
         });
       }
-    } catch (error) {
+    } catch {
       setServerStatus({
         online: false,
         message: 'Backend szerver nem elérhető'
@@ -92,6 +88,7 @@ export default function AdminPage() {
     }
     setLoading(false);
   };
+
 
   return (
     <div className="admin-container">
