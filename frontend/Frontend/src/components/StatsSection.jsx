@@ -18,7 +18,6 @@ export default function StatsSection() {
     minPrice: '—',
     maxPrice: '—'
   });
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadStats = async () => {
@@ -34,8 +33,6 @@ export default function StatsSection() {
         }
       } catch (error) {
         console.error('Hiba a statisztikák betöltéskor:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
