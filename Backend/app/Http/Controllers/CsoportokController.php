@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Csoportok;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CsoportokController extends Controller
 {
@@ -29,7 +30,15 @@ class CsoportokController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'csoport_tipus_id' => 'required|exists:csoport_tipusok,id',
+            'megnevezes' => 'required|string',
+            'keszito_felhasznalo_id' => 'required|exists:user,id'
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
+        }
     }
 
     /**

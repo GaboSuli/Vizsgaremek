@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlkategoriakController;
+use App\Http\Controllers\CsoportokController;
 use App\Http\Controllers\KuponController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VevesListaController;
@@ -22,7 +23,10 @@ Route::get( '/felhasznalo/{id}/eEviKoltesei',[VevesObjektumController::class, 's
 Route::get( '/statisztika/id/{id}',[VevesObjektumController::class, 'show']);
 Route::get( '/statisztika/ev/{ev}',[VevesObjektumController::class, 'show2']);
 Route::get('/kuponok/get',[KuponController::class, 'index']);
+
 Route::post('/kuponok/create', [KuponController::class, 'store']);
+Route::post('/csoport/create', [CsoportokController::class, 'store']);
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');

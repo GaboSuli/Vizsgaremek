@@ -25,6 +25,7 @@ return new class extends Migration
             $table->boolean('kuponok')->default(true);
             $table->boolean('termekArKovetes')->default(true);
             $table->boolean('brokerArKovetes')->default(true);
+            $table->integer("jogosultsag_szint")->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
