@@ -31,14 +31,20 @@ class CsoportokController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'csoport_tipus_id' => 'required|exists:csoport_tipusok,id',
+            'csoport_tipus_id' => 'required|exists:csoport_tipusok,id', 
             'megnevezes' => 'required|string',
-            'keszito_felhasznalo_id' => 'required|exists:user,id'
+            'keszito_felhasznalo_id' => 'required|exists:users,id'
         ]);
         if ($validator->fails())
         {
             return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
         }
+        $newRec = new Csoportok();
+        $newRec->csoport_tipus_id = $request->csoport_tipus_id;
+        $newRec->megnevezes = $request->megnevezes;
+        $newRec->keszito_felhasznalo_id = $request->keszito_felhasznalo_id;
+        $newRec->save();
+        return response()->json(['message'=>'sikeres feltöltes'],201);
     }
 
     /**

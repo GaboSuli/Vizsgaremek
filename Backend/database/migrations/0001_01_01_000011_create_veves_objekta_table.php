@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreign('veves_lista_id')->references('id')->on('veves_lista');
             $table->unsignedBigInteger('alKategoria_id');
             $table->foreign('alKategoria_id')->references('id')->on('alkategoriak');
-            $table->string('megnevezes');
+            $table->string('megnevezes')->default("");
             $table->float('ar');
             $table->float('mennyiseg');
             $table->boolean("elfogadott_statisztikara")->default(false);

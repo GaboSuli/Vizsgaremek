@@ -1,13 +1,10 @@
 <?php
 
-use App\Http\Controllers\AlkategoriakController;
 use App\Http\Controllers\CsoportokController;
 use App\Http\Controllers\KuponController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VevesListaController;
 use App\Http\Controllers\VevesObjektumController;
-use App\Models\Alkategoriak;
-use App\Models\VevesLista;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +23,8 @@ Route::get('/kuponok/get',[KuponController::class, 'index']);
 
 Route::post('/kuponok/create', [KuponController::class, 'store']);
 Route::post('/csoport/create', [CsoportokController::class, 'store']);
+Route::post('/vevesiLista/create', [VevesListaController::class, 'store']);
+Route::post('/vevesiObjektum/create', [VevesObjektumController::class, 'store']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

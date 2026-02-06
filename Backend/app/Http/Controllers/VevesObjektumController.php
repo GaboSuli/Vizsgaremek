@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\mennyisegTipusok;
 use App\Models\VevesObjektum;
 use App\Http\Controllers\Controller;
-use Date;
 use DB;
 use Illuminate\Http\Request;
-use phpDocumentor\Reflection\Types\Integer;
-
+use Illuminate\Support\Facades\Validator;
 class VevesObjektumController extends Controller
 {
     /**
@@ -57,7 +55,25 @@ class VevesObjektumController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'veves_lista_id' => 'required|exists:veves_lista,id',
+            'alKategoria_id' => 'required|exists:alkategoriak,id',
+            'megnevezes' => 'string',
+            'ar' => 'required|numeric|min:0',
+            'mennyiseg' => 'required|numeric|min:0'
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
+        }
+        $newRec = new VevesObjektum();
+        $newRec->veves_lista_id = $request->veves_lista_id;
+        $newRec->alKategoria_id = $request->alKategoria_id;
+        $newRec->megnevezes = $request->megnevezes;
+        $newRec->ar = $request->ar;
+        $newRec->mennyiseg = $request->mennyiseg;
+        $newRec->save();
+        return response()->json(['message'=>'sikeres feltöltes'],201);
     }
 
     /**

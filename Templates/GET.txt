@@ -56,16 +56,49 @@ POST
 
 
 - csoport létrehozása
+(http://127.0.0.1:8000/api/csoport/create)
+{
+ "csoport_tipus_id":"", ##Muszály
+ "megnevezes":"", ##Muszály
+ "keszito_felhasznalo_id":"" ##Muszály
+}
+
 - kupon létrehozása
+(http://127.0.0.1:8000/api/kuponok/create)
+{
+ "kezdesi_datum":"", ##Muszály
+ "lejarasi_datum":"", ##Muszály
+ "kod":"", ##Muszály
+ "kedvezmeny":"", ##Muszály
+ "megjegyzes":"", 
+ "hasznalasi_hely":"", ##Muszály
+ "feltolto_kuponos_id":"" ##Muszály
+}
+
 - vevési objektum létrehozása
+(http://127.0.0.1:8000/api/vevesiObjektum/create)
+{
+ "veves_lista_id":"", ##Muszály
+ "alKategoria_id":"", ##Muszály
+ "megnevezes":"",
+ "ar":"", ##Muszály
+ "mennyiseg":"" ##Muszály
+}
+
 - vevési lista létrehozása
+(http://127.0.0.1:8000/api/vevesiLista/create)
+{
+ "felhasznalo_id":"", ##Muszály
+ "csoport_id":"" ##Muszály
+}
+
 PUT
 - felhasználó módosítása
 - csoport módosítása
 - kupon módosítása
 
 DELETE
-- felhasználö törlése
+- felhasználó törlése
 - vevési objektum törlése
 - vevési lista törlése
 - csoport törlése

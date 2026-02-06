@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\VevesLista;
 use App\Http\Controllers\Controller;
-use DB;
-use Illuminate\Container\Attributes\Database;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class VevesListaController extends Controller
 {
@@ -31,7 +30,19 @@ class VevesListaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         $validator = Validator::make($request->all(),[
+            'felhasznalo_id' => 'required|exists:users,id',
+            'csoport_id' => 'exists:csoportok,id'
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
+        }
+        $newRec = new VevesLista();
+        $newRec->felhasznalo_id = $request->felhasznalo_id;
+        $newRec->csoport_id = $request->csoport_id;
+        $newRec->save();
+        return response()->json(['message'=>'sikeres feltöltes'],201);
     }
 
     /**
