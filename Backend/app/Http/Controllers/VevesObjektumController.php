@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\mennyisegTipusok;
+use App\Models\User;
 use App\Models\VevesObjektum;
 use App\Http\Controllers\Controller;
 use DB;
@@ -148,26 +149,26 @@ public function show2(int $ev)
         }
         return response()->json($endResult,200);
     }
-    public function show3(string $id)
+    public function show3(User $user)
     {
         $data = DB::table("veves_objekt")
         ->join("alkategoriak","veves_objekt.alKategoria_id","=","alkategoriak.id")
         ->join("veves_lista","veves_objekt.veves_lista_id","=","veves_lista.id")
         ->selectRaw("alkategoriak.megnevezes, SUM(veves_objekt.ar) as 'Osszegzett' ")
         ->where("elfogadott_statisztikara","=",1)
-        ->where("veves_lista.felhasznalo_id","=", $id)
+        ->where("veves_lista.felhasznalo_id","=", auth()->id())
         ->groupBy("alkategoriak.megnevezes")
         ->get();
         return response()->json($data);
     }
-    public function show4(string $id)
+    public function show4(User $user)
     {
         $data = DB::table("veves_objekt")
         ->join("alkategoriak","veves_objekt.alKategoria_id","=","alkategoriak.id")
         ->join("veves_lista","veves_objekt.veves_lista_id","=","veves_lista.id")
         ->selectRaw("alkategoriak.megnevezes, SUM(veves_objekt.ar) as 'Osszegzett' ")
         ->where("elfogadott_statisztikara","=",1)
-        ->where("veves_lista.felhasznalo_id","=", $id)
+        ->where("veves_lista.felhasznalo_id","=", auth()->id())
         ->whereRaw("month(veves_lista.created_at) = " . date("m"))
         ->whereRaw("year(veves_lista.created_at) = " . date("Y"))
         ->groupBy("alkategoriak.megnevezes")
@@ -175,14 +176,14 @@ public function show2(int $ev)
         return response()->json($data);
     }
     
-    public function show5(string $id)
+    public function show5(User $user)
     {
         $data = DB::table("veves_objekt")
         ->join("alkategoriak","veves_objekt.alKategoria_id","=","alkategoriak.id")
         ->join("veves_lista","veves_objekt.veves_lista_id","=","veves_lista.id")
         ->selectRaw("alkategoriak.megnevezes, SUM(veves_objekt.ar) as 'Osszegzett' ")
         ->where("elfogadott_statisztikara","=",1)
-        ->where("veves_lista.felhasznalo_id","=", $id)
+        ->where("veves_lista.felhasznalo_id","=", auth()->id())
         ->whereRaw("year(veves_lista.created_at) = " . date("Y"))
         ->groupBy("alkategoriak.megnevezes")
         ->get();

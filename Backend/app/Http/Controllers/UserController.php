@@ -53,6 +53,7 @@ class UserController extends Controller
         }
 
         $user = User::where('email', $request->email)->first();
+        $user->tokens()->delete();
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
@@ -93,9 +94,9 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
-        $resp = User::where("id",'=',$id)->with("csoportok")->get();
+        $resp = User::where("id",'=',auth()->id())->with("csoportok")->get();
         if (empty($resp))
         {
             return response()->json(['message'=>"Nincs ilyen felhasználó."]);
@@ -105,17 +106,9 @@ class UserController extends Controller
             return response()->json($resp);
         }
     }
-    public function show2(string $id)
+    public function show2(Request $request)
     {
-        $resp = User::find($id);
-        if (empty($resp))
-        {
-            return response()->json(['message'=>"Nincs ilyen felhasználó."]);
-        }
-        else
-        {
-            return response()->json($resp);
-        }
+        return response()->json($request->user());
     }
 
     /**
