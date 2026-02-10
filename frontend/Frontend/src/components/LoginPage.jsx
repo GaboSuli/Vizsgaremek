@@ -143,6 +143,7 @@ export default function LoginPage() {
               value={formData.password}
               onChange={handleChange}
               required
+              minLength="8"
               disabled={loading}
             />
           </div>
@@ -157,6 +158,7 @@ export default function LoginPage() {
                 value={formData.passwordConfirm}
                 onChange={handleChange}
                 required
+                minLength="8"
                 disabled={loading}
               />
             </div>
