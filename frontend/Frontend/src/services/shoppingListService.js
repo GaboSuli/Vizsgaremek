@@ -82,11 +82,6 @@ const mockShoppingLists = [
   }
 ];
 
-// Calculate total from items
-const calculateTotal = (items) => {
-  return items.reduce((sum, item) => sum + (item.Ar * item.Mennyiseg), 0);
-};
-
 // Get all shopping lists
 export const getAllShoppingLists = async () => {
   const response = await apiCall('/vevesiListak');
@@ -228,10 +223,18 @@ export const estimateTotalCost = async (listId) => {
   };
 };
 
+// Create shopping list item (vevesi objektum)
+export const createVevesiObjektum = async (itemData) => {
+  return apiCall('/vevesiObjektum/create', {
+    method: 'POST',
+    body: itemData
+  });
+};
+
 // Get shopping list statistics
 export const getShoppingListStats = async () => {
   const response = await getAllShoppingLists();
-  
+
   if (!response.success) {
     return {
       success: false,
@@ -261,4 +264,32 @@ export const getShoppingListStats = async () => {
       averageItemsPerList: lists.length > 0 ? (totalItems / lists.length).toFixed(2) : 0
     }
   };
+};
+
+// Get all coupons
+export const getAllCoupons = async () => {
+  return apiCall('/kuponok/get');
+};
+
+// Create a new coupon
+export const createCoupon = async (couponData) => {
+  return apiCall('/kuponok/create', {
+    method: 'POST',
+    body: couponData
+  });
+};
+
+// Update coupon
+export const updateCoupon = async (id, couponData) => {
+  return apiCall(`/kuponok/${id}`, {
+    method: 'PUT',
+    body: couponData
+  });
+};
+
+// Delete coupon
+export const deleteCoupon = async (id) => {
+  return apiCall(`/kuponok/${id}`, {
+    method: 'DELETE'
+  });
 };

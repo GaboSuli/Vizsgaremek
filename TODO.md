@@ -1,17 +1,35 @@
-# User Management REST API Implementation
+# TODO: Implement API Endpoints in Frontend
 
-## Completed Tasks
-- [x] Updated `getUserById` to return public data structure (FelhasznaloNyilvanosAdatai.json)
-- [x] Updated `registerUser` to return public data structure on success
-- [x] Added `updateUser` function for modifying users (PUT /api/felhasznalo/{id})
-- [x] Added `deleteUser` function for deleting users (DELETE /api/felhasznalo/{id})
+## Statistics Service Updates
+- [x] Update `getAlkategoriaMonthlyStats` to use `/statisztika/id/{id}` API with fallback to mock data
+- [x] Update `getAllAlkategoriasStats` to use `/statisztika/all` API with fallback to mock data
+- [x] Add `getAllAlkategoriasStatsForYear` function for `/statisztika/ev/{ev}` API
 
-## Pending Tasks
-- [ ] Test the API functions to ensure they work correctly with the backend
-- [ ] Verify responses match the required FelhasznaloNyilvanosAdatai.json structure
-- [ ] Update AdminPage.jsx to include new endpoints in the API list if needed
+## Auth Service Additions
+- [x] Add `getUserTotalCostsByCategory` function for `/felhasznalo/{id}/osszKoltesei`
+- [x] Add `getUserMonthlyCosts` function for `/felhasznalo/{id}/eHaviKoltesei`
+- [x] Add `getUserYearlyCosts` function for `/felhasznalo/{id}/eEviKoltesei`
+- [x] Add `createGroup` function for `/csoport/create`
+- [x] Add `updateGroup` function for `/csoport/{id}` (PUT)
+- [x] Add `deleteGroup` function for `/csoport/{id}` (DELETE)
+- [x] Fix `registerUser` to map frontend fields to backend expected fields (nev, email, password, password_confirmation)
 
-## Notes
-- Backend files cannot be edited, only frontend services updated
-- All responses for create/modify operations return public data structure
-- Login function remains unchanged as per task requirements
+## Shopping List Service Additions
+- [x] Add `createVevesiObjektum` function for `/vevesiObjektum/create`
+- [x] Add `getAllCoupons` function for `/kuponok/get`
+- [x] Add `createCoupon` function for `/kuponok/create`
+- [x] Add `updateCoupon` function for `/kuponok/{id}` (PUT)
+- [x] Add `deleteCoupon` function for `/kuponok/{id}` (DELETE)
+
+## Existing Functions Verified
+- [x] `getShoppingListsByUser` - `/felhasznalo/{id}/vevesiListak`
+- [x] `getShoppingListById` - `/vevesiLista/{id}`
+- [x] `getShoppingListsByGroup` - `/csoport/{id}/vevesiListak`
+- [x] `getUserGroups` - `/felhasznalo/{id}/csoportjai`
+- [x] `getUserById` - `/felhasznalo/{id}`
+- [x] `loginUser` - `/felhasznalo/login`
+- [x] `createShoppingList` - `/vevesiLista/create`
+
+## Testing
+- [x] Test all new functions with API calls and fallbacks
+- [x] All GET and POST endpoints from the specification are implemented

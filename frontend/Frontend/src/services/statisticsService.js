@@ -2,6 +2,8 @@
  * Statistics Service - Statisztikai adatok feldolgozása
  */
 
+import { apiCall } from './api.js';
+
 // Adatok közvetlenül az objektumokba ágyazva
 const alkategoriaHaviData = {
   "2025-05": {
@@ -48,10 +50,56 @@ const osszesAlkategoriasData = {
 /**
  * Alkategória havi átlagár-változásának lekérése
  */
-export const getAlkategoriaMonthlyStats = async () => {
+export const getAlkategoriaMonthlyStats = async (alkategoriaId) => {
   try {
-    const allData = alkategoriaHaviData;
+    // Try API first
+    const response = await apiCall(`/statisztika/id/${alkategoriaId}`);
 
+    if (response.success && response.data) {
+      const monthlyData = response.data.map(entry => ({
+        month: entry.Mikor || entry.month,
+        price: entry.AtlagAr || entry.price
+      }));
+
+      monthlyData.sort((a, b) => {
+        if (a.month === 'Jelen') return 1;
+        if (b.month === 'Jelen') return -1;
+        return a.month.localeCompare(b.month);
+      });
+
+      const chartData = {
+        labels: monthlyData.map(e => e.month),
+        datasets: [
+          {
+            label: 'Átlagár (Ft)',
+            data: monthlyData.map(e => e.price),
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+          }
+        ]
+      };
+
+      const prices = monthlyData.map(e => e.price);
+      const statistics = {
+        min: Math.min(...prices),
+        max: Math.max(...prices),
+        average: Math.round(prices.reduce((a, b) => a + b, 0) / prices.length),
+        current: prices[prices.length - 1]
+      };
+
+      return {
+        success: true,
+        chartData,
+        statistics,
+        rawData: monthlyData
+      };
+    }
+
+    // Fallback to mock data
+    const allData = alkategoriaHaviData;
     const monthlyData = [];
     for (const key in allData) {
       const entry = allData[key];
@@ -113,6 +161,59 @@ export const getAlkategoriaMonthlyStats = async () => {
  */
 export const getAllAlkategoriasStats = async () => {
   try {
+    // Try API first
+    const response = await apiCall('/statisztika/all');
+
+    if (response.success && response.data) {
+      const transformedData = response.data.map(item => ({
+        id: item.id,
+        megnevezes: item.Megnevezes || item.megnevezes || 'Ismeretlen',
+        atlagAr: item.AtlagAr || item.atlagAr || 0,
+        mertekegyseg: item.Mertekegyseg || item.mertekegyseg || ''
+      }));
+
+      const chartColors = [
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 206, 86)',
+        'rgb(75, 192, 192)',
+        'rgb(153, 102, 255)',
+        'rgb(255, 159, 64)'
+      ];
+
+      transformedData.sort((a, b) => b.atlagAr - a.atlagAr);
+
+      const chartData = {
+        labels: transformedData.map(d => d.megnevezes),
+        datasets: [
+          {
+            label: 'Átlagár (Ft)',
+            data: transformedData.map(d => d.atlagAr),
+            backgroundColor: chartColors.slice(0, transformedData.length),
+            borderColor: chartColors.slice(0, transformedData.length),
+            borderWidth: 1
+          }
+        ]
+      };
+
+      const allPrices = transformedData.map(d => d.atlagAr);
+      const statistics = {
+        totalCategories: transformedData.length,
+        minPrice: Math.min(...allPrices),
+        maxPrice: Math.max(...allPrices),
+        averagePrice: Math.round(allPrices.reduce((a, b) => a + b, 0) / allPrices.length)
+      };
+
+      return {
+        success: true,
+        data: transformedData,
+        chartData,
+        statistics,
+        totalCount: transformedData.length
+      };
+    }
+
+    // Fallback to mock data
     const allData = osszesAlkategoriasData;
 
     const transformedData = [];
@@ -174,6 +275,13 @@ export const getAllAlkategoriasStats = async () => {
       chartData: { labels: [], datasets: [] }
     };
   }
+};
+
+/**
+ * Összes alkategória átlagárának havi változása egy adott évben
+ */
+export const getAllAlkategoriasStatsForYear = async (year) => {
+  return apiCall(`/statisztika/ev/${year}`);
 };
 
 /**

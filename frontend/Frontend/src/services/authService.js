@@ -4,7 +4,12 @@ import { apiCall, setAuthToken } from './api.js';
 export const registerUser = async (userData) => {
   const response = await apiCall('/felhasznalo/register', {
     method: 'POST',
-    body: userData,
+    body: {
+      nev: userData.name,
+      email: userData.email,
+      password: userData.password,
+      password_confirmation: userData.password_confirmation
+    },
     includeAuth: false
   });
   if (response.success && response.data?.user) {
@@ -164,4 +169,42 @@ export const setStoredUserInfo = (userInfo) => {
   } else {
     localStorage.removeItem('user_info');
   }
+};
+
+// Get user's total costs by category
+export const getUserTotalCostsByCategory = async (userId) => {
+  return apiCall(`/felhasznalo/${userId}/osszKoltesei`);
+};
+
+// Get user's monthly costs
+export const getUserMonthlyCosts = async (userId) => {
+  return apiCall(`/felhasznalo/${userId}/eHaviKoltesei`);
+};
+
+// Get user's yearly costs
+export const getUserYearlyCosts = async (userId) => {
+  return apiCall(`/felhasznalo/${userId}/eEviKoltesei`);
+};
+
+// Create a new group
+export const createGroup = async (groupData) => {
+  return apiCall('/csoport/create', {
+    method: 'POST',
+    body: groupData
+  });
+};
+
+// Update group
+export const updateGroup = async (id, groupData) => {
+  return apiCall(`/csoport/${id}`, {
+    method: 'PUT',
+    body: groupData
+  });
+};
+
+// Delete group
+export const deleteGroup = async (id) => {
+  return apiCall(`/csoport/${id}`, {
+    method: 'DELETE'
+  });
 };
