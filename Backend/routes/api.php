@@ -8,15 +8,7 @@ use App\Http\Controllers\VevesObjektumController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get("/felhasznalo/{id}/vevesiListak", [VevesListaController::class, 'show1']);
-Route::get("/vevesiLista/{id}", [VevesListaController::class, 'show2']);
-Route::get("/csoport/{id}/vevesiListak", [VevesListaController::class, 'show3']);
-Route::get("/felhasznalo/{id}/csoportjai", [UserController::class, 'show']);
-Route::get("/felhasznalo/{id}", action: [UserController::class, 'show2']);
 Route::get( '/statisztika/all',[VevesObjektumController::class, 'index']);
-Route::get( '/felhasznalo/{id}/osszKoltesei',[VevesObjektumController::class, 'show3']);
-Route::get( '/felhasznalo/{id}/eHaviKoltesei',[VevesObjektumController::class, 'show4']);
-Route::get( '/felhasznalo/{id}/eEviKoltesei',[VevesObjektumController::class, 'show5']);
 Route::get( '/statisztika/id/{id}',[VevesObjektumController::class, 'show']);
 Route::get( '/statisztika/ev/{ev}',[VevesObjektumController::class, 'show2']);
 Route::get('/kuponok/get',[KuponController::class, 'index']);
@@ -33,4 +25,12 @@ Route::post('/felhasznalo/register', action: [UserController::class, 'register']
 Route::post('/felhasznalo/login', [UserController::class, 'login']) ->name('login');
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/felhasznalo/logout', [UserController::class, 'logout']);
+    Route::get("/felhasznalo",  [UserController::class, 'show2']);
+    Route::get( '/felhasznalo/osszKoltesei',[VevesObjektumController::class, 'show3']); // a felhasználo csak sajátját hivhassa
+    Route::get( '/felhasznalo/eHaviKoltesei',[VevesObjektumController::class, 'show4']); // a felhasználo csak sajátját hivhassa
+    Route::get( '/felhasznalo/eEviKoltesei',[VevesObjektumController::class, 'show5']); // a felhasználo csak sajátját hivhassa
+    Route::get("/felhasznalo/vevesiListak", [VevesListaController::class, 'show1']); // a felhasználo csak sajátját hivhassa
+    Route::get("/vevesiLista", [VevesListaController::class, 'show2']); // a felhasználo csak sajátját hivhassa
+    Route::get("/csoport/{id}/vevesiListak", [VevesListaController::class, 'show3']); // a felhasználo csak azokat hivhassa amilyen csoportba van
+    Route::get("/felhasznalo/csoportjai", [UserController::class, 'show']); // a felhasználo csak sajátját hivhassa
 });

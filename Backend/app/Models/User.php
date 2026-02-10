@@ -19,7 +19,8 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nev',
+        'becenev',
         'email',
         'password',
     ];
@@ -39,6 +40,9 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    protected $policies = [
+    User::class => UserPolicy::class,
+    ];
     protected function casts(): array
     {
         return [
