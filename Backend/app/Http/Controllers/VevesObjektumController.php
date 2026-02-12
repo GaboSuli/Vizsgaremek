@@ -54,8 +54,9 @@ class VevesObjektumController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(User $user, Request $request)
     {
+        
         $validator = Validator::make($request->all(),[
             'veves_lista_id' => 'required|exists:veves_lista,id',
             'alKategoria_id' => 'required|exists:alkategoriak,id',

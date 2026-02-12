@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CsoportTagsag;
+use App\Models\User;
 use App\Models\VevesLista;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -28,9 +30,9 @@ class VevesListaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(User $user, Request $request)
     {
-         $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(),[
             'felhasznalo_id' => 'required|exists:users,id',
             'csoport_id' => 'exists:csoportok,id'
         ]);
@@ -38,6 +40,15 @@ class VevesListaController extends Controller
         {
             return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
         }
+        $authCheck = CsoportTagsag::where("felhasznalo_id","=",auth()->id())::where("csoport_id","=",$request->csoport_id)->first();
+        if (empty($authCheck))
+        {
+            return response(["message"=>"nincs jogosultsagod"],403);
+        }
+        elseif ($authCheck->jogosultsag_szing < 1)
+        {
+            return response(["message"=>"nincs jogosultsagod"],403);
+        }  
         $newRec = new VevesLista();
         $newRec->felhasznalo_id = $request->felhasznalo_id;
         $newRec->csoport_id = $request->csoport_id;
