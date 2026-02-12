@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kupon;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -29,8 +30,13 @@ class KuponController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(User $user, Request $request)
     {
+        $user = auth()->user();
+        if ($user->jogosultsag_szint < 1)
+        {
+            return response(["message"=>"nincs jogosultsagod"],403);
+        }
         $validator = Validator::make($request->all(),[
             'kezdesi_datum' => 'required|date',
             'lejarasi_datum' => 'required|date',

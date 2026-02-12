@@ -68,7 +68,8 @@ POST
 }
 
 - kupon létrehozása
-(http://127.0.0.1:8000/api/kuponok/create)
+(http://127.0.0.1:8000/api/kuponok/create) 
+-- bearer: session token
 {
  "kezdesi_datum":"", ##Muszály
  "lejarasi_datum":"", ##Muszály
