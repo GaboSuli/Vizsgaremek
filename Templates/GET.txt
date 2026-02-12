@@ -1,24 +1,27 @@
 GET
 - egy felhasználó összes vevési listája
-(http://127.0.0.1:8000/api/felhasznalo/{id}/vevesiListak)
-
-- egy megadott vevési listája 
-(http://127.0.0.1:8000/api/vevesiLista/{id})
+(http://127.0.0.1:8000/api/felhasznalo/vevesiListak) 
+-- bearer: session token
 
 - egy felhasználó csoportjai
-(http://127.0.0.1:8000/api/felhasznalo/{id}/csoportjai)
+(http://127.0.0.1:8000/api/felhasznalo/csoportjai)
+-- bearer: session token
 
 - egy csoport összes vevési listája
 (http://127.0.0.1:8000/api/csoport/{id}/vevesiListak)
+-- bearer: session token
 
 - egy felhasználó összes költségei alkategoriák szerint
-(http://127.0.0.1:8000/api/felhasznalo/{id}/osszKoltesei)
+(http://127.0.0.1:8000/api/felhasznalo/osszKoltesei)
+-- bearer: session token
 
 - egy felhasználó összes költsége ebben a hónapban
-(http://127.0.0.1:8000/api/felhasznalo/{id}/eHaviKoltesei)
+(http://127.0.0.1:8000/api/felhasznalo/eHaviKoltesei)
+-- bearer: session token
 
 - egy felhasználó összes költsége ebben az évben
-(http://127.0.0.1:8000/api/felhasznalo/{id}/eEviKoltesei)
+(http://127.0.0.1:8000/api/felhasznalo/eEviKoltesei)
+-- bearer: session token
 
 - összes alkategória átlag árának havi váltakozása
 (http://127.0.0.1:8000/api/statisztika/all)
@@ -33,7 +36,8 @@ GET
 (http://127.0.0.1:8000/api/kuponok/get)
 
 - felhasználó nyilvános adatai
-(http://127.0.0.1:8000/api/felhasznalo/{id})
+(http://127.0.0.1:8000/api/felhasznalo)
+-- bearer: session token
 
 POST
 
