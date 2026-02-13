@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CsoportTagsag;
 use App\Models\mennyisegTipusok;
 use App\Models\User;
+use App\Models\VevesLista;
 use App\Models\VevesObjektum;
 use App\Http\Controllers\Controller;
 use DB;
@@ -56,7 +58,6 @@ class VevesObjektumController extends Controller
      */
     public function store(User $user, Request $request)
     {
-        
         $validator = Validator::make($request->all(),[
             'veves_lista_id' => 'required|exists:veves_lista,id',
             'alKategoria_id' => 'required|exists:alkategoriak,id',
@@ -68,6 +69,16 @@ class VevesObjektumController extends Controller
         {
             return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
         }
+        $authCheck = VevesLista::where("felhasznalo_id","=",auth()->id())::where("id","=",$request->veves_lista_id)->first();
+        if (empty($authCheck))
+        {
+            return response(["message"=>"nincs jogosultsagod"],403);
+        }
+        $authCheck2 = CsoportTagsag::where("felhasznalo_id","=",auth()->id())::where("csoport_id","=",$authCheck->csoport_id)->first();
+        if ($authCheck2->jogosultsag_szing < 1)
+        {
+            return response(["message"=>"nincs jogosultsagod"],403);
+        }  
         $newRec = new VevesObjektum();
         $newRec->veves_lista_id = $request->veves_lista_id;
         $newRec->alKategoria_id = $request->alKategoria_id;
@@ -117,20 +128,20 @@ public function show2(int $ev)
         $keresettEv = 0;
         if ($ev > 2000)
         {
-            $keresettEv = $ev-2000;
-        }
-        elseif ($ev < 100 and $ev > 0)
-        {
             $keresettEv = $ev;
         }
-        if ($keresettEv === 0)
+        elseif ($ev <= 100 and $ev >= 0)
+        {
+            $keresettEv = $ev+2000;
+        }
+        else
         {
             return response()->json(["Hiba"=>"Hibás év megadás. Vagy 1-100-ig, vagy 2000 fölötti számot adj meg."],400);
         }
         foreach ($stats as $key => $temp) {
-            if ($temp->elfogadott_statisztikara === 1 and intval($temp->vevesLista->created_at->format('y')) === $keresettEv)
+            if ($temp->elfogadott_statisztikara === 1 and intval($temp->vevesLista->created_at->format('Y')) === $keresettEv)
             {
-                $arrayKey = $temp->alKategoria->megnevezes.";".$temp->vevesLista->created_at->format('y');
+                $arrayKey = $temp->alKategoria->megnevezes.";".$temp->vevesLista->created_at->format('Y');
                 $mertekegyseg = mennyisegTipusok::find($temp->alKategoria->mennyiseg_tipus_id)->mertekegyseg;
                 if (!array_key_exists($arrayKey,$statisztika))
                 {

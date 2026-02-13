@@ -59,7 +59,7 @@ class VevesListaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show1(Request $request)
+    public function show1(User $user, Request $request)
     {
         $resp = VevesLista::where("felhasznalo_id",'=',auth()->id())->with("vevesobjektum")->with("user")->get();
         if (empty($resp))
@@ -71,12 +71,13 @@ class VevesListaController extends Controller
             return response()->json($resp);
         }
     }
-    public function show3(Request $request, string $id)
+    public function show3(User $user, Request $request, string $id)
     {
         
-        $resp = VevesLista::where("csoport_id",$id)->whereHas('user', function ($q) {
-        $q->where('id', auth()->id());
-    })->with(["vevesobjektum","user"])->get();
+        $resp = VevesLista::where("csoport_id",$id)->whereHas('user', function ($q) 
+        {    
+            $q->where('id', auth()->id());
+        })->with(["vevesobjektum","user"])->get();
          if (empty($resp))
         {
             return response()->json(['message'=>"Nincs ilyen vevés lista."]);

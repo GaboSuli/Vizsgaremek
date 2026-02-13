@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\CsoportokController;
+use App\Http\Controllers\CsoportTagsagController;
 use App\Http\Controllers\KuponController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VevesListaController;
 use App\Http\Controllers\VevesObjektumController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get( '/statisztika/all',[VevesObjektumController::class, 'index']);
@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get( '/felhasznalo/eHaviKoltesei',[VevesObjektumController::class, 'show4']);
     Route::get( '/felhasznalo/eEviKoltesei',[VevesObjektumController::class, 'show5']);
     Route::get("/felhasznalo/vevesiListak", [VevesListaController::class, 'show1']);
+    Route::get("/csoport/{id}/felhasznalok", [CsoportTagsagController::class, 'show']);
     Route::get("/csoport/{id}/vevesiListak", [VevesListaController::class, 'show3']);
     Route::get("/felhasznalo/csoportjai", [UserController::class, 'show']);
 });

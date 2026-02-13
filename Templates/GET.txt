@@ -39,6 +39,9 @@ GET
 (http://127.0.0.1:8000/api/felhasznalo)
 -- bearer: session token
 
+- csoport felhasználoi
+(http://127.0.0.1:8000/api/csoport/{id}/felhasznalok)
+-- bearer: session token
 POST
 
 - felhasználó létrehozása
@@ -61,6 +64,7 @@ POST
 
 - csoport létrehozása
 (http://127.0.0.1:8000/api/csoport/create)
+-- bearer: session token
 {
  "csoport_tipus_id":"", ##Muszály
  "megnevezes":"", ##Muszály
@@ -69,7 +73,7 @@ POST
 
 - kupon létrehozása
 (http://127.0.0.1:8000/api/kuponok/create) 
--- bearer: session token
+-- bearer: session token (csak olyan felhasználo tud aki nagyobb jogosultsag mint 0)
 {
  "kezdesi_datum":"", ##Muszály
  "lejarasi_datum":"", ##Muszály
@@ -82,6 +86,7 @@ POST
 
 - vevési objektum létrehozása
 (http://127.0.0.1:8000/api/vevesiObjektum/create)
+-- bearer: session token (csoportnál csak az tud aki benne van a csoportba és nagyobb jogosultság szint mint 0)
 {
  "veves_lista_id":"", ##Muszály
  "alKategoria_id":"", ##Muszály
@@ -92,6 +97,7 @@ POST
 
 - vevési lista létrehozása
 (http://127.0.0.1:8000/api/vevesiLista/create)
+-- bearer: session token (csoportnál csak az tud aki benne van a csoportba és nagyobb jogosultság szint mint 0)
 {
  "felhasznalo_id":"", ##Muszály
  "csoport_id":"" ##Muszály

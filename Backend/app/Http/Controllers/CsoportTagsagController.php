@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Csoportok;
 use App\Models\CsoportTagsag;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use DB;
 use Illuminate\Http\Request;
 
 class CsoportTagsagController extends Controller
@@ -35,9 +38,25 @@ class CsoportTagsagController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(CsoportTagsag $csoportTagsag)
+    public function show(User $user, string $id)
     {
-        //
+        $authUser = CsoportTagsag::where("csoport_id","=",$id)->where("felhasznalo_id","=",auth()->user())->first();
+        if (empty($authUser))
+        {
+            return response(["message"=>"nincs jogosultsagod"],403);
+        }
+        else
+        {
+            $users = DB::select("SELECT users.nev, csoport_tagsag.becenev, users.profilkep_url,csoport_tagsag.created_at FROM csoport_tagsag INNER JOIN users ON csoport_tagsag.felhasznalo_id = users.id WHERE users.id = ? AND csoport_tagsag.csoport_id = ?",[auth()->id(),$id]);
+            if (empty($users))
+            {
+                return response(["Message"=>"Nem talált."],404);
+            }
+            else
+            {
+                return response($users,200);
+            }
+        }
     }
 
     /**
