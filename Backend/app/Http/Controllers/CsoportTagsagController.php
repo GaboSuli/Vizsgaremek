@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CsoportTagsagController extends Controller
 {
@@ -32,7 +33,31 @@ class CsoportTagsagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = auth()->user();
+        $validator = Validator::make($request->all(),
+        [
+            'csoport_id' => 'exists:csoportok,id',
+            'felhasznalo_id' => 'exists:users,id'
+        ]);
+        if ($validator->fails())
+        {
+            return response(["success"=>false,"errors"=>$validator->errors()->toArray()],400);
+        }
+        $authUser = Csoportok::where("csoport_id", "=",$request->csoport_id)->first();
+        if ($authUser->keszito_felhasznalo_id != auth()->id())
+        {
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+        }
+        $authCheck = CsoportTagsag::where("csoport_id","=",$request->csoport_id)->where("felhasznalo_id","=",$request->felhasznalo_id)->first();
+        if (!$authCheck)
+        {
+            return response(["Message" => "Már van ilyen csoport tagság."],409);
+        }
+        $newRec = new CsoportTagsag();
+        $newRec->csoport_id = $request->csoport_id;
+        $newRec->felhasznalo_id = $request->felhasznalo_id;
+        $newRec->save();
+        return response(["Message"=>"Sikeres létrehozás"],201);
     }
 
     /**

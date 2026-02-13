@@ -71,6 +71,9 @@ POST
  "megnevezes":"", ##Muszály
 }
 
+- csoport tagság létrehozása
+
+
 - kupon létrehozása
 (http://127.0.0.1:8000/api/kuponok/create) 
 -- bearer: session token (csak olyan felhasználo tud aki nagyobb jogosultsag mint 0)
@@ -104,18 +107,21 @@ POST
 
 PUT
 - felhasználó módosítása
-(http://127.0.0.1:8000/api/felhasznalo/modositas/{id}) (itt a json be ne adj meg olyan adatot amit nem akarsz változtatni)
+(http://127.0.0.1:8000/api/felhasznalo/modositas/{id}) (itt a json be ne adj meg olyan adatot amit nem akarsz változtatni, ha saját felhasználot akarsz modositani akkor ne adj meg felhasznalo id-t.)
 -- bearer: session token (más felhasználot csak 2 vagy nagyobb jogosultsagi szinten lehet)
 {
     "felhasznalo_id_valtoztatni":"",
     "nev":"",
     "becenev":"",
     "profilkep_url":"",
-    "kuponok":""
-    "termekArKovetes":""
+    "kuponok":"",
+    "termekArKovetes":"",
     "brokerArKovetes":""
 }
 - csoport módosítása
+- csoport tagság modositása
+- vevési lista modositása
+- vevési objektum modositása
 - kupon módosítása
 
 DELETE
@@ -123,4 +129,5 @@ DELETE
 - vevési objektum törlése
 - vevési lista törlése
 - csoport törlése
+- csoport tagság törlése
 - kupon törlése

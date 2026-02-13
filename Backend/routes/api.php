@@ -18,6 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/felhasznalo/modositas/{id}',[UserController::class, 'update']);
     Route::post('/kuponok/create', [KuponController::class, 'store']);
     Route::post('/csoport/create', [CsoportokController::class, 'store']);
+    Route::get('/csoportTagsag/create', [CsoportTagsagController::class, 'store']);
     Route::post('/vevesiLista/create', [VevesListaController::class, 'store']);
     Route::post('/vevesiObjektum/create', [VevesObjektumController::class, 'store']);
     Route::post('/felhasznalo/logout', [UserController::class, 'logout']);
@@ -25,8 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get( '/felhasznalo/osszKoltesei',[VevesObjektumController::class, 'show3']);
     Route::get( '/felhasznalo/eHaviKoltesei',[VevesObjektumController::class, 'show4']);
     Route::get( '/felhasznalo/eEviKoltesei',[VevesObjektumController::class, 'show5']);
-    Route::get("/felhasznalo/vevesiListak", [VevesListaController::class, 'show1']);
-    Route::get("/csoport/{id}/felhasznalok", [CsoportTagsagController::class, 'show']);
-    Route::get("/csoport/{id}/vevesiListak", [VevesListaController::class, 'show3']);
-    Route::get("/felhasznalo/csoportjai", [UserController::class, 'show']);
+    Route::get('/felhasznalo/vevesiListak', [VevesListaController::class, 'show1']);
+    Route::get('/csoport/{id}/felhasznalok', [CsoportTagsagController::class, 'show']);
+    Route::get('/csoport/{id}/vevesiListak', [VevesListaController::class, 'show3']);
+    Route::get('/felhasznalo/csoportjai', [UserController::class, 'show']);
 });
