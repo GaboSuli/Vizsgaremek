@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash; 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator; 
 
 
 class UserController extends Controller
@@ -122,9 +123,63 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $csoportok)
+    public function update(Request $request, User $csoportok, string $id)
     {
-        //
+        $authUser = auth();
+        if ($authUser->user()->jogosultsag_szint < 2 or $authUser->id() != $id)
+        {
+            return response(["Message"=>"Nincs jogosultságod ehhez."],403);
+        }
+        $validator = Validator::make($request->all(),
+        [
+            'felhasznalo_id_valtoztatni' => 'exists:users,id',
+            'nev' => 'string',
+            'becenev' => 'string',
+            'profilkep_url' => 'string',
+            'kuponok' => 'numeric|min:0|max:1',
+            'termekArKovetes' => 'numeric|min:0|max:1',
+            'brokerArKovetes' => 'numeric|min:0|max:1',
+            'jogosultsag_szint' => 'numeric|min:0'
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
+        }
+        $user = $authUser->user();
+        if ($authUser->user()->jogosultsag_szint >= 2 and !empty($request->felhasznalo_id_valtoztatni))
+        {
+            $user = User::find($request->felhasznalo_id_valtoztatni)->get();
+        }
+        if (!empty($request->nev))
+        {
+            $user->nev = $request->nev;
+        }
+        if (!empty($request->becenev))
+        {
+            $user->becenev = $request->becenev;
+        }
+        if (!empty($request->profilkep_url))
+        {
+            $user->profilkep_url = $request->profilkep_url;
+        }
+        if (!empty($request->kuponok))
+        {
+            $user->kuponok = $request->kuponok;
+        }
+        if (!empty($request->termekArKovetes))
+        {
+            $user->termekArKovetes = $request->termekArKovetes;
+        }
+        if (!empty($request->brokerArKovetes))
+        {
+            $user->brokerArKovetes = $request->brokerArKovetes;
+        }
+        if (!empty($request->jogosultsag_szint) and $authUser->user()->jogosultsag_szint >= 2)
+        {
+            $user->jogosultsag_szint = $request->jogosultsag_szint;
+        }
+        $user->save();
+        return response(["Message"=>"Sikeres változtatás."],200);
     }
 
     /**

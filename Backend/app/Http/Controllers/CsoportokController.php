@@ -33,7 +33,6 @@ class CsoportokController extends Controller
         $validator = Validator::make($request->all(),[
             'csoport_tipus_id' => 'required|exists:csoport_tipusok,id', 
             'megnevezes' => 'required|string',
-            'keszito_felhasznalo_id' => 'required|exists:users,id'
         ]);
         if ($validator->fails())
         {
@@ -42,7 +41,7 @@ class CsoportokController extends Controller
         $newRec = new Csoportok();
         $newRec->csoport_tipus_id = $request->csoport_tipus_id;
         $newRec->megnevezes = $request->megnevezes;
-        $newRec->keszito_felhasznalo_id = $request->keszito_felhasznalo_id;
+        $newRec->keszito_felhasznalo_id = auth()->id();
         $newRec->save();
         return response()->json(['message'=>'sikeres feltöltes'],201);
     }

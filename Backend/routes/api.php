@@ -15,6 +15,7 @@ Route::get('/kuponok/get',[KuponController::class, 'index']);
 Route::post('/felhasznalo/register', action: [UserController::class, 'register']);
 Route::post('/felhasznalo/login', [UserController::class, 'login']) ->name('login');
 Route::middleware('auth:sanctum')->group(function () {
+    Route::put('/felhasznalo/modositas/{id}',[UserController::class, 'update']);
     Route::post('/kuponok/create', [KuponController::class, 'store']);
     Route::post('/csoport/create', [CsoportokController::class, 'store']);
     Route::post('/vevesiLista/create', [VevesListaController::class, 'store']);

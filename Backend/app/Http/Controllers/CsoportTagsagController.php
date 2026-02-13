@@ -43,7 +43,7 @@ class CsoportTagsagController extends Controller
         $authUser = CsoportTagsag::where("csoport_id","=",$id)->where("felhasznalo_id","=",auth()->user())->first();
         if (empty($authUser))
         {
-            return response(["message"=>"nincs jogosultsagod"],403);
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
         }
         else
         {

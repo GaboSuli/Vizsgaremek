@@ -42,6 +42,7 @@ GET
 - csoport felhasználoi
 (http://127.0.0.1:8000/api/csoport/{id}/felhasznalok)
 -- bearer: session token
+
 POST
 
 - felhasználó létrehozása
@@ -68,43 +69,52 @@ POST
 {
  "csoport_tipus_id":"", ##Muszály
  "megnevezes":"", ##Muszály
- "keszito_felhasznalo_id":"" ##Muszály
 }
 
 - kupon létrehozása
 (http://127.0.0.1:8000/api/kuponok/create) 
 -- bearer: session token (csak olyan felhasználo tud aki nagyobb jogosultsag mint 0)
 {
- "kezdesi_datum":"", ##Muszály
- "lejarasi_datum":"", ##Muszály
- "kod":"", ##Muszály
- "kedvezmeny":"", ##Muszály
- "megjegyzes":"", 
- "hasznalasi_hely":"", ##Muszály
- "feltolto_kuponos_id":"" ##Muszály
+    "kezdesi_datum":"", ##Muszály
+    "lejarasi_datum":"", ##Muszály
+    "kod":"", ##Muszály
+    "kedvezmeny":"", ##Muszály
+    "megjegyzes":"", 
+    "hasznalasi_hely":"" ##Muszály
 }
 
 - vevési objektum létrehozása
 (http://127.0.0.1:8000/api/vevesiObjektum/create)
 -- bearer: session token (csoportnál csak az tud aki benne van a csoportba és nagyobb jogosultság szint mint 0)
 {
- "veves_lista_id":"", ##Muszály
- "alKategoria_id":"", ##Muszály
- "megnevezes":"",
- "ar":"", ##Muszály
- "mennyiseg":"" ##Muszály
+    "veves_lista_id":"", ##Muszály
+    "alKategoria_id":"", ##Muszály
+    "megnevezes":"",
+    "ar":"", ##Muszály
+    "mennyiseg":"" ##Muszály
 }
 
 - vevési lista létrehozása
 (http://127.0.0.1:8000/api/vevesiLista/create)
 -- bearer: session token (csoportnál csak az tud aki benne van a csoportba és nagyobb jogosultság szint mint 0)
 {
- "felhasznalo_id":"", ##Muszály
- "csoport_id":"" ##Muszály
+    "felhasznalo_id":"", ##Muszály
+    "csoport_id":"" ##Muszály
 }
 
 PUT
 - felhasználó módosítása
+(http://127.0.0.1:8000/api/felhasznalo/modositas/{id}) (itt a json be ne adj meg olyan adatot amit nem akarsz változtatni)
+-- bearer: session token (más felhasználot csak 2 vagy nagyobb jogosultsagi szinten lehet)
+{
+    "felhasznalo_id_valtoztatni":"",
+    "nev":"",
+    "becenev":"",
+    "profilkep_url":"",
+    "kuponok":""
+    "termekArKovetes":""
+    "brokerArKovetes":""
+}
 - csoport módosítása
 - kupon módosítása
 

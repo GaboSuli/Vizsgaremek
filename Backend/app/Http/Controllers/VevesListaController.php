@@ -43,11 +43,11 @@ class VevesListaController extends Controller
         $authCheck = CsoportTagsag::where("felhasznalo_id","=",auth()->id())::where("csoport_id","=",$request->csoport_id)->first();
         if (empty($authCheck))
         {
-            return response(["message"=>"nincs jogosultsagod"],403);
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
         }
         elseif ($authCheck->jogosultsag_szing < 1)
         {
-            return response(["message"=>"nincs jogosultsagod"],403);
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
         }  
         $newRec = new VevesLista();
         $newRec->felhasznalo_id = $request->felhasznalo_id;

@@ -72,12 +72,12 @@ class VevesObjektumController extends Controller
         $authCheck = VevesLista::where("felhasznalo_id","=",auth()->id())::where("id","=",$request->veves_lista_id)->first();
         if (empty($authCheck))
         {
-            return response(["message"=>"nincs jogosultsagod"],403);
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
         }
         $authCheck2 = CsoportTagsag::where("felhasznalo_id","=",auth()->id())::where("csoport_id","=",$authCheck->csoport_id)->first();
         if ($authCheck2->jogosultsag_szing < 1)
         {
-            return response(["message"=>"nincs jogosultsagod"],403);
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
         }  
         $newRec = new VevesObjektum();
         $newRec->veves_lista_id = $request->veves_lista_id;

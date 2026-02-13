@@ -35,7 +35,7 @@ class KuponController extends Controller
         $user = auth()->user();
         if ($user->jogosultsag_szint < 1)
         {
-            return response(["message"=>"nincs jogosultsagod"],403);
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
         }
         $validator = Validator::make($request->all(),[
             'kezdesi_datum' => 'required|date',
@@ -44,7 +44,6 @@ class KuponController extends Controller
             'kedvezmeny' => 'required|string',
             'megjegyzes' => 'string',
             'hasznalasi_hely' => 'required|string',
-            'feltolto_kuponos_id' => 'required|exists:user,id'
         ]);
         if ($validator->fails())
         {
@@ -57,7 +56,7 @@ class KuponController extends Controller
         $newRec->kedvezmeny = $request->kedvezmeny;
         $newRec->megjegyzes = $request->megjegyzes;
         $newRec->hasznalasi_hely = $request->hasznalasi_hely;
-        $newRec->feltolto_kuponos_id = $request->feltolto_kuponos_id;
+        $newRec->feltolto_kuponos_id = auth()->id();
         $newRec->save();
         return response()->json(['message'=>'sikeres feltöltes'],201);
     }
