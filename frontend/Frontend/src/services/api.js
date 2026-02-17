@@ -123,4 +123,85 @@ export const apiCall = async (endpoint, options = {}) => {
   }
 };
 
+// High-level API wrapper functions
+
+// GET endpoints (mostly require bearer token where noted)
+export const getUserVevesiListak = () => apiCall('/felhasznalo/vevesiListak');
+export const getUserCsoportjai = () => apiCall('/felhasznalo/csoportjai');
+export const getCsoportVevesiListak = (csoportId) => apiCall(`/csoport/${csoportId}/vevesiListak`);
+export const getUserOsszKoltesei = () => apiCall('/felhasznalo/osszKoltesei');
+export const getUserEHaviKoltesei = () => apiCall('/felhasznalo/eHaviKoltesei');
+export const getUserEEviKoltesei = () => apiCall('/felhasznalo/eEviKoltesei');
+
+// Statistics (assumed public)
+export const getStatisztikaAll = () => apiCall('/statisztika/all', { includeAuth: false });
+export const getStatisztikaById = (id) => apiCall(`/statisztika/id/${id}`, { includeAuth: false });
+export const getStatisztikaByYear = (ev) => apiCall(`/statisztika/ev/${ev}`, { includeAuth: false });
+
+// Other public GET endpoints
+export const getKuponok = () => apiCall('/kuponok/get', { includeAuth: false });
+
+// User public data (requires bearer)
+export const getFelhasznaloNyilvanosAdatok = () => apiCall('/felhasznalo');
+
+// Csoport users (requires bearer)
+export const getCsoportFelhasznalok = (csoportId) => apiCall(`/csoport/${csoportId}/felhasznalok`);
+
+// POST endpoints (register/login now persist token and user when returned)
+export const registerUser = async (payload) => {
+  const res = await apiCall('/felhasznalo/register', { method: 'POST', body: payload, includeAuth: false });
+  if (res.success) {
+    const token = res.data?.token || res.data?.access_token || res.data?.accessToken || res.data?.accessToken;
+    const user = res.data?.user || res.data;
+    if (token) setAuthToken(token);
+    if (user) localStorage.setItem('current_user', JSON.stringify(user));
+  }
+  return res;
+};
+
+export const loginUser = async (payload) => {
+  const res = await apiCall('/felhasznalo/login', { method: 'POST', body: payload, includeAuth: false });
+  if (res.success) {
+    const token = res.data?.token || res.data?.access_token || res.data?.accessToken;
+    const user = res.data?.user || res.data;
+    if (token) setAuthToken(token);
+    if (user) localStorage.setItem('current_user', JSON.stringify(user));
+  }
+  return res;
+};
+
+// Keep other POST endpoints
+export const createCsoport = (payload) => apiCall('/csoport/create', { method: 'POST', body: payload });
+// Endpoint for creating csoport tagsag is not explicitly listed; assume /csoportTagsag/create
+export const createCsoportTagsag = (payload) => apiCall('/csoportTagsag/create', { method: 'POST', body: payload });
+export const createKupon = (payload) => apiCall('/kuponok/create', { method: 'POST', body: payload });
+export const createVevesiObjektum = (payload) => apiCall('/vevesiObjektum/create', { method: 'POST', body: payload });
+export const createVevesiLista = (payload) => apiCall('/vevesiLista/create', { method: 'POST', body: payload });
+
+// PUT endpoints
+export const modifyUser = (payload) => apiCall('/felhasznalo/modositas', { method: 'PUT', body: payload });
+export const modifyCsoport = (csoportId, payload) => apiCall(`/csoport/modositas/${csoportId}`, { method: 'PUT', body: payload });
+export const modifyCsoportTagsag = (csoportId, payload) => apiCall(`/csoportTagsag/modositas/${csoportId}`, { method: 'PUT', body: payload });
+
+// Logout and user helpers
+export const logout = () => {
+  setAuthToken(null);
+  localStorage.removeItem('current_user');
+  window.location.href = '/login';
+};
+
+export const getCurrentUser = () => {
+  const user = localStorage.getItem('current_user');
+  return user ? JSON.parse(user) : null;
+};
+
+// Initialize axios headers if token already exists in storage
+const initAuth = () => {
+  const token = getAuthToken();
+  if (token) {
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }
+};
+initAuth();
+
 export default API_BASE_URL;
