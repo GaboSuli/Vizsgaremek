@@ -123,13 +123,9 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $csoportok, string $id)
+    public function update(Request $request, User $csoportok)
     {
         $authUser = auth();
-        if ($authUser->user()->jogosultsag_szint < 2 or $authUser->id() != $id)
-        {
-            return response(["Message"=>"Nincs jogosultságod ehhez."],403);
-        }
         $validator = Validator::make($request->all(),
         [
             'felhasznalo_id_valtoztatni' => 'exists:users,id',

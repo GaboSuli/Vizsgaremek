@@ -32,8 +32,7 @@ class KuponController extends Controller
      */
     public function store(User $user, Request $request)
     {
-        $user = auth()->user();
-        if ($user->jogosultsag_szint < 1)
+        if (auth()->user()->jogosultsag_szint < 1)
         {
             return response(["message"=>"Nincs jogosultságod ehhez."],403);
         }

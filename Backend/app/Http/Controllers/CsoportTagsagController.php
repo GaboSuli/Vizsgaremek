@@ -97,8 +97,7 @@ class CsoportTagsagController extends Controller
      */
     public function update(Request $request, User $user, string $csoportId)
     {
-        $user = auth();
-        $tagsagok = CsoportTagsag::where("felhasznalo_id","=",$user->id())->where("csoport_id","=",$csoportId)->first();
+        $tagsagok = CsoportTagsag::where("felhasznalo_id","=",auth()->id())->where("csoport_id","=",$csoportId)->first();
         if (empty($tagsagok))
         {
             return response(["message"=>"Nem vagy benne ilyen csoportban."],404);

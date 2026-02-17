@@ -74,11 +74,24 @@ class VevesObjektumController extends Controller
         {
             return response(["message"=>"Nincs jogosultságod ehhez."],403);
         }
-        $authCheck2 = CsoportTagsag::where("felhasznalo_id","=",auth()->id())::where("csoport_id","=",$authCheck->csoport_id)->first();
-        if ($authCheck2->jogosultsag_szing < 1)
+        else if (!empty($authCheck))
         {
-            return response(["message"=>"Nincs jogosultságod ehhez."],403);
-        }  
+            if (!empty($authCheck->csoport_id))
+            {
+                $authUser = CsoportTagsag::where("felhasznalo_id","=",auth()->id())::where("csoport_id","=",$authCheck->csoport_id)->first();
+                if (empty($authUser))
+                {
+                    return response(["message"=>"Nincs jogosultságod ehhez."],403);
+                }
+                else
+                {
+                    if ($authUser->jogosultsag_szint < 1)
+                    {
+                        return response(["message"=>"Nincs jogosultságod ehhez."],403);
+                    }
+                }
+            }
+        }
         $newRec = new VevesObjektum();
         $newRec->veves_lista_id = $request->veves_lista_id;
         $newRec->alKategoria_id = $request->alKategoria_id;
@@ -212,9 +225,70 @@ public function show2(int $ev)
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, VevesObjektum $vevesObjektum)
+    public function update(Request $request, User $user, string $objektId)
     {
-        //
+        $objekt = VevesObjektum::find($objektId);
+        $authUser = auth()->user();
+        $authentication = VevesLista::find($objekt->veves_lista_id);
+        if (!empty($authentication->csoport_id) or $authUser->jogosultsag_szint < 2)
+        {
+            $authUser2 = CsoportTagsag::where("felhasznalo_id","=",auth()->id())::where("csoport_id","=",$authentication->csoport_id)->first();
+                if (empty($authUser2))
+                {
+                    return response(["message"=>"Nincs jogosultságod ehhez."],403);
+                }
+                else
+                {
+                    if ($authUser2->jogosultsag_szint < 1)
+                    {
+                        return response(["message"=>"Nincs jogosultságod ehhez."],403);
+                    }
+                }
+        }
+        else if ($authentication->felhasznalo_id != auth()->id())
+        {
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+        }
+        $validator = Validator::make($request->all(),
+        [
+            'alKategoria_id' => 'exists:user,id',
+            'megnevezes' => 'string',
+            'ar' => 'integer|min:0',
+            'mennyiseg' => 'float|min:0',
+            'elfogadott_statisztikara' => 'boolean'
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
+        }
+        if (!$objekt->elfogadott_statisztikara or $authUser->user()->jogosultsag_szint >= 2)
+        {
+            if (!empty($request->alKategoria_id))
+            {
+                $objekt->alKategoria_id = $request->alKategoria_id;
+            }
+            if (!empty($request->ar))
+            {
+                $objekt->ar = $request->ar;
+            }
+            if (!empty($request->mennyiseg))
+            {
+                $objekt->mennyiseg = $request->mennyiseg;
+            }
+        }
+        if (!empty($request->elfogadott_statisztikara))
+        {
+            if ($authUser->user()->jogosultsag_szint >= 2)
+            {
+                $objekt->elfogadott_statisztikara = $request->elfogadott_statisztikara;
+            }
+        }
+        if (!empty($request->megnevezes))
+        {
+            $objekt->megnevezes = $request->megnevezes;
+        }
+        $objekt->save();
+        return response(["Message"=>"Sikeres változtatás."],200);
     }
 
     /**

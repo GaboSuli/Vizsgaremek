@@ -137,8 +137,16 @@ PUT
 }
 
 
-- vevési lista modositása
 - vevési objektum modositása
+-- bearer: session token (csoporton kívül csak sajátodat tudod, csoporton belül csak ha nagyobb mint 1 jogosultsag szinted van, statisztika elfogadás után csak a megnevezést lehet változtatni, de akinek nagyobb a globális jogosultsagi szintje mint 1 az tud mindent)
+{
+	"alKategoria_id":"",
+	"megnevezes":"",
+	"ar":"",
+	"mennyiseg":"",
+	"elfogadott_statisztikara":""
+}
+
 - kupon módosítása
 
 DELETE

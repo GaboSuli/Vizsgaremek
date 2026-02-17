@@ -17,7 +17,8 @@ Route::post('/felhasznalo/login', [UserController::class, 'login']) ->name('logi
 Route::middleware('auth:sanctum')->group(function () {
     Route::put('/felhasznalo/modositas',[UserController::class, 'update']);
     Route::put('/csoport/modositas/{csoportId}',[CsoportokController::class, 'update']);
-    Route::put('/csoportTagsag/modositas/{csoportId}',[CsoportokController::class, 'update']);
+    Route::put('/csoportTagsag/modositas/{csoportId}',[CsoportTagsagController::class, 'update']);
+    Route::put('/vevesiObjektum/modositas/{objektumId}',[VevesObjektumController::class, 'update']);
     Route::post('/kuponok/create', [KuponController::class, 'store']);
     Route::post('/csoport/create', [CsoportokController::class, 'store']);
     Route::get('/csoportTagsag/create', [CsoportTagsagController::class, 'store']);
