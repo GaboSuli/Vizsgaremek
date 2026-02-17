@@ -95,9 +95,42 @@ class CsoportTagsagController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, CsoportTagsag $csoportTagsag)
+    public function update(Request $request, User $user, string $csoportId)
     {
-        //
+        $user = auth();
+        $tagsagok = CsoportTagsag::where("felhasznalo_id","=",$user->id())->where("csoport_id","=",$csoportId)->first();
+        if (empty($tagsagok))
+        {
+            return response(["message"=>"Nem vagy benne ilyen csoportban."],404);
+        }
+        $validator = Validator::make($request->all(),
+        [
+            'becenev' => 'string',
+            'mastValtoztatniId' => 'exists:user,id',
+            'jogosultsag_szint' => 'integer|min:0',
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
+        }
+        if (!empty($request->mastValtoztatniId))
+        {
+            $csoport = Csoportok::find($csoportId);
+            if ($user->id() == $csoport->keszito_felhasznalo_id)
+            {
+                $tagsagok = CsoportTagsag::where("felhasznalo_id","=",$request->mastValtoztatniId)->where("csoport_id","=",$csoportId)->first();
+                if (!empty($request->jogosultsag_szint))
+                {
+                    $tagsagok->jogosultsag_szint = $request->jogosultsag_szint;
+                }
+            }
+        }
+        if (!empty($request->becenev))
+        {
+            $tagsagok->becenev = $request->becenev;
+        }
+        $tagsagok->save();
+        return response(["Message"=>"Sikeres változtatás."],200);
     }
 
     /**

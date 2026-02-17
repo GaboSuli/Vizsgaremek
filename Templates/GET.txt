@@ -107,8 +107,8 @@ POST
 
 PUT
 - felhasználó módosítása
-(http://127.0.0.1:8000/api/felhasznalo/modositas/{id}) (itt a json be ne adj meg olyan adatot amit nem akarsz változtatni, ha saját felhasználot akarsz modositani akkor ne adj meg felhasznalo id-t.)
--- bearer: session token (más felhasználot csak 2 vagy nagyobb jogosultsagi szinten lehet)
+(http://127.0.0.1:8000/api/felhasznalo/modositas) (itt a json be ne adj meg olyan adatot amit nem akarsz változtatni, ha saját felhasználót akarsz módosítani akkor ne adj meg felhasználó id-t.)
+-- bearer: session token (más felhasználót csak 2 vagy nagyobb jogosultsági szinten lehet)
 {
     "felhasznalo_id_valtoztatni":"",
     "nev":"",
@@ -119,7 +119,24 @@ PUT
     "brokerArKovetes":""
 }
 - csoport módosítása
+(http://127.0.0.1:8000/api/csoport/modositas/{csoportId})
+-- bearer: session token (csak saját csoportot tudsz ezzel változtatni)
+{
+	"megnevezes":"",
+	"csoport_tipus_id":"",
+	"keszito_felhasznalo_id":""
+}
+
 - csoport tagság modositása
+(http://127.0.0.1:8000/api/csoportTagsag/modositas/{csoportId})
+-- bearer: session token (mást változtatni csak saját csoporton belül tudsz, becenevet bármilyen csoportba amibe vagy)
+{
+	"becenev":"",
+	"mastValtoztatniId":"",
+	"jogosultsag_szint":""
+}
+
+
 - vevési lista modositása
 - vevési objektum modositása
 - kupon módosítása
