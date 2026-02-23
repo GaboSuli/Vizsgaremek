@@ -138,6 +138,7 @@ PUT
 
 
 - vevési objektum modositása
+(http://127.0.0.1:8000/api/vevesiObjektum/modositas/{objektumId})
 -- bearer: session token (csoporton kívül csak sajátodat tudod, csoporton belül csak ha nagyobb mint 1 jogosultsag szinted van, statisztika elfogadás után csak a megnevezést lehet változtatni, de akinek nagyobb a globális jogosultsagi szintje mint 1 az tud mindent)
 {
 	"alKategoria_id":"",
@@ -148,9 +149,19 @@ PUT
 }
 
 - kupon módosítása
+(http://127.0.0.1:8000/api/kuponok/modositas/{id})
+-- bearer: session token (csak nagyobb mint 0 jogosultsagu szintu tud)
+{
+	"alKategoria_id":"",
+	"megnevezes":"",
+	"ar":"",
+	"mennyiseg":"",
+	"elfogadott_statisztikara":""
+}
 
 DELETE
 - felhasználó törlése
+
 - vevési objektum törlése
 - vevési lista törlése
 - csoport törlése

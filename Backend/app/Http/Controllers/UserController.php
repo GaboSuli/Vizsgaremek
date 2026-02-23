@@ -181,8 +181,15 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $csoportok)
+    public function destroy(User $csoportok,string $id)
     {
-        //
+        $authUser = auth();
+        $user = $authUser->user();
+        if ($authUser->user()->jogosultsag_szint >= 2 and $id != $authUser->id())
+        {
+            $user = User::find($id)->get();
+        }
+        $user->delete();
+        return response(["message"=>"sikeres törlés"],203);
     }
 }

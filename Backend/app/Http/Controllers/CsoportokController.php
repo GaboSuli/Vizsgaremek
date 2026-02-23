@@ -102,8 +102,14 @@ class CsoportokController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Csoportok $csoportok)
+    public function destroy(User $user, string $id)
     {
-        //
+        $csoport = Csoportok::find($id);
+        if ($csoport->keszito_felhasznalo_id != auth()->id())
+        {
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+        }
+        $csoport->delete();
+        return response(["message"=>"sikeres törlés"],203);
     }
 }
