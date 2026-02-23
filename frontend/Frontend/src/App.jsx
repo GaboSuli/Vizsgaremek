@@ -11,23 +11,36 @@ import ShoppingListPage from './components/ShoppingListPage.jsx'
 import AdminPage from './components/AdminPage.jsx'
 import ContactPage from './components/ContactPage.jsx'
 import UserManagementPage from './components/UserManagementPage.jsx'
-import SiteUsersPage from './components/SiteUsersPage.jsx'
+import FirstPage from './components/FirstPage.jsx'
 
 function App() {
   const { initialPage, initialActive } = useMemo(() => {
-    const isAuth = isAuthenticated()
+    // Allow opening a specific page via ?page= or #page so landing buttons can link here
+    const urlParams = new URLSearchParams(window.location.search);
+    const hash = (window.location.hash || '').replace('#', '');
+    const requested = (urlParams.get('page') || hash || '').trim();
+
+    const allowedPages = ['home', 'stats', 'lista', 'kupon', 'shopping', 'admin', 'contact', 'user', 'login', 'register']
+
     let page = 'home'
     let activeTab = 'home'
 
-    if (isAuth) {
-      const userInfo = getStoredUserInfo()
+    const isAuth = isAuthenticated()
 
-      // Check if user is admin (email contains 'admin' or role is admin)
-      const isAdmin = userInfo?.email?.includes('admin') || userInfo?.role === 'admin' || userInfo?.type === 'admin'
+    if (requested && allowedPages.includes(requested)) {
+      page = requested
+      activeTab = requested
+    } else {
+      if (isAuth) {
+        const userInfo = getStoredUserInfo()
 
-      if (isAdmin) {
-        page = 'admin'
-        activeTab = 'admin'
+        // Check if user is admin (email contains 'admin' or role is admin)
+        const isAdmin = userInfo?.email?.includes('admin') || userInfo?.role === 'admin' || userInfo?.type === 'admin'
+
+        if (isAdmin) {
+          page = 'admin'
+          activeTab = 'admin'
+        }
       }
     }
 
@@ -42,6 +55,8 @@ function App() {
   const [active, setActive] = useState(initialActive)
 
   const authenticatedNow = isAuthenticated();
+  // Disable forced FirstPage during normal operation
+  const FORCE_FIRSTPAGE = false;
 
   const handlePageChange = (page) => {
     setCurrentPage(page)
@@ -52,8 +67,6 @@ function App() {
     switch(currentPage) {
       case 'stats':
         return <StatisticsPage />
-      case 'site-users':
-        return <SiteUsersPage />
       case 'lista':
         return <VevesiListePage />
       case 'kupon':
@@ -72,10 +85,17 @@ function App() {
     }
   }
 
-  // If the user is unauthenticated, allow rendering public pages (home, site-users, contact, etc.)
-  const publicPages = ['home', 'site-users', 'contact', 'about', 'features', 'how']
-  if (!authenticatedNow && !publicPages.includes(currentPage)) {
-    return <LoginPage />
+  // Make the entire site login-only: unauthenticated visitors see FirstPage,
+  // but allow explicit ?page=login or ?page=register to show the auth form.
+  if (FORCE_FIRSTPAGE) {
+    return <FirstPage />
+  }
+
+  if (!authenticatedNow) {
+    if (currentPage === 'login' || currentPage === 'register') {
+      return <LoginPage />
+    }
+    return <FirstPage />
   }
 
   return (

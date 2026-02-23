@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { loginUser, registerUser, setStoredUserInfo } from '../services/authService.js';
+import React, { useState, useEffect } from 'react';
+import { loginUser as apiLoginUser, registerUser as apiRegisterUser } from '../services/api.js';
 import './LoginPage.css';
 
 export default function LoginPage() {
@@ -14,12 +14,23 @@ export default function LoginPage() {
     name: ''
   });
 
+  // read target from query param for redirect after login
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const target = params.get('target') || null;
+    const pageParam = (params.get('page') || '').toLowerCase();
+    if (target) {
+      // store desired target in localStorage for retrieval after login
+      localStorage.setItem('login_target', target);
+    }
+    if (pageParam === 'register') {
+      setIsLogin(false);
+    }
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -29,64 +40,70 @@ export default function LoginPage() {
     setSuccess('');
 
     try {
-      if (isLogin) {
-        const response = await loginUser({
-          email: formData.email,
-          password: formData.password
-        });
+      const target = localStorage.getItem('login_target');
 
-        if (response.success) {
-          // Store user info from response
-          if (response.data) {
-            setStoredUserInfo(response.data);
-          }
-          setSuccess('Sikeresen bejelentkeztél!');
+      if (isLogin) {
+        // Call axios-based login helper
+        console.debug('Submitting login', { email: formData.email });
+        const res = await apiLoginUser({ email: formData.email, password: formData.password });
+        console.debug('apiLoginUser response', res);
+        if (res && res.success) {
+          setSuccess('Sikeres bejelentkezés — átirányítás...');
+          // Redirect to requested target or root
           setTimeout(() => {
-            window.location.href = '/';
-          }, 1000);
+            if (target) window.location.href = `/?page=${encodeURIComponent(target)}`;
+            else window.location.href = '/';
+          }, 600);
         } else {
-          // Jobb error üzenet
-          const errorMsg = response.message || 'Sikertelen bejelentkezés';
-          
-          // Backend nem elérhető
-          if (errorMsg.includes('Backend szerver nem elérhető') || response.status === 503) {
-            setError(
-              '❌ BACKEND SZERVER NEM FUTNAK!\n\n' +
-              'Lépések:\n' +
-              '1. Nyisd meg a PowerShell-t\n' +
-              '2. Futtasd: cd Backend && php artisan serve\n' +
-              '3. Várj, amíg a szerver indul (localhost:8000)\n' +
-              '4. Újra próbáld a bejelentkezést\n\n' +
-              'QUICK_START.md fájl lásd a projekt gyökerében'
-            );
+          // Show validation or message
+          if (res && res.errors) {
+            const joined = Object.values(res.errors).map(arr => Array.isArray(arr) ? arr.join(' ') : String(arr)).join(' ');
+            setError(joined || res.message || 'Sikertelen bejelentkezés');
           } else {
-            setError(errorMsg);
+            setError((res && res.message) || 'Sikertelen bejelentkezés');
           }
         }
       } else {
-        if (formData.password !== formData.passwordConfirm) {
-          setError('A jelszavak nem egyeznek');
+        // register
+        if (!formData.name || !formData.name.trim()) {
+          setError('A név megadása kötelező');
+          setLoading(false);
           return;
         }
 
-        const response = await registerUser({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          password_confirmation: formData.passwordConfirm
-        });
+        if (formData.password !== formData.passwordConfirm) {
+          setError('A jelszavak nem egyeznek');
+          setLoading(false);
+          return;
+        }
 
-        if (response.success) {
-          setSuccess('Sikeres regisztráció! Most bejelentkezhetsz.');
-          setIsLogin(true);
-          setFormData({
-            email: '',
-            password: '',
-            passwordConfirm: '',
-            name: ''
-          });
+        const payload = { name: formData.name, email: formData.email, password: formData.password, password_confirmation: formData.passwordConfirm };
+        console.debug('Submitting register', payload);
+        const res = await apiRegisterUser(payload);
+        console.debug('apiRegisterUser response', res);
+
+        if (res && res.success) {
+          // If backend returned token and user, apiRegisterUser already stored them -> consider the user logged in
+          const hasToken = res.data && res.data.token;
+          if (hasToken) {
+            setSuccess('Sikeres regisztráció! Átirányítás...');
+            setTimeout(() => {
+              if (target) window.location.href = `/?page=${encodeURIComponent(target)}`;
+              else window.location.href = '/';
+            }, 600);
+          } else {
+            // No token returned: inform user to login
+            setSuccess('Sikeres regisztráció! Most bejelentkezhetsz.');
+            setIsLogin(true);
+            setFormData({ email: '', password: '', passwordConfirm: '', name: '' });
+          }
         } else {
-          setError(response.message || 'Sikertelen regisztráció');
+          if (res && res.errors) {
+            const joined = Object.values(res.errors).map(arr => Array.isArray(arr) ? arr.join(' ') : String(arr)).join(' ');
+            setError(joined || res.message || 'Sikertelen regisztráció');
+          } else {
+            setError((res && res.message) || 'Sikertelen regisztráció');
+          }
         }
       }
     } catch (err) {
@@ -117,6 +134,7 @@ export default function LoginPage() {
                 onChange={handleChange}
                 required
                 disabled={loading}
+                autoComplete="name"
               />
             </div>
           )}

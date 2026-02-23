@@ -1,8 +1,8 @@
-import { apiCall, setAuthToken } from './api.js';
+import * as api from './api.js';
 
 // User registration
 export const registerUser = async (userData) => {
-  const response = await apiCall('/felhasznalo/register', {
+  const response = await api.apiCall('/felhasznalo/register', {
     method: 'POST',
     body: {
       nev: userData.name,
@@ -30,7 +30,7 @@ export const registerUser = async (userData) => {
 
 // User login
 export const loginUser = async (credentials) => {
-  const response = await apiCall('/felhasznalo/login', {
+  const response = await api.apiCall('/felhasznalo/login', {
     method: 'POST',
     body: credentials,
     includeAuth: false
@@ -38,7 +38,7 @@ export const loginUser = async (credentials) => {
 
   // If login successful, store token
   if (response.success && response.data?.token) {
-    setAuthToken(response.data.token);
+    api.setAuthToken(response.data.token);
   }
 
   return response;
@@ -46,12 +46,12 @@ export const loginUser = async (credentials) => {
 
 // Get current user
 export const getCurrentUser = async () => {
-  return apiCall('/user');
+  return api.apiCall('/user');
 };
 
 // Logout user
 export const logoutUser = () => {
-  setAuthToken(null);
+  api.setAuthToken(null);
   return {
     success: true,
     message: 'Sikeresen kijelentkeztél'
@@ -60,7 +60,7 @@ export const logoutUser = () => {
 
 // Get user by ID (returns public data)
 export const getUserById = async (id) => {
-  const response = await apiCall(`/felhasznalo/${id}`);
+  const response = await api.apiCall(`/felhasznalo/${id}`);
   if (response.success && response.data) {
     // Transform to public data structure
     const publicData = {
@@ -79,7 +79,7 @@ export const getUserById = async (id) => {
 
 // Update user
 export const updateUser = async (id, userData) => {
-  const response = await apiCall(`/felhasznalo/${id}`, {
+  const response = await api.apiCall(`/felhasznalo/${id}`, {
     method: 'PUT',
     body: userData
   });
@@ -101,7 +101,7 @@ export const updateUser = async (id, userData) => {
 
 // Delete user
 export const deleteUser = async (id) => {
-  const response = await apiCall(`/felhasznalo/${id}`, {
+  const response = await api.apiCall(`/felhasznalo/${id}`, {
     method: 'DELETE'
   });
   if (response.success) {
@@ -115,7 +115,7 @@ export const deleteUser = async (id) => {
 
 // Get user's groups
 export const getUserGroups = async (id) => {
-  return apiCall(`/felhasznalo/${id}/csoportjai`);
+  return api.apiCall(`/felhasznalo/${id}/csoportjai`);
 };
 
 // Get user data within a specific group
@@ -173,22 +173,22 @@ export const setStoredUserInfo = (userInfo) => {
 
 // Get user's total costs by category
 export const getUserTotalCostsByCategory = async (userId) => {
-  return apiCall(`/felhasznalo/${userId}/osszKoltesei`);
+  return api.apiCall(`/felhasznalo/${userId}/osszKoltesei`);
 };
 
 // Get user's monthly costs
 export const getUserMonthlyCosts = async (userId) => {
-  return apiCall(`/felhasznalo/${userId}/eHaviKoltesei`);
+  return api.apiCall(`/felhasznalo/${userId}/eHaviKoltesei`);
 };
 
 // Get user's yearly costs
 export const getUserYearlyCosts = async (userId) => {
-  return apiCall(`/felhasznalo/${userId}/eEviKoltesei`);
+  return api.apiCall(`/felhasznalo/${userId}/eEviKoltesei`);
 };
 
 // Create a new group
 export const createGroup = async (groupData) => {
-  return apiCall('/csoport/create', {
+  return api.apiCall('/csoport/create', {
     method: 'POST',
     body: groupData
   });
@@ -196,7 +196,7 @@ export const createGroup = async (groupData) => {
 
 // Update group
 export const updateGroup = async (id, groupData) => {
-  return apiCall(`/csoport/${id}`, {
+  return api.apiCall(`/csoport/${id}`, {
     method: 'PUT',
     body: groupData
   });
@@ -204,7 +204,7 @@ export const updateGroup = async (id, groupData) => {
 
 // Delete group
 export const deleteGroup = async (id) => {
-  return apiCall(`/csoport/${id}`, {
+  return api.apiCall(`/csoport/${id}`, {
     method: 'DELETE'
   });
 };
