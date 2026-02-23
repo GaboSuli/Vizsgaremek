@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('veves_objekt', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id();
+            $table->timestamps();
             $table->unsignedBigInteger('veves_lista_id');
             $table->foreign('veves_lista_id')->references('id')->on('veves_lista');
             $table->unsignedBigInteger('alKategoria_id');

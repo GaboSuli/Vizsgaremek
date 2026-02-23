@@ -19,8 +19,8 @@ return new class extends Migration
             $table->foreign('felhasznalo_id')->references('id')->on('users');
             $table->unsignedBigInteger('csoport_id');
             $table->foreign('csoport_id')->references('id')->on('csoportok');
-            $table->integer('jogosultsag_szint');
-            $table->string('becenev');
+            $table->integer('jogosultsag_szint')->default(0);
+            $table->string('becenev')->default("");
         });
     }
 

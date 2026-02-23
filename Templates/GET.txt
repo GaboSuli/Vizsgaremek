@@ -1,0 +1,190 @@
+GET
+- egy felhasználó összes vevési listája
+(http://127.0.0.1:8000/api/felhasznalo/vevesiListak) 
+-- bearer: session token
+
+- egy felhasználó csoportjai
+(http://127.0.0.1:8000/api/felhasznalo/csoportjai)
+-- bearer: session token
+
+- egy csoport összes vevési listája
+(http://127.0.0.1:8000/api/csoport/{id}/vevesiListak)
+-- bearer: session token
+
+- egy felhasználó összes költségei alkategoriák szerint
+(http://127.0.0.1:8000/api/felhasznalo/osszKoltesei)
+-- bearer: session token
+
+- egy felhasználó összes költsége ebben a hónapban
+(http://127.0.0.1:8000/api/felhasznalo/eHaviKoltesei)
+-- bearer: session token
+
+- egy felhasználó összes költsége ebben az évben
+(http://127.0.0.1:8000/api/felhasznalo/eEviKoltesei)
+-- bearer: session token
+
+- összes alkategória átlag árának havi váltakozása
+(http://127.0.0.1:8000/api/statisztika/all)
+
+- egy alkategória átlag árának havi váltakozása
+(http://127.0.0.1:8000/api/statisztika/id/{id})
+
+- összes alkategória jelenlegi átlagára ebben az évben
+(http://127.0.0.1:8000/api/statisztika/ev/{ev})
+
+- összes kupon
+(http://127.0.0.1:8000/api/kuponok/get)
+
+- felhasználó nyilvános adatai
+(http://127.0.0.1:8000/api/felhasznalo)
+-- bearer: session token
+
+- csoport felhasználoi
+(http://127.0.0.1:8000/api/csoport/{id}/felhasznalok)
+-- bearer: session token
+
+POST
+
+- felhasználó létrehozása
+(http://127.0.0.1:8000/api/felhasznalo/register)
+{
+ "name":"", ##Muszály
+ "email":"", ##Muszály
+ "password":"", ##Muszály
+ "password_confirmation":"" ##Muszály
+}
+
+
+- felhasználó login
+(http://127.0.0.1:8000/api/felhasznalo/login)
+{
+ "email":"", ##Muszály
+ "password":"" ##Muszály
+}
+
+
+- csoport létrehozása
+(http://127.0.0.1:8000/api/csoport/create)
+-- bearer: session token
+{
+ "csoport_tipus_id":"", ##Muszály
+ "megnevezes":"" ##Muszály
+}
+
+- csoport tagság létrehozása
+(http://127.0.0.1:8000/api/csoportTagsag/create) 
+-- bearer: session token (csak saját csoportba tudsz ami a tied)
+{
+    "csoport_id":"", ##Muszály
+    "felhasznalo_id":"" ##Muszály
+}
+
+- kupon létrehozása
+(http://127.0.0.1:8000/api/kuponok/create) 
+-- bearer: session token (csak olyan felhasználo tud aki nagyobb jogosultsag mint 0)
+{
+    "kezdesi_datum":"", ##Muszály
+    "lejarasi_datum":"", ##Muszály
+    "kod":"", ##Muszály
+    "kedvezmeny":"", ##Muszály
+    "megjegyzes":"", 
+    "hasznalasi_hely":"" ##Muszály
+}
+
+- vevési objektum létrehozása
+(http://127.0.0.1:8000/api/vevesiObjektum/create)
+-- bearer: session token (csoportnál csak az tud aki benne van a csoportba és nagyobb jogosultság szint mint 0)
+{
+    "veves_lista_id":"", ##Muszály
+    "alKategoria_id":"", ##Muszály
+    "megnevezes":"",
+    "ar":"", ##Muszály
+    "mennyiseg":"" ##Muszály
+}
+
+- vevési lista létrehozása
+(http://127.0.0.1:8000/api/vevesiLista/create)
+-- bearer: session token (csoportnál csak az tud aki benne van a csoportba és nagyobb jogosultság szint mint 0)
+{
+    "felhasznalo_id":"", ##Muszály
+    "csoport_id":"" ##Muszály
+}
+
+PUT
+- felhasználó módosítása
+(http://127.0.0.1:8000/api/felhasznalo/modositas) (itt a json be ne adj meg olyan adatot amit nem akarsz változtatni, ha saját felhasználót akarsz módosítani akkor ne adj meg felhasználó id-t.)
+-- bearer: session token (más felhasználót csak 2 vagy nagyobb jogosultsági szinten lehet)
+{
+    "felhasznalo_id_valtoztatni":"",
+    "nev":"",
+    "becenev":"",
+    "profilkep_url":"",
+    "kuponok":"",
+    "termekArKovetes":"",
+    "brokerArKovetes":""
+}
+- csoport módosítása
+(http://127.0.0.1:8000/api/csoport/modositas/{csoportId})
+-- bearer: session token (csak saját csoportot tudsz ezzel változtatni)
+{
+	"megnevezes":"",
+	"csoport_tipus_id":"",
+	"keszito_felhasznalo_id":""
+}
+
+- csoport tagság modositása
+(http://127.0.0.1:8000/api/csoportTagsag/modositas/{csoportId})
+-- bearer: session token (mást változtatni csak saját csoporton belül tudsz, becenevet bármilyen csoportba amibe vagy)
+{
+	"becenev":"",
+	"mastValtoztatniId":"",
+	"jogosultsag_szint":""
+}
+
+
+- vevési objektum modositása
+(http://127.0.0.1:8000/api/vevesiObjektum/modositas/{objektumId})
+-- bearer: session token (csoporton kívül csak sajátodat tudod, csoporton belül csak ha nagyobb mint 1 jogosultsag szinted van, statisztika elfogadás után csak a megnevezést lehet változtatni, de akinek nagyobb a globális jogosultsagi szintje mint 1 az tud mindent)
+{
+	"alKategoria_id":"",
+	"megnevezes":"",
+	"ar":"",
+	"mennyiseg":"",
+	"elfogadott_statisztikara":""
+}
+
+- kupon módosítása
+(http://127.0.0.1:8000/api/kuponok/modositas/{id})
+-- bearer: session token (csak nagyobb mint 0 jogosultsagu szintu tud)
+{
+	"alKategoria_id":"",
+	"megnevezes":"",
+	"ar":"",
+	"mennyiseg":"",
+	"elfogadott_statisztikara":""
+}
+
+DELETE
+- felhasználó törlése
+(http://127.0.0.1:8000/api/felhasznalo/torles/{id})
+-- bearer: session token (hogy ha a megadott id nem a sajátod akkor csak 2 vagy nagyobb jogosultsagi szinttel tudod azt torolni)
+
+- vevési objektum törlése
+(http://127.0.0.1:8000/api/vevesiObjektum/torles/{id})
+-- bearer: session token (csak olyan vevesi listad tudsz torolni ami a tied vagy, ha csoporthoz tartozik akkor csak nagyobb vagy egyenlo mint 1 jogosultsággal lehet abba a csoportba)
+
+- vevési lista törlése
+(http://127.0.0.1:8000/api/vevesiLista/torles/{id})
+-- bearer: session token (csak olyan vevesi listad tudsz torolni ami a tied vagy, ha csoporthoz tartozik akkor csak nagyobb vagy egyenlo mint 1 jogosultsággal lehet abba a csoportba)
+
+- csoport törlése
+(http://127.0.0.1:8000/api/csoport/torles/{id})
+-- bearer: session token (csak olyan csoportot tudsz torolni ami a tied)
+
+- csoport tagság törlése
+(http://127.0.0.1:8000/api/csoportTagsag/torles/{id})
+-- bearer: session token (csak olyan csoporttagsagot tudsz torolni ami a tied vagy olyan csoportba van ami a tied)
+
+- kupon törlése
+(http://127.0.0.1:8000/api/kuponok/torles/{id})
+-- bearer: session token (csak nagyobb mint 0 jogosultsagu szintu tud)

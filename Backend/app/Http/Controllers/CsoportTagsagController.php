@@ -36,8 +36,8 @@ class CsoportTagsagController extends Controller
         $user = auth()->user();
         $validator = Validator::make($request->all(),
         [
-            'csoport_id' => 'exists:csoportok,id',
-            'felhasznalo_id' => 'exists:users,id'
+            'csoport_id' => 'required|exists:csoportok,id',
+            'felhasznalo_id' => 'required|exists:users,id'
         ]);
         if ($validator->fails())
         {
@@ -135,8 +135,15 @@ class CsoportTagsagController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(CsoportTagsag $csoportTagsag)
+    public function destroy(User $user, string $id)
     {
-        //
+        $csoportTagsag = CsoportTagsag::find($id);
+        $keszito = User::find(Csoportok::find($csoportTagsag->csoport_id)->keszito_felhasznalo_id);
+        if ($csoportTagsag->felhasznalo_id != auth()->id() and auth()->id() != $keszito->id)
+        {
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+        }
+        $csoportTagsag->delete();
+        return response(["message"=>"sikeres törlés"],203);
     }
 }

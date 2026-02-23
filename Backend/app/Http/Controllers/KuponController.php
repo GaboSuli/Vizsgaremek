@@ -79,16 +79,64 @@ class KuponController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Kupon $kupon)
+    public function update(Request $request, User $user, string $id)
     {
-        //
+        if (auth()->user()->jogosultsag_szint < 1)
+        {
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+        }
+        $validator = Validator::make($request->all(),[
+            'kezdesi_datum' => 'date',
+            'lejarasi_datum' => 'date',
+            'kod' => 'string',
+            'kedvezmeny' => 'string',
+            'megjegyzes' => 'string',
+            'hasznalasi_hely' => 'string',
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
+        }
+        $kupon = Kupon::find($id);
+        if (!empty($request->kezdesi_datum))
+        {
+            $kupon->kezdesi_datum = $request->kezdesi_datum;
+        }
+        if (!empty($request->lejarasi_datum))
+        {
+            $kupon->lejarasi_datum = $request->lejarasi_datum;
+        }
+        if (!empty($request->kod))
+        {
+            $kupon->kod = $request->kod;
+        }
+        if (!empty($request->kedvezmeny))
+        {
+            $kupon->kedvezmeny = $request->kedvezmeny;
+        }
+        if (!empty($request->megjegyzes))
+        {
+            $kupon->megjegyzes = $request->megjegyzes;
+        }
+        if (!empty($request->hasznalasi_hely))
+        {
+            $kupon->hasznalasi_hely = $request->hasznalasi_hely;
+        }
+        $kupon->save();
+        return response(["message"=>"sikeres változtatás"],203);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Kupon $kupon)
+    public function destroy(User $user, string $id)
     {
-        //
+        if (auth()->user()->jogosultsag_szint < 1)
+        {
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+        }
+        $kupon = Kupon::find($id);
+        $kupon->delete();
+        return response(["message"=>"sikeres törlés"],203);
     }
 }

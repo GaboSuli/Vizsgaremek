@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('veves_lista', function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->id();
+            $table->id()->onDelete('cascade');;
             $table->timestamps();
             $table->unsignedBigInteger('felhasznalo_id');
             $table->foreign('felhasznalo_id')->references('id')->on('users');

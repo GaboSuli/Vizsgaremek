@@ -1,207 +1,185 @@
 import axios from 'axios';
 
-// API configuration - Backend endpoint
-const API_BASE_URL = 'http://localhost:8000/api';
-
-// Helper function to get auth token from localStorage
-const getAuthToken = () => {
-  return localStorage.getItem('auth_token');
-};
-
-// Helper function to set auth token
-export const setAuthToken = (token) => {
-  if (token) {
-    localStorage.setItem('auth_token', token);
-    // Add token to axios default headers
-    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  } else {
-    localStorage.removeItem('auth_token');
-    delete axiosInstance.defaults.headers.common['Authorization'];
-  }
-};
-
-// Create axios instance with default config
-export const axiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+// Base axios instance for API calls
+const api = axios.create({
+  baseURL: '/api',
   headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  }
+    'Content-Type': 'application/json'
+  },
+  timeout: 15000
 });
 
-// Add request interceptor to include auth token
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = getAuthToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+// Set or remove Authorization header and persist token to localStorage
+export function setAuthToken(token) {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    try { localStorage.setItem('auth_token', token); } catch (e) { void e; }
+  } else {
+    delete api.defaults.headers.common['Authorization'];
+    try { localStorage.removeItem('auth_token'); } catch (e) { void e; }
   }
-);
+}
 
-// Add response interceptor to handle 401 errors
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      setAuthToken(null);
-      window.location.href = '/login';
+// Read current_user from localStorage
+export function getCurrentUser() {
+  try {
+    const raw = localStorage.getItem('current_user');
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { void e; return null; }
+}
+
+// Save current_user to localStorage
+function setCurrentUser(user) {
+  try {
+    if (user) localStorage.setItem('current_user', JSON.stringify(user));
+    else localStorage.removeItem('current_user');
+  } catch (e) { void e; }
+}
+
+// Ensure Authorization header exists from stored token on cold-start
+(function initAuthFromStorage() {
+  try {
+    const t = localStorage.getItem('auth_token');
+    if (t) api.defaults.headers.common['Authorization'] = `Bearer ${t}`;
+  } catch (e) { void e; }
+})();
+
+// Request interceptor: ensure header present if token in localStorage
+api.interceptors.request.use((cfg) => {
+  try {
+    if (!cfg.headers['Authorization']) {
+      const t = localStorage.getItem('auth_token');
+      if (t) cfg.headers['Authorization'] = `Bearer ${t}`;
     }
-    return Promise.reject(error);
-  }
-);
+  } catch (e) { void e; }
+  return cfg;
+}, (error) => Promise.reject(error));
 
-// Generic API call function
-export const apiCall = async (endpoint, options = {}) => {
-  const {
-    method = 'GET',
-    body = null,
-    includeAuth = true,
-    customHeaders = {}
-  } = options;
+// Response interceptor: handle 401 centrally
+api.interceptors.response.use((res) => res, (error) => {
+  const resp = error.response;
+  console.error('API error', {
+    url: error.config && error.config.url,
+    status: resp && resp.status,
+    data: resp && resp.data,
+    message: error.message
+  });
+
+  if (resp && resp.status === 401) {
+    // Clear stored auth and redirect to login
+    try { localStorage.removeItem('auth_token'); } catch (e) { void e; }
+    try { localStorage.removeItem('current_user'); } catch (e) { void e; }
+    try { delete api.defaults.headers.common['Authorization']; } catch (e) { void e; }
+
+    // Avoid infinite redirect loops: only redirect if not already on login page
+    const search = (window.location.search || '').toLowerCase();
+    if (!search.includes('page=login')) {
+      window.location.href = '/?page=login';
+    }
+  }
+
+  return Promise.reject(error);
+});
+
+// Centralized error formatter
+async function handleError(err) {
+  // Default structure
+  const result = { success: false, status: null, message: 'Hiba történt', errors: null };
+  if (!err) return result;
+  if (err.response) {
+    result.status = err.response.status;
+    result.message = (err.response.data && (err.response.data.message || err.response.data.msg)) || err.message || 'Hiba a szerverről';
+    // Normalize validation errors (Laravel style: errors object)
+    if (err.response.status === 422 && err.response.data && err.response.data.errors) {
+      result.errors = err.response.data.errors;
+    } else if (err.response.data && typeof err.response.data === 'object') {
+      result.errors = err.response.data;
+    }
+
+    // Specific status mapping
+    if (err.response.status === 409) {
+      result.message = err.response.data && (err.response.data.message || 'Konfliktus: erőforrás már létezik');
+    }
+
+  } else {
+    result.message = err.message || 'Hálózati hiba';
+  }
+
+  // Log details for debugging
+  console.error('handleError result', result);
+  return result;
+}
+
+// API: login user
+export async function loginUser(payload) {
+  try {
+    const resp = await api.post('/felhasznalo/login', payload);
+    // Expect 200 and body with token and user data
+    const data = resp.data || {};
+    // Common token locations
+    const token = data.token || data.access_token || (data.data && (data.data.token || data.data.access_token));
+    const user = data.user || data.data || data.current_user || null;
+
+    if (token) setAuthToken(token);
+    if (user) setCurrentUser(user);
+
+    return { success: true, status: resp.status, data: { token, user }, raw: data };
+  } catch (err) {
+    return await handleError(err);
+  }
+}
+
+// API: register user
+export async function registerUser(payload) {
+  try {
+    const resp = await api.post('/felhasznalo/register', payload);
+    const data = resp.data || {};
+    // On successful registration backend may return created user and optionally token
+    const token = data.token || data.access_token || (data.data && (data.data.token || data.data.access_token));
+    const user = data.user || data.data || data.current_user || null;
+
+    if (token) setAuthToken(token);
+    if (user) setCurrentUser(user);
+
+    // Some APIs return 201 for created
+    return { success: true, status: resp.status, data: { token, user }, raw: data };
+  } catch (err) {
+    return await handleError(err);
+  }
+}
+
+// Backwards-compatible apiCall wrapper used by older services
+export async function apiCall(path, options = {}) {
+  const { method = 'GET', body = null, includeAuth = true, headers = {} } = options;
+
+  const cfg = {
+    url: path,
+    method: method.toLowerCase(),
+    headers: { ...headers }
+  };
+
+  if (body && (cfg.method === 'post' || cfg.method === 'put' || cfg.method === 'patch' || cfg.method === 'delete')) {
+    cfg.data = body;
+  }
+
+  // If includeAuth is false, temporarily remove Authorization header
+  let prevAuth = null;
+  if (!includeAuth) {
+    prevAuth = api.defaults.headers.common['Authorization'];
+    delete api.defaults.headers.common['Authorization'];
+  }
 
   try {
-    const config = {
-      method,
-      headers: customHeaders
-    };
-
-    if (body) {
-      config.data = body;
+    const resp = await api.request(cfg);
+    return { success: true, status: resp.status, data: resp.data, raw: resp.data };
+  } catch (err) {
+    return await handleError(err);
+  } finally {
+    if (!includeAuth) {
+      if (prevAuth) api.defaults.headers.common['Authorization'] = prevAuth;
     }
-
-    // If auth is not needed, create temporary instance without auth
-    const instance = includeAuth ? axiosInstance : axios.create({
-      baseURL: API_BASE_URL,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        ...customHeaders
-      }
-    });
-
-    const response = await instance(endpoint, config);
-
-    return {
-      success: true,
-      data: response.data.data || response.data,
-      message: response.data.message || 'Sikeres'
-    };
-  } catch (error) {
-    console.error('API Error:', error);
-
-    // Handle network errors
-    if (!error.response) {
-      if (!navigator.onLine) {
-        return {
-          success: false,
-          data: null,
-          message: '❌ Backend szerver nem elérhető!\n\nEllenőrizd:\n1. Backend fut-e? (php artisan serve)\n2. A port 8000-en hallgatja-e?\n3. Nyitva van-e a Backend terminál?\n\nQUICK_START.md fájl olvasásához kattints a projekt gyökerében',
-          status: 503
-        };
-      }
-
-      return {
-        success: false,
-        data: null,
-        message: `Hálózati hiba: ${error.message}`,
-        status: 0
-      };
-    }
-
-    // Handle HTTP error responses
-    return {
-      success: false,
-      data: null,
-      message: error.response.data?.message || 'Hiba történt az API hívás során',
-      status: error.response.status
-    };
   }
-};
+}
 
-// High-level API wrapper functions
-
-// GET endpoints (mostly require bearer token where noted)
-export const getUserVevesiListak = () => apiCall('/felhasznalo/vevesiListak');
-export const getUserCsoportjai = () => apiCall('/felhasznalo/csoportjai');
-export const getCsoportVevesiListak = (csoportId) => apiCall(`/csoport/${csoportId}/vevesiListak`);
-export const getUserOsszKoltesei = () => apiCall('/felhasznalo/osszKoltesei');
-export const getUserEHaviKoltesei = () => apiCall('/felhasznalo/eHaviKoltesei');
-export const getUserEEviKoltesei = () => apiCall('/felhasznalo/eEviKoltesei');
-
-// Statistics (assumed public)
-export const getStatisztikaAll = () => apiCall('/statisztika/all', { includeAuth: false });
-export const getStatisztikaById = (id) => apiCall(`/statisztika/id/${id}`, { includeAuth: false });
-export const getStatisztikaByYear = (ev) => apiCall(`/statisztika/ev/${ev}`, { includeAuth: false });
-
-// Other public GET endpoints
-export const getKuponok = () => apiCall('/kuponok/get', { includeAuth: false });
-
-// User public data (requires bearer)
-export const getFelhasznaloNyilvanosAdatok = () => apiCall('/felhasznalo');
-
-// Csoport users (requires bearer)
-export const getCsoportFelhasznalok = (csoportId) => apiCall(`/csoport/${csoportId}/felhasznalok`);
-
-// POST endpoints (register/login now persist token and user when returned)
-export const registerUser = async (payload) => {
-  const res = await apiCall('/felhasznalo/register', { method: 'POST', body: payload, includeAuth: false });
-  if (res.success) {
-    const token = res.data?.token || res.data?.access_token || res.data?.accessToken || res.data?.accessToken;
-    const user = res.data?.user || res.data;
-    if (token) setAuthToken(token);
-    if (user) localStorage.setItem('current_user', JSON.stringify(user));
-  }
-  return res;
-};
-
-export const loginUser = async (payload) => {
-  const res = await apiCall('/felhasznalo/login', { method: 'POST', body: payload, includeAuth: false });
-  if (res.success) {
-    const token = res.data?.token || res.data?.access_token || res.data?.accessToken;
-    const user = res.data?.user || res.data;
-    if (token) setAuthToken(token);
-    if (user) localStorage.setItem('current_user', JSON.stringify(user));
-  }
-  return res;
-};
-
-// Keep other POST endpoints
-export const createCsoport = (payload) => apiCall('/csoport/create', { method: 'POST', body: payload });
-// Endpoint for creating csoport tagsag is not explicitly listed; assume /csoportTagsag/create
-export const createCsoportTagsag = (payload) => apiCall('/csoportTagsag/create', { method: 'POST', body: payload });
-export const createKupon = (payload) => apiCall('/kuponok/create', { method: 'POST', body: payload });
-export const createVevesiObjektum = (payload) => apiCall('/vevesiObjektum/create', { method: 'POST', body: payload });
-export const createVevesiLista = (payload) => apiCall('/vevesiLista/create', { method: 'POST', body: payload });
-
-// PUT endpoints
-export const modifyUser = (payload) => apiCall('/felhasznalo/modositas', { method: 'PUT', body: payload });
-export const modifyCsoport = (csoportId, payload) => apiCall(`/csoport/modositas/${csoportId}`, { method: 'PUT', body: payload });
-export const modifyCsoportTagsag = (csoportId, payload) => apiCall(`/csoportTagsag/modositas/${csoportId}`, { method: 'PUT', body: payload });
-
-// Logout and user helpers
-export const logout = () => {
-  setAuthToken(null);
-  localStorage.removeItem('current_user');
-  window.location.href = '/login';
-};
-
-export const getCurrentUser = () => {
-  const user = localStorage.getItem('current_user');
-  return user ? JSON.parse(user) : null;
-};
-
-// Initialize axios headers if token already exists in storage
-const initAuth = () => {
-  const token = getAuthToken();
-  if (token) {
-    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  }
-};
-initAuth();
-
-export default API_BASE_URL;
+export default api;
