@@ -52,6 +52,10 @@ class VevesListaController extends Controller
                 return response(["message"=>"Nincs jogosultságod ehhez."],403);
             }
         }
+        elseif ($request->felhasznalo_id != auth()->id())
+        {
+           return response(["message"=>"Nincs jogosultságod ehhez."],403); 
+        }
         $newRec = new VevesLista();
         $newRec->felhasznalo_id = $request->felhasznalo_id;
         $newRec->csoport_id = $request->csoport_id;

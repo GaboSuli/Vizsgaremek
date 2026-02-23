@@ -36,8 +36,8 @@ class CsoportTagsagController extends Controller
         $user = auth()->user();
         $validator = Validator::make($request->all(),
         [
-            'csoport_id' => 'exists:csoportok,id',
-            'felhasznalo_id' => 'exists:users,id'
+            'csoport_id' => 'required|exists:csoportok,id',
+            'felhasznalo_id' => 'required|exists:users,id'
         ]);
         if ($validator->fails())
         {

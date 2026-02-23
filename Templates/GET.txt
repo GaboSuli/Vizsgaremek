@@ -48,18 +48,18 @@ POST
 - felhasználó létrehozása
 (http://127.0.0.1:8000/api/felhasznalo/register)
 {
- "name":"",
- "email":"",
- "password":"",
- "password_confirmation":""
+ "name":"", ##Muszály
+ "email":"", ##Muszály
+ "password":"", ##Muszály
+ "password_confirmation":"" ##Muszály
 }
 
 
 - felhasználó login
 (http://127.0.0.1:8000/api/felhasznalo/login)
 {
- "email":"",
- "password":""
+ "email":"", ##Muszály
+ "password":"" ##Muszály
 }
 
 
@@ -68,11 +68,16 @@ POST
 -- bearer: session token
 {
  "csoport_tipus_id":"", ##Muszály
- "megnevezes":"", ##Muszály
+ "megnevezes":"" ##Muszály
 }
 
 - csoport tagság létrehozása
-
+(http://127.0.0.1:8000/api/csoportTagsag/create) 
+-- bearer: session token (csak saját csoportba tudsz ami a tied)
+{
+    "csoport_id":"", ##Muszály
+    "felhasznalo_id":"" ##Muszály
+}
 
 - kupon létrehozása
 (http://127.0.0.1:8000/api/kuponok/create) 
@@ -161,9 +166,25 @@ PUT
 
 DELETE
 - felhasználó törlése
+(http://127.0.0.1:8000/api/felhasznalo/torles/{id})
+-- bearer: session token (hogy ha a megadott id nem a sajátod akkor csak 2 vagy nagyobb jogosultsagi szinttel tudod azt torolni)
 
 - vevési objektum törlése
+(http://127.0.0.1:8000/api/vevesiObjektum/torles/{id})
+-- bearer: session token (csak olyan vevesi listad tudsz torolni ami a tied vagy, ha csoporthoz tartozik akkor csak nagyobb vagy egyenlo mint 1 jogosultsággal lehet abba a csoportba)
+
 - vevési lista törlése
+(http://127.0.0.1:8000/api/vevesiLista/torles/{id})
+-- bearer: session token (csak olyan vevesi listad tudsz torolni ami a tied vagy, ha csoporthoz tartozik akkor csak nagyobb vagy egyenlo mint 1 jogosultsággal lehet abba a csoportba)
+
 - csoport törlése
+(http://127.0.0.1:8000/api/csoport/torles/{id})
+-- bearer: session token (csak olyan csoportot tudsz torolni ami a tied)
+
 - csoport tagság törlése
+(http://127.0.0.1:8000/api/csoportTagsag/torles/{id})
+-- bearer: session token (csak olyan csoporttagsagot tudsz torolni ami a tied vagy olyan csoportba van ami a tied)
+
 - kupon törlése
+(http://127.0.0.1:8000/api/kuponok/torles/{id})
+-- bearer: session token (csak nagyobb mint 0 jogosultsagu szintu tud)

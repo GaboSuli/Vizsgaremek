@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Csoportok;
 use App\Http\Controllers\Controller;
+use App\Models\CsoportTagsag;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -29,7 +30,7 @@ class CsoportokController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
         $validator = Validator::make($request->all(),[
             'csoport_tipus_id' => 'required|exists:csoport_tipusok,id', 
@@ -44,6 +45,11 @@ class CsoportokController extends Controller
         $newRec->megnevezes = $request->megnevezes;
         $newRec->keszito_felhasznalo_id = auth()->id();
         $newRec->save();
+        $newCsoportTagsag = new CsoportTagsag();
+        $newCsoportTagsag->felhasznalo_id = auth()->id();
+        $newCsoportTagsag->csoport_id = $newRec->id;
+        $newCsoportTagsag->jogosultsag_szint = 3;
+        $newCsoportTagsag->save();
         return response()->json(['message'=>'sikeres feltöltes'],201);
     }
 

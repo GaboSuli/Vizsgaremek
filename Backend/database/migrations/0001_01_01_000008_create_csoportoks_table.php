@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('csoportok', function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->id();
+            $table->id()->onDelete('cascade');;
             $table->timestamps();
             $table->unsignedBigInteger('csoport_tipus_id');
             $table->foreign('csoport_tipus_id')->references('id')->on('csoport_tipusok');

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('lejarasi_datum');
             $table->string('kod');
             $table->string('kedvezmeny');
-            $table->string('megjegyzes');
+            $table->string('megjegyzes')->default("");
             $table->string('hasznalasi_hely');
             $table->foreignId('feltolto_kuponos_id');
             $table->foreign('feltolto_kuponos_id')->references('id')->on('users');
