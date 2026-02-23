@@ -69,7 +69,7 @@ class VevesObjektumController extends Controller
         {
             return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
         }
-        $authCheck = VevesLista::where("felhasznalo_id","=",auth()->id())::where("id","=",$request->veves_lista_id)->first();
+        $authCheck = VevesLista::where("felhasznalo_id","=",auth()->id())->where("id","=",$request->veves_lista_id)->first();
         if (empty($authCheck))
         {
             return response(["message"=>"Nincs jogosultságod ehhez."],403);
@@ -228,11 +228,15 @@ public function show2(int $ev)
     public function update(Request $request, User $user, string $objektId)
     {
         $objekt = VevesObjektum::find($objektId);
+        if (empty($objekt))
+        {
+            return response(["Message"=>"Nincs ilyen."],404);
+        }
         $authUser = auth()->user();
         $authentication = VevesLista::find($objekt->veves_lista_id);
         if (!empty($authentication->csoport_id) or $authUser->jogosultsag_szint < 2)
         {
-            $authUser2 = CsoportTagsag::where("felhasznalo_id","=",auth()->id())::where("csoport_id","=",$authentication->csoport_id)->first();
+            $authUser2 = CsoportTagsag::where("felhasznalo_id","=",auth()->id())->where("csoport_id","=",$authentication->csoport_id)->first();
                 if (empty($authUser2))
                 {
                     return response(["message"=>"Nincs jogosultságod ehhez."],403);
@@ -294,8 +298,31 @@ public function show2(int $ev)
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(VevesObjektum $vevesObjektum)
+    public function destroy(User $user, string $id)
     {
-        //
+        $objekt = VevesObjektum::find($id);
+        $authUser = auth()->user();
+        $authentication = VevesLista::find($objekt->veves_lista_id);
+        if (!empty($authentication->csoport_id) or $authUser->jogosultsag_szint < 2)
+        {
+            $authUser2 = CsoportTagsag::where("felhasznalo_id","=",auth()->id())->where("csoport_id","=",$authentication->csoport_id)->first();
+                if (empty($authUser2))
+                {
+                    return response(["message"=>"Nincs jogosultságod ehhez."],403);
+                }
+                else
+                {
+                    if ($authUser2->jogosultsag_szint < 1)
+                    {
+                        return response(["message"=>"Nincs jogosultságod ehhez."],403);
+                    }
+                }
+        }
+        else if ($authentication->felhasznalo_id != auth()->id())
+        {
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+        }
+        $objekt->delete();
+        return response(["message"=>"sikeres törlés"],203);
     }
 }

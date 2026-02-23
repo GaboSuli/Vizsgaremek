@@ -40,15 +40,22 @@ class VevesListaController extends Controller
         {
             return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
         }
-        $authCheck = CsoportTagsag::where("felhasznalo_id","=",auth()->id())::where("csoport_id","=",$request->csoport_id)->first();
-        if (empty($authCheck))
+        if (!empty($request->csoport_id))
         {
-            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+            $authCheck = CsoportTagsag::where("felhasznalo_id","=",auth()->id())::where("csoport_id","=",$request->csoport_id)->first();
+            if (empty($authCheck))
+            {
+                return response(["message"=>"Nincs jogosultságod ehhez."],403);
+            }
+            elseif ($authCheck->jogosultsag_szing < 1)
+            {
+                return response(["message"=>"Nincs jogosultságod ehhez."],403);
+            }
         }
-        elseif ($authCheck->jogosultsag_szing < 1)
+        elseif ($request->felhasznalo_id != auth()->id())
         {
-            return response(["message"=>"Nincs jogosultságod ehhez."],403);
-        }  
+           return response(["message"=>"Nincs jogosultságod ehhez."],403); 
+        }
         $newRec = new VevesLista();
         $newRec->felhasznalo_id = $request->felhasznalo_id;
         $newRec->csoport_id = $request->csoport_id;
@@ -107,8 +114,26 @@ class VevesListaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(VevesLista $vevesLista)
+    public function destroy(User $user, string $id)
     {
-        //
+        $vevesiLista = VevesLista::find($id);
+        if (!empty($vevesiLista->csoport_id))
+        {
+            $authCheck = CsoportTagsag::where("felhasznalo_id","=",auth()->id())::where("csoport_id","=",$vevesiLista->csoport_id)->first();
+            if (empty($authCheck))
+            {
+                return response(["message"=>"Nincs jogosultságod ehhez."],403);
+            }
+            elseif ($authCheck->jogosultsag_szing < 1)
+            {
+                return response(["message"=>"Nincs jogosultságod ehhez."],403);
+            }
+        }
+        elseif ($vevesiLista->felhasznalo_id != auth()->id())
+        {
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+        }
+        $vevesiLista->delete();
+        return response(["message"=>"sikeres törlés"],203);
     }
 }
