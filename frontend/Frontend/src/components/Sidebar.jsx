@@ -7,6 +7,7 @@ const navItems = [
   { id: 'features', label: 'Funkciók', icon: 'sparkles' },
   { id: 'how', label: 'Hogyan működik', icon: 'steps' },
   { id: 'stats', label: 'Statisztikák', icon: 'chart', page: true },
+  { id: 'site-users', label: 'Felhasználók', icon: 'users', page: true },
   { id: 'lista', label: 'Bevásárlás', icon: 'shopping', page: true },
   { id: 'shopping', label: 'Bevásárlólista', icon: 'cart', page: true },
   { id: 'kupon', label: 'Kuponok', icon: 'ticket', page: true },

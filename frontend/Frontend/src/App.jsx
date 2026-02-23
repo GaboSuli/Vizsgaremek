@@ -1,6 +1,5 @@
-
 import './App.css'
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { isAuthenticated, getStoredUserInfo } from './services/authService.js'
 import Sidebar from './components/Sidebar.jsx'
 import LoginPage from './components/LoginPage.jsx'
@@ -12,9 +11,10 @@ import ShoppingListPage from './components/ShoppingListPage.jsx'
 import AdminPage from './components/AdminPage.jsx'
 import ContactPage from './components/ContactPage.jsx'
 import UserManagementPage from './components/UserManagementPage.jsx'
+import SiteUsersPage from './components/SiteUsersPage.jsx'
 
 function App() {
-  const { authenticated, initialPage, initialActive } = useMemo(() => {
+  const { initialPage, initialActive } = useMemo(() => {
     const isAuth = isAuthenticated()
     let page = 'home'
     let activeTab = 'home'
@@ -32,7 +32,6 @@ function App() {
     }
 
     return {
-      authenticated: isAuth,
       initialPage: page,
       initialActive: activeTab
     }
@@ -41,6 +40,8 @@ function App() {
   const [currentPage, setCurrentPage] = useState(initialPage)
   const [collapsed, setCollapsed] = useState(false)
   const [active, setActive] = useState(initialActive)
+
+  const authenticatedNow = isAuthenticated();
 
   const handlePageChange = (page) => {
     setCurrentPage(page)
@@ -51,6 +52,8 @@ function App() {
     switch(currentPage) {
       case 'stats':
         return <StatisticsPage />
+      case 'site-users':
+        return <SiteUsersPage />
       case 'lista':
         return <VevesiListePage />
       case 'kupon':
@@ -69,9 +72,9 @@ function App() {
     }
   }
 
-
-
-  if (!authenticated) {
+  // If the user is unauthenticated, allow rendering public pages (home, site-users, contact, etc.)
+  const publicPages = ['home', 'site-users', 'contact', 'about', 'features', 'how']
+  if (!authenticatedNow && !publicPages.includes(currentPage)) {
     return <LoginPage />
   }
 
@@ -83,6 +86,7 @@ function App() {
         active={active}
         onNavigate={() => {}}
         onPageChange={handlePageChange}
+        authenticated={authenticatedNow}
       />
       <main className={`main-content ${collapsed ? 'sidebar-collapsed' : ''}`}>
         {renderPage()}
