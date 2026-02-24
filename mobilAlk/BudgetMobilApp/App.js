@@ -38,9 +38,15 @@ export default function App({ navigation }) {
         </View> 
         {Drop === 'show' && (
           <View style={styles.dropdownContent}>
-            <Text>Option 1</Text>
-            <Text>Option 2</Text>
-            <Text>Option 3</Text>
+            <TouchableOpacity onPress={() => console.log('Option 1 Pressed!')}>
+              <Text>Option 1</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => console.log('Option 2 Pressed!')}>
+              <Text>Option 2</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => console.log('Option 3 Pressed!')}>
+              <Text>Option 3</Text>
+            </TouchableOpacity>
           </View>)}
       </View>
     </>
