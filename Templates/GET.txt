@@ -107,7 +107,7 @@ POST
 -- bearer: session token (csoportnál csak az tud aki benne van a csoportba és nagyobb jogosultság szint mint 0)
 {
     "felhasznalo_id":"", ##Muszály
-    "csoport_id":"" ##Muszály
+    "csoport_id":""
 }
 
 PUT
@@ -157,11 +157,12 @@ PUT
 (http://127.0.0.1:8000/api/kuponok/modositas/{id})
 -- bearer: session token (csak nagyobb mint 0 jogosultsagu szintu tud)
 {
-	"alKategoria_id":"",
-	"megnevezes":"",
-	"ar":"",
-	"mennyiseg":"",
-	"elfogadott_statisztikara":""
+	"kezdesi_datum":"",
+    "lejarasi_datum":"",
+    "kod":"",
+    "kedvezmeny":"",
+    "megjegyzes":"", 
+    "hasznalasi_hely":""
 }
 
 DELETE
