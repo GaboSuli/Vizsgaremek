@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { apiCall } from '../services/api.js';
+import useAuth from '../context/useAuth.js';
 import './ContactPage.css';
 
 export default function ContactPage() {
+  const auth = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     messageType: '',
     message: ''
   });
+
+  useEffect(() => {
+    if (auth.user) {
+      setFormData(f => ({
+        ...f,
+        name: auth.user.name || auth.user.Nev || '',
+        email: auth.user.email || auth.user.Email || ''
+      }));
+    }
+  }, [auth.user]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import useAuth from '../context/useAuth.js';
 import { Container, Row, Col, Card, Button, Table, Badge, Spinner, Alert } from 'react-bootstrap';
-import { getAllVevesiListak, getVevesiListaById } from '../services/vevesiListaService';
+import { getAllVevesiListak, getVevesiListaById, getVevesiListakByUser } from '../services/vevesiListaService';
 import './VevesiListePage.css';
 
 export default function VevesiListePage() {
@@ -9,14 +10,17 @@ export default function VevesiListePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const auth = useAuth();
+
   useEffect(() => {
-    loadListaky();
-  }, []);
+    if (auth.user) loadListaky();
+  }, [auth.user]);
 
   const loadListaky = async () => {
     try {
       setLoading(true);
-      const result = await getAllVevesiListak();
+      const userId = auth.user?.id;
+      const result = userId ? await getVevesiListakByUser(userId) : await getAllVevesiListak();
       
       if (result.success) {
         setListaky(result.data);
@@ -85,7 +89,7 @@ export default function VevesiListePage() {
                   <div>
                     <h3 className="mb-0">{selectedLista.nev}</h3>
                     <small className="text-muted">
-                      {new Date(selectedLista.letrehozas).toLocaleDateString('hu-HU')} • {selectedLista.felhasznalo}
+                      {new Date(selectedLista.letrehozas).toLocaleDateString('hu-HU')} • {auth.user?.name || auth.user?.Nev || 'te'}
                     </small>
                   </div>
                   <Button variant="outline-secondary" onClick={handleClose}>Vissza</Button>
@@ -141,7 +145,7 @@ export default function VevesiListePage() {
                         {new Date(lista.letrehozas).toLocaleDateString('hu-HU')}
                       </small>
                       <small className="text-muted d-block mb-3">
-                        👤 {lista.felhasznalo}
+                        👤 {auth.user?.name || auth.user?.Nev || 'te'}
                       </small>
 
                       <div className="lista-footer">

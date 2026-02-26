@@ -73,9 +73,10 @@ api.interceptors.response.use((res) => res, (error) => {
     try { delete api.defaults.headers.common['Authorization']; } catch (e) { void e; }
 
     // Avoid infinite redirect loops: only redirect if not already on login page
-    const search = (window.location.search || '').toLowerCase();
-    if (!search.includes('page=login')) {
-      window.location.href = '/?page=login';
+    // if we're not already on the login route, send user there
+    const current = window.location.pathname.toLowerCase();
+    if (!current.includes('/login')) {
+      window.location.href = '/login';
     }
   }
 

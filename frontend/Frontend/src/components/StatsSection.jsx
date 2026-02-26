@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Foldal.css';
 import { getAllAlkategoriasStats } from '../services/statisticsService';
+import useAuth from '../context/useAuth.js';
 
 function StatCard({ value, label }) {
   return (
@@ -12,6 +13,7 @@ function StatCard({ value, label }) {
 }
 
 export default function StatsSection() {
+  const auth = useAuth();
   const [stats, setStats] = useState({
     totalCategories: '—',
     averagePrice: '—',
@@ -22,7 +24,8 @@ export default function StatsSection() {
   useEffect(() => {
     const loadStats = async () => {
       try {
-        const result = await getAllAlkategoriasStats();
+        const userId = auth.user?.id;
+        const result = await getAllAlkategoriasStats(userId);
         if (result.success && result.statistics) {
           setStats({
             totalCategories: result.statistics.totalCategories,
@@ -37,7 +40,7 @@ export default function StatsSection() {
     };
 
     loadStats();
-  }, []);
+  }, [auth.user]);
 
   return (
     <section id="stats" className="stats-section">

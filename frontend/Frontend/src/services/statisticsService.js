@@ -50,10 +50,11 @@ const osszesAlkategoriasData = {
 /**
  * Alkategória havi átlagár-változásának lekérése
  */
-export const getAlkategoriaMonthlyStats = async (alkategoriaId) => {
+export const getAlkategoriaMonthlyStats = async (alkategoriaId, userId = null) => {
   try {
-    // Try API first
-    const response = await apiCall(`/statisztika/id/${alkategoriaId}`);
+    // Try API first, optionally scoped to a user
+    const pathBase = userId ? `/felhasznalo/${userId}` : '';
+    const response = await apiCall(`${pathBase}/statisztika/id/${alkategoriaId}`);
 
     if (response.success && response.data) {
       const monthlyData = response.data.map(entry => ({
@@ -159,10 +160,11 @@ export const getAlkategoriaMonthlyStats = async (alkategoriaId) => {
 /**
  * Összes alkategória aktuális átlagárának lekérése
  */
-export const getAllAlkategoriasStats = async () => {
+export const getAllAlkategoriasStats = async (userId = null) => {
   try {
     // Try API first
-    const response = await apiCall('/statisztika/all');
+    const pathBase = userId ? `/felhasznalo/${userId}` : '';
+    const response = await apiCall(`${pathBase}/statisztika/all`);
 
     if (response.success && response.data) {
       const transformedData = response.data.map(item => ({
@@ -280,16 +282,17 @@ export const getAllAlkategoriasStats = async () => {
 /**
  * Összes alkategória átlagárának havi változása egy adott évben
  */
-export const getAllAlkategoriasStatsForYear = async (year) => {
-  return apiCall(`/statisztika/ev/${year}`);
+export const getAllAlkategoriasStatsForYear = async (year, userId = null) => {
+  const pathBase = userId ? `/felhasznalo/${userId}` : '';
+  return apiCall(`${pathBase}/statisztika/ev/${year}`);
 };
 
 /**
  * Keresés alkategóriák között
  */
-export const searchAlkategorias = async (searchTerm) => {
+export const searchAlkategorias = async (searchTerm, userId = null) => {
   try {
-    const result = await getAllAlkategoriasStats();
+    const result = await getAllAlkategoriasStats(userId);
     if (!result.success) return [];
 
     return result.data.filter(item =>

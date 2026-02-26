@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { getCurrentUser, updateUser, deleteUser, getUserById, getStoredUserInfo, logoutUser } from '../services/authService.js';
+import { useNavigate } from 'react-router-dom';
+import { updateUser, deleteUser, getUserById } from '../services/authService.js';
+import useAuth from '../context/useAuth.js';
 import './UserManagementPage.css';
 
 export default function UserManagementPage() {
+  const navigate = useNavigate();
+  const auth = useAuth();
+
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -18,24 +23,31 @@ export default function UserManagementPage() {
   });
 
   useEffect(() => {
-    loadUserData();
-  }, []);
+    // initialize from context or fetch if needed
+    if (auth.user) {
+      setUserData(auth.user);
+      setUpdateForm({
+        nev: auth.user.nev || auth.user.name || '',
+        becenev: auth.user.becenev || '',
+        email: auth.user.email || '',
+        profilkep_url: auth.user.profilkep_url || ''
+      });
+    }
+  }, [auth.user]);
 
+  // kept for backward compatibility but we now rely on auth.user
   const loadUserData = async () => {
     setLoading(true);
     setError('');
     try {
-      const response = await getCurrentUser();
-      if (response.success) {
-        setUserData(response.data);
+      if (auth.user) {
+        setUserData(auth.user);
         setUpdateForm({
-          nev: response.data.nev || '',
-          becenev: response.data.becenev || '',
-          email: response.data.email || '',
-          profilkep_url: response.data.profilkep_url || ''
+          nev: auth.user.nev || auth.user.name || '',
+          becenev: auth.user.becenev || '',
+          email: auth.user.email || '',
+          profilkep_url: auth.user.profilkep_url || ''
         });
-      } else {
-        setError(response.message);
       }
     } catch {
       setError('Hiba történt az adatok betöltésekor');
@@ -51,16 +63,17 @@ export default function UserManagementPage() {
     setSuccess('');
 
     try {
-      const userInfo = getStoredUserInfo();
-      if (!userInfo || !userInfo.id) {
+      const userId = auth.user?.id;
+      if (!userId) {
         setError('Felhasználó azonosító nem található');
         return;
       }
 
-      const response = await updateUser(userInfo.id, updateForm);
+      const response = await updateUser(userId, updateForm);
       if (response.success) {
         setSuccess('Felhasználó adatok sikeresen módosítva');
         setUserData(response.data);
+        auth.refreshUser();
       } else {
         setError(response.message);
       }
@@ -81,16 +94,16 @@ export default function UserManagementPage() {
     setSuccess('');
 
     try {
-      const userInfo = getStoredUserInfo();
-      if (!userInfo || !userInfo.id) {
+      const userId = auth.user?.id;
+      if (!userId) {
         setError('Felhasználó azonosító nem található');
         return;
       }
 
-      const response = await deleteUser(userInfo.id);
+      const response = await deleteUser(userId);
       if (response.success) {
-        logoutUser();
-        window.location.href = '/';
+        auth.logout();
+        navigate('/', { replace: true });
       } else {
         setError(response.message);
       }

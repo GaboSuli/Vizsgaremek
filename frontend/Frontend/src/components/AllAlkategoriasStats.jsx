@@ -12,6 +12,7 @@ import {
   Legend
 } from 'chart.js';
 import { getAllAlkategoriasStats, searchAlkategorias } from '../services/statisticsService';
+import useAuth from '../context/useAuth.js';
 import './AllAlkategoriasStats.css';
 
 ChartJS.register(
@@ -34,11 +35,14 @@ export const AllAlkategoriasStats = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [chartType, setChartType] = useState('bar'); // 'bar' vagy 'pie'
 
+  const auth = useAuth();
+
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const result = await getAllAlkategoriasStats();
+        const userId = auth.user?.id;
+        const result = await getAllAlkategoriasStats(userId);
 
         if (result.success) {
           setAllData(result.data);
@@ -57,14 +61,14 @@ export const AllAlkategoriasStats = () => {
     };
 
     loadData();
-  }, []);
+  }, [auth.user]);
 
   const handleSearch = async (term) => {
     setSearchTerm(term);
     if (term.trim() === '') {
       setFilteredData(allData);
     } else {
-      const results = await searchAlkategorias(term);
+      const results = await searchAlkategorias(term, auth.user?.id);
       setFilteredData(results);
     }
   };

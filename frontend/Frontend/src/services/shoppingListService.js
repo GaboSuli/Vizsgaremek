@@ -232,8 +232,8 @@ export const createVevesiObjektum = async (itemData) => {
 };
 
 // Get shopping list statistics
-export const getShoppingListStats = async () => {
-  const response = await getAllShoppingLists();
+export const getShoppingListStats = async (userId = null) => {
+  const response = userId ? await getShoppingListsByUser(userId) : await getAllShoppingLists();
 
   if (!response.success) {
     return {

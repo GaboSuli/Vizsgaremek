@@ -71,6 +71,37 @@ export const getAllVevesiListak = async () => {
   }
 };
 
+// Fetch lists for a specific user (backend should scope by token or userId)
+export const getVevesiListakByUser = async (felhasznaloId) => {
+  // try API endpoint first
+  const response = await apiCall(`/felhasznalo/${felhasznaloId}/vevesiListak`);
+  if (!response.success) {
+    // fallback to filtering mocks
+    const userLists = [];
+    for (const id in vevesiListaData) {
+      if (vevesiListaData[id].Felhasznalo === felhasznaloId || vevesiListaData[id].FelhasznaloId === felhasznaloId) {
+        const lista = vevesiListaData[id];
+        const osszesen = lista.Tetelek.reduce((sum, item) => sum + (item.Ar * item.Mennyiseg), 0);
+        userLists.push({
+          id,
+          nev: lista.Nev,
+          letrehozas: lista.Letrehozas,
+          felhasznalo: lista.Felhasznalo,
+          tetelek: lista.Tetelek,
+          osszesen,
+          darab: lista.Tetelek.length
+        });
+      }
+    }
+    return {
+      success: true,
+      data: userLists,
+      total: userLists.length
+    };
+  }
+  return response;
+};
+
 /**
  * Egy bevásárlólista lekérése
  */

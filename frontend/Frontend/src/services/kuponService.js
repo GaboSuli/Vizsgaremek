@@ -29,8 +29,9 @@ const mockKuponData = [
 ];
 
 // Get all coupons from backend
-export const getAllKupons = async () => {
-  const response = await apiCall('/kuponok/get');
+export const getAllKupons = async (userId = null) => {
+  const path = userId ? `/felhasznalo/${userId}/kuponok/get` : '/kuponok/get';
+  const response = await apiCall(path);
   
   if (!response.success) {
     return {
@@ -44,8 +45,9 @@ export const getAllKupons = async () => {
 };
 
 // Get kupon by ID
-export const getKuponById = async (id) => {
-  const response = await apiCall(`/kuponok/${id}`);
+export const getKuponById = async (id, userId = null) => {
+  const path = userId ? `/felhasznalo/${userId}/kuponok/${id}` : `/kuponok/${id}`;
+  const response = await apiCall(path);
   
   if (!response.success) {
     const kupon = mockKuponData.find(k => k.id === id);
@@ -85,8 +87,8 @@ export const deleteKupon = async (id) => {
 };
 
 // Search kupon by code
-export const searchKupon = async (kod) => {
-  const response = await getAllKupons();
+export const searchKupon = async (kod, userId = null) => {
+  const response = await getAllKupons(userId);
   
   if (!response.success) {
     return response;
@@ -104,8 +106,8 @@ export const searchKupon = async (kod) => {
 };
 
 // Get expired kupons
-export const getExpiredKupons = async () => {
-  const response = await getAllKupons();
+export const getExpiredKupons = async (userId = null) => {
+  const response = await getAllKupons(userId);
   
   if (!response.success) {
     return response;
@@ -122,8 +124,8 @@ export const getExpiredKupons = async () => {
 };
 
 // Get active kupons
-export const getActiveKupons = async () => {
-  const response = await getAllKupons();
+export const getActiveKupons = async (userId = null) => {
+  const response = await getAllKupons(userId);
   
   if (!response.success) {
     return response;

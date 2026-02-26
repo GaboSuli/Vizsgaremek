@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import useAuth from '../context/useAuth.js';
 import { Container, Row, Col, Card, Button, Table, Badge, Spinner, Alert, Modal, Form, InputGroup } from 'react-bootstrap';
 import {
   getAllShoppingLists,
+  getShoppingListsByUser,
   createShoppingList,
   updateShoppingList,
   addItemToList,
@@ -35,17 +37,20 @@ export default function ShoppingListPage() {
     Mennyiseg: 1
   });
 
+  const auth = useAuth();
+
   useEffect(() => {
-    loadLists();
-  }, []);
+    if (auth.user) loadLists();
+  }, [auth.user]);
 
   const loadLists = async () => {
     try {
       setLoading(true);
-      const result = await getAllShoppingLists();
+      const userId = auth.user?.id;
+      const result = userId ? await getShoppingListsByUser(userId) : await getAllShoppingLists();
       setLists(result.data);
       
-      const statsResult = await getShoppingListStats();
+      const statsResult = await getShoppingListStats(userId);
       setStats(statsResult.data);
       
       setError(null);

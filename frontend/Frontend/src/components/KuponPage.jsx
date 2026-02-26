@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import useAuth from '../context/useAuth.js';
 import { Container, Row, Col, Card, Button, Table, Badge, Spinner, Alert, Modal, Form } from 'react-bootstrap';
 import { getAllKupons, createKupon, updateKupon, deleteKupon, getActiveKupons, getExpiredKupons } from '../services/kuponService';
 import './KuponPage.css';
@@ -18,14 +19,17 @@ export default function KuponPage() {
     Megjegyzes: ''
   });
 
+  const auth = useAuth();
+
   useEffect(() => {
-    loadKupons();
-  }, []);
+    if (auth.user) loadKupons();
+  }, [auth.user]);
 
   const loadKupons = async () => {
     try {
       setLoading(true);
-      const result = await getAllKupons();
+      const userId = auth.user?.id;
+      const result = await getAllKupons(userId);
       setKupons(result.data);
       setError(null);
     } catch (err) {
