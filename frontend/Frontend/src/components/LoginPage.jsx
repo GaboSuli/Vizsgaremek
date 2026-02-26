@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../context/useAuth.js';
 import './LoginPage.css';
 
+<<<<<<< Updated upstream
 export default function LoginPage({ initialMode } = {}) {
   const { login, register } = useAuth();
   const navigate = useNavigate();
@@ -10,6 +11,10 @@ export default function LoginPage({ initialMode } = {}) {
 
   const [isLogin, setIsLogin] = useState(initialMode !== 'register');
 
+=======
+export default function LoginPage({ onSuccess }) {
+  const [isLogin, setIsLogin] = useState(true);
+>>>>>>> Stashed changes
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -43,6 +48,7 @@ export default function LoginPage({ initialMode } = {}) {
 
     try {
       if (isLogin) {
+<<<<<<< Updated upstream
         const res = await login({ email: formData.email, password: formData.password });
         if (res.success) {
           navigate(from, { replace: true });
@@ -52,6 +58,27 @@ export default function LoginPage({ initialMode } = {}) {
         if (res.errors) {
           const joined = Object.values(res.errors).flat().join(' ');
           setError(joined || res.message);
+=======
+        const response = await loginUser({
+          email: formData.email,
+          password: formData.password
+        });
+
+        if (response.success) {
+          // Store user info from response
+          if (response.data) {
+            setStoredUserInfo(response.data);
+          }
+          setSuccess('Sikeresen bejelentkeztél!');
+          if (typeof onSuccess === 'function') {
+            // let parent close the login view and show main app
+            onSuccess()
+          } else {
+            setTimeout(() => {
+              window.location.href = '/';
+            }, 1000);
+          }
+>>>>>>> Stashed changes
         } else {
           setError(res.message || 'Sikertelen bejelentkezés');
         }

@@ -1,6 +1,10 @@
 import React from 'react';
+<<<<<<< Updated upstream
 import { NavLink, useNavigate } from 'react-router-dom';
 import useAuth from '../context/useAuth.js';
+=======
+import { useUser } from '../contexts/UserContext.jsx';
+>>>>>>> Stashed changes
 import './Foldal.css';
 
 // simplified list of navigable routes; routes starting with "/" are
@@ -55,6 +59,7 @@ function Icon({ name }) {
   }
 }
 
+<<<<<<< Updated upstream
 export default function Sidebar({ collapsed, onToggle }) {
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -62,6 +67,18 @@ export default function Sidebar({ collapsed, onToggle }) {
   const handleLogout = () => {
     logout();
     navigate('/');
+=======
+export default function Sidebar({ collapsed, onToggle, active, onNavigate, onPageChange }) {
+  const { user } = useUser()
+  const handleNavClick = (item) => {
+    if (item.page) {
+      // Navigáció az oldal szinten
+      onPageChange && onPageChange(item.id);
+    } else {
+      // Navigáció a lap szinten
+      onNavigate(item.id);
+    }
+>>>>>>> Stashed changes
   };
 
   const { user } = useAuth();
@@ -72,7 +89,17 @@ export default function Sidebar({ collapsed, onToggle }) {
         <NavLink to="/dashboard" className="logo">
           <div className="logo-mark">VB</div>
           {!collapsed && <div className="logo-text">VevesBazar</div>}
+<<<<<<< Updated upstream
         </NavLink>
+=======
+        </div>
+        {!collapsed && user && (
+          <div className="sidebar-user">
+            <img src={user.ProfilKepURL || user.profilkep_url || 'user.png'} alt="profil" className="sidebar-user-avatar" />
+            <div className="sidebar-user-name">{user.Nev || user.nev || user.Becenev || user.name}</div>
+          </div>
+        )}
+>>>>>>> Stashed changes
         <button className="collapse-btn" onClick={onToggle} aria-label="Menü összecsukása">{collapsed ? '›' : '‹'}</button>
       </div>
       {user && !collapsed && (

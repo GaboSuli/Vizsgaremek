@@ -166,8 +166,14 @@ export const getStoredUserInfo = () => {
 export const setStoredUserInfo = (userInfo) => {
   if (userInfo) {
     localStorage.setItem('user_info', JSON.stringify(userInfo));
+    try {
+      window.dispatchEvent(new CustomEvent('user-updated', { detail: userInfo }))
+    } catch (err) {}
   } else {
     localStorage.removeItem('user_info');
+    try {
+      window.dispatchEvent(new CustomEvent('user-updated', { detail: null }))
+    } catch (err) {}
   }
 };
 
