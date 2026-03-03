@@ -1,12 +1,12 @@
 # Vizsgaremek
-Beliczky Gábor,
-Németh Zalán,
-Papp Ákos
+• Beliczky Gábor,
+• Németh Zalán,
+• Papp Ákos
 
 # Feladat leírás 
-Egy online naplózási szolgáltatás, ami átláthatobbá teszi a költségvetéseidet vagy csoportodét, illetve statisztikákat, árkövetést, bróker árkövetést és weboldalakra kuponokat mutat.
-Probléma amire készül:
-Emberek soka nem tudja felelösséggel kezelni pénzét, költségvetéseit, mert nem látja az egész képet, és csak részletekben gondolkozik.
+• Egy online naplózási szolgáltatás, ami átláthatobbá teszi a költségvetéseidet vagy csoportodét, illetve statisztikákat, árkövetést, bróker árkövetést és weboldalakra kuponokat mutat.
+• Probléma amire készül:
+• Emberek soka nem tudja felelösséggel kezelni pénzét, költségvetéseit, mert nem látja az egész képet, és csak részletekben gondolkozik.
 # Felhasználói szerepkörök 
 User, KuponModerator
 # A funkciók között szerepel: 
@@ -29,10 +29,10 @@ KuponModerator:
 • Kuponok tesztelése, felrakása
 
 # Adatbázis Design?
-https://dbdiagram.io/d/68c7d646ce69eed1117db4a3
+• https://dbdiagram.io/d/68c7d646ce69eed1117db4a3
 
 # Weblap Design terv?
-https://www.figma.com/make/e8wanJNoeFDFZ8AKVD8gp4/Budget-Tracking-Webpage?t=uISZIXNqsgRRS6Kg-6
+• https://www.figma.com/make/e8wanJNoeFDFZ8AKVD8gp4/Budget-Tracking-Webpage?t=uISZIXNqsgRRS6Kg-6
 # Gmail:
-Email Cím!: cashentis@gmail.com
-Jelszó: cAshEntIs0126!?
+• Email Cím!: cashentis@gmail.com
+• Jelszó: cAshEntIs0126!?
