@@ -15,10 +15,12 @@ export default function LoginPage({ initialMode } = {}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
+    
+    name: '',
     email: '',
     password: '',
     passwordConfirm: '',
-    name: ''
+    
   });
 
   // determine where we should go after auth
@@ -70,7 +72,7 @@ export default function LoginPage({ initialMode } = {}) {
         }
 
         const res = await register({
-          name: formData.name,
+          nev: formData.nev,
           email: formData.email,
           password: formData.password,
           password_confirmation: formData.passwordConfirm
