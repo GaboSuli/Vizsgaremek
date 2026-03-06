@@ -94,7 +94,7 @@ export const registerUser = async (userData) => {
   try {
     // Laravel backend mezőnevek szerint
     const resp = await api.post("/felhasznalo/register", {
-      name: userData.name,                      // backend "nev"
+      nev: userData.nev,                      // backend "nev"
       email: userData.email,
       jelszo: userData.password,               // backend "jelszo"
       jelszo_confirmation: userData.password_confirmation || userData.passwordConfirm,

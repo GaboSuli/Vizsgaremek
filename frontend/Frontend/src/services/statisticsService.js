@@ -163,7 +163,7 @@ export const getAlkategoriaMonthlyStats = async (alkategoriaId, userId = null) =
 export const getAllAlkategoriasStats = async (userId = null) => {
   try {
     // Try API first
-    const pathBase = userId ? `/felhasznalo/${userId}` : '';
+    const pathBase = userId ? `` : '';
     const response = await apiCall(`${pathBase}/statisztika/all`);
 
     if (response.success && response.data) {

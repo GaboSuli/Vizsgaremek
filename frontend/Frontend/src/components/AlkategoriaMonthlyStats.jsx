@@ -26,9 +26,21 @@ ChartJS.register(
   Filler
 );
 
+const DEFAULT_STATS = {
+  min: null,
+  max: null,
+  average: null,
+  current: null
+};
+
+const EMPTY_CHART = {
+  labels: [],
+  datasets: []
+};
+
 export const AlkategoriaMonthlyStats = () => {
-  const [chartData, setChartData] = useState(null);
-  const [statistics, setStatistics] = useState(null);
+  const [chartData, setChartData] = useState(EMPTY_CHART);
+  const [statistics, setStatistics] = useState(DEFAULT_STATS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -37,16 +49,19 @@ export const AlkategoriaMonthlyStats = () => {
       try {
         setLoading(true);
         const result = await getAlkategoriaMonthlyStats();
-        
         if (result.success) {
-          setChartData(result.chartData);
-          setStatistics(result.statistics);
+          setChartData(result.chartData ?? EMPTY_CHART);
+          setStatistics(result.statistics ?? DEFAULT_STATS);
           setError(null);
         } else {
           setError(result.error || 'Hiba az adatok betöltésekor');
+          setChartData(EMPTY_CHART);
+          setStatistics(DEFAULT_STATS);
         }
-      } catch (err) {
-        setError(err.message);
+      } catch {
+        setError('Ismeretlen hiba');
+        setChartData(EMPTY_CHART);
+        setStatistics(DEFAULT_STATS);
       } finally {
         setLoading(false);
       }
@@ -57,105 +72,83 @@ export const AlkategoriaMonthlyStats = () => {
 
   if (loading) {
     return (
-      <Container className="mt-4">
-        <div className="text-center">
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Betöltés...</span>
-          </Spinner>
-        </div>
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container className="mt-4">
-        <Alert variant="danger">
-          <Alert.Heading>Hiba!</Alert.Heading>
-          <p>{error}</p>
-        </Alert>
+      <Container className="mt-4 text-center">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Betöltés...</span>
+        </Spinner>
       </Container>
     );
   }
 
   return (
     <Container className="alkategoria-monthly-stats mt-4">
+      {error && (
+        <Row className="mb-4">
+          <Col>
+            <Alert variant="danger">
+              <Alert.Heading>Hiba!</Alert.Heading>
+              <p>{error}</p>
+            </Alert>
+          </Col>
+        </Row>
+      )}
+
       <Row className="mb-4">
         <Col>
           <h2>Alkategória Havi Átlagár-Változás</h2>
         </Col>
       </Row>
 
-      {statistics && (
-        <Row className="mb-4">
-          <Col md={3} sm={6} className="mb-3">
+      <Row className="mb-4">
+        {['min', 'max', 'average', 'current'].map((key) => (
+          <Col key={key} md={3} sm={6} className="mb-3">
             <Card className="stat-card">
               <Card.Body>
-                <small className="text-muted">Minimális ár</small>
-                <h5>{statistics.min.toLocaleString()} Ft</h5>
+                <small className="text-muted">
+                  {key === 'min'
+                    ? 'Minimális ár'
+                    : key === 'max'
+                    ? 'Maximális ár'
+                    : key === 'average'
+                    ? 'Átlagár'
+                    : 'Jelenlegi ár'}
+                </small>
+                <h5>
+                  {statistics?.[key] != null
+                    ? statistics[key].toLocaleString()
+                    : '–'}{' '}
+                  Ft
+                </h5>
               </Card.Body>
             </Card>
           </Col>
-          <Col md={3} sm={6} className="mb-3">
-            <Card className="stat-card">
-              <Card.Body>
-                <small className="text-muted">Maximális ár</small>
-                <h5>{statistics.max.toLocaleString()} Ft</h5>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={3} sm={6} className="mb-3">
-            <Card className="stat-card">
-              <Card.Body>
-                <small className="text-muted">Átlagár</small>
-                <h5>{statistics.average.toLocaleString()} Ft</h5>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={3} sm={6} className="mb-3">
-            <Card className="stat-card">
-              <Card.Body>
-                <small className="text-muted">Jelenlegi ár</small>
-                <h5>{statistics.current.toLocaleString()} Ft</h5>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      )}
+        ))}
+      </Row>
 
       <Row>
         <Col>
           <Card className="chart-card">
             <Card.Body>
-              {chartData && (
-                <Line
-                  data={chartData}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                      legend: {
-                        display: true,
-                        position: 'top'
-                      },
-                      title: {
-                        display: true,
-                        text: 'Havi Átlagár-Változás'
-                      }
-                    },
-                    scales: {
-                      y: {
-                        beginAtZero: false,
-                        ticks: {
-                          callback: function(value) {
-                            return value.toLocaleString() + ' Ft';
-                          }
-                        }
+              <Line
+                data={chartData ?? EMPTY_CHART}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: true,
+                  plugins: {
+                    legend: { display: true, position: 'top' },
+                    title: { display: true, text: 'Havi Átlagár-Változás' }
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: false,
+                      ticks: {
+                        callback: (value) =>
+                          value != null ? value.toLocaleString() + ' Ft' : ''
                       }
                     }
-                  }}
-                />
-              )}
+                  }
+                }}
+              />
             </Card.Body>
           </Card>
         </Col>

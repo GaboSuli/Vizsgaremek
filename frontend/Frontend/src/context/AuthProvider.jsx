@@ -15,24 +15,23 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     async function init() {
       setLoading(true);
-      // if we have a token stored, attempt to verify it by fetching /user
       try {
         const storedUser = readStoredUser();
         if (storedUser) {
-          // try to refresh from server in case token expired/changed
           const resp = await fetchCurrentUser();
           if (resp.success && resp.data) {
             setUser(resp.data);
-            // ensure storage is up to date
-            try { localStorage.setItem('current_user', JSON.stringify(resp.data)); } catch (e) { }
+            try {
+              localStorage.setItem('current_user', JSON.stringify(resp.data));
+            } catch {
+              // szándékosan elnyeljük a hibát EZT NE töröld ki
+            }
           } else {
-            // token invalid
             setUser(null);
             setAuthToken(null);
           }
         }
-      } catch (e) {
-        console.error('auth init error', e);
+      } catch {
         setUser(null);
         setAuthToken(null);
       } finally {
@@ -42,7 +41,6 @@ export function AuthProvider({ children }) {
 
     init();
 
-    // Global 401 listener: if another tab clears auth_token, react here
     const onStorage = (e) => {
       if (e.key === 'auth_token' && !e.newValue) {
         setUser(null);
@@ -82,7 +80,11 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setAuthToken(null);
-    try { localStorage.removeItem('current_user'); } catch (e) { }
+    try {
+      localStorage.removeItem('current_user');
+    } catch {
+              // szándékosan elnyeljük a hibát EZT NE töröld ki
+    }
     setUser(null);
   };
 
@@ -92,8 +94,8 @@ export function AuthProvider({ children }) {
       if (resp.success && resp.data) {
         setUser(resp.data);
       }
-    } catch (e) {
-      console.error(e);
+    } catch {
+              // szándékosan elnyeljük a hibát EZT NE töröld ki
     }
   };
 
