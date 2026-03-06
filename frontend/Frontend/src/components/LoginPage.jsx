@@ -72,7 +72,7 @@ export default function LoginPage({ initialMode } = {}) {
         }
 
         const res = await register({
-          nev: formData.nev,
+          nev: formData.name,
           email: formData.email,
           password: formData.password,
           password_confirmation: formData.passwordConfirm
