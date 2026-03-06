@@ -1,216 +1,183 @@
-import * as api from './api.js';
+// src/services/authService.js
+import axios from "axios";
 
-// User registration
-export const registerUser = async (userData) => {
-  const response = await api.apiCall('/felhasznalo/register', {
-    method: 'POST',
-    body: {
-      nev: userData.name,
-      email: userData.email,
-      password: userData.password,
-      password_confirmation: userData.password_confirmation
-    },
-    includeAuth: false
-  });
-  if (response.success && response.data?.user) {
-    // Transform to public data structure
-    const publicData = {
-      Nev: response.data.user.nev || response.data.user.name,
-      Becenev: response.data.user.becenev || response.data.user.name,
-      ProfilKepURL: response.data.user.profilkep_url || 'user.png'
-    };
-    return {
-      success: true,
-      data: publicData,
-      message: 'Felhasználó sikeresen létrehozva'
-    };
+/* ================================
+   Axios instance (Vite proxy)
+   ================================ */
+const api = axios.create({
+  baseURL: "/api", // Vite proxy átirányítja a Laravel backendre
+  timeout: 15000,
+  headers: { "Content-Type": "application/json" },
+});
+
+/* ================================
+   Local storage keys
+   ================================ */
+const TOKEN_KEY = "auth_token";
+const USER_KEY = "current_user";
+
+/* ================================
+   Token / User helpers
+   ================================ */
+export const getToken = () => {
+  try { return localStorage.getItem(TOKEN_KEY); } catch { return null; }
+};
+
+export const setToken = (token) => {
+  try {
+    if (token) localStorage.setItem(TOKEN_KEY, token);
+    else localStorage.removeItem(TOKEN_KEY);
+  } catch (e) { console.warn("localStorage error:", e); }
+};
+
+export const setUser = (user) => {
+  try {
+    if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
+    else localStorage.removeItem(USER_KEY);
+  } catch (e) { console.warn("localStorage error:", e); }
+};
+
+export const getStoredUserInfo = () => {
+  try {
+    const raw = localStorage.getItem(USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+};
+
+export const isAuthenticated = () => !!getToken();
+
+/* ================================
+   Axios interceptors
+   ================================ */
+api.interceptors.request.use((config) => {
+  const token = getToken();
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+api.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error?.response?.status === 401) {
+      setToken(null);
+      setUser(null);
+    }
+    return Promise.reject(error);
   }
-  return response;
-};
+);
 
-// User login
-export const loginUser = async (credentials) => {
-  const response = await api.apiCall('/felhasznalo/login', {
-    method: 'POST',
-    body: credentials,
-    includeAuth: false
-  });
-
-  // If login successful, store token
-  if (response.success && response.data?.token) {
-    api.setAuthToken(response.data.token);
-  }
-
-  return response;
-};
-
-// Get current user
-export const getCurrentUser = async () => {
-  return api.apiCall('/user');
-};
-
-// Logout user
-export const logoutUser = () => {
-  api.setAuthToken(null);
-  return {
-    success: true,
-    message: 'Sikeresen kijelentkeztél'
-  };
-};
-
-// Get user by ID (returns public data)
-export const getUserById = async (id) => {
-  const response = await api.apiCall(`/felhasznalo/${id}`);
-  if (response.success && response.data) {
-    // Transform to public data structure
-    const publicData = {
-      Nev: response.data.nev || response.data.Nev,
-      Becenev: response.data.becenev || response.data.Becenev,
-      ProfilKepURL: response.data.profilkep_url || response.data.ProfilKepURL || 'user.png'
-    };
-    return {
-      success: true,
-      data: publicData,
-      message: 'Felhasználó adatok sikeresen lekérdezve'
-    };
-  }
-  return response;
-};
-
-// Update user
-export const updateUser = async (id, userData) => {
-  const response = await api.apiCall(`/felhasznalo/${id}`, {
-    method: 'PUT',
-    body: userData
-  });
-  if (response.success && response.data) {
-    // Transform to public data structure
-    const publicData = {
-      Nev: response.data.nev || response.data.Nev,
-      Becenev: response.data.becenev || response.data.Becenev,
-      ProfilKepURL: response.data.profilkep_url || response.data.ProfilKepURL || 'user.png'
-    };
-    return {
-      success: true,
-      data: publicData,
-      message: 'Felhasználó sikeresen módosítva'
-    };
-  }
-  return response;
-};
-
-// Delete user
-export const deleteUser = async (id) => {
-  const response = await api.apiCall(`/felhasznalo/${id}`, {
-    method: 'DELETE'
-  });
-  if (response.success) {
-    return {
-      success: true,
-      message: 'Felhasználó sikeresen törölve'
-    };
-  }
-  return response;
-};
-
-// Get user's groups
-export const getUserGroups = async (id) => {
-  return api.apiCall(`/felhasznalo/${id}/csoportjai`);
-};
-
-// Get user data within a specific group
-export const getUserInGroup = async (userId, groupId) => {
-  const groupsResponse = await getUserGroups(userId);
-
-  if (!groupsResponse.success) {
-    return groupsResponse;
-  }
-
-  const userGroups = groupsResponse.data;
-  const groupData = userGroups.find(group => group.id === parseInt(groupId));
-
-  if (!groupData) {
+/* ================================
+   Error / Success handlers
+   ================================ */
+const handleError = (error) => {
+  if (!error) return { success: false, message: "Ismeretlen hiba" };
+  if (error.response) {
     return {
       success: false,
-      data: null,
-      message: 'Felhasználó nem tagja ennek a csoportnak'
+      status: error.response.status,
+      message: error.response.data?.message || error.response.data?.msg || "Szerver hiba",
+      errors: error.response.data?.errors || null,
     };
   }
-
-  // Extract and format data according to EgyFelhasznaloEgyCsoportAdatai.json
-  const userInGroupData = {
-    Becenev: groupData.pivot.becenev,
-    JogosultsagSzint: groupData.pivot.jogosultsag_szint,
-    CsatlakozasDatuma: groupData.pivot.created_at.split('T')[0] // Extract date part
-  };
-
-  return {
-    success: true,
-    data: userInGroupData,
-    message: 'Sikeres lekérdezés'
-  };
+  return { success: false, message: error.message || "Hálózati hiba" };
 };
 
-// Check if user is authenticated
-export const isAuthenticated = () => {
-  return !!localStorage.getItem('auth_token');
+const handleSuccess = (resp) => {
+  const data = resp?.data || {};
+  const token = data.token || data.access_token || data?.data?.token || data?.data?.access_token;
+  const user = data.user || data.data || null;
+
+  if (token) setToken(token);
+  if (user) setUser(user);
+
+  return { success: true, status: resp.status, data, token, user };
 };
 
-// Get stored user info from localStorage
-export const getStoredUserInfo = () => {
-  const userInfo = localStorage.getItem('user_info');
-  return userInfo ? JSON.parse(userInfo) : null;
-};
+/* ================================
+   Auth functions
+   ================================ */
+export const registerUser = async (userData) => {
+  try {
+    const resp = await api.post("/felhasznalo/register", {
+      nev: userData.name,  // ← itt változott
+      email: userData.email,
+      password: userData.password,
+      password_confirmation: userData.password_confirmation || userData.passwordConfirm
+    });
 
-// Store user info in localStorage
-export const setStoredUserInfo = (userInfo) => {
-  if (userInfo) {
-    localStorage.setItem('user_info', JSON.stringify(userInfo));
-    try {
-      window.dispatchEvent(new CustomEvent('user-updated', { detail: userInfo }))
-    } catch (err) {}
-  } else {
-    localStorage.removeItem('user_info');
-    try {
-      window.dispatchEvent(new CustomEvent('user-updated', { detail: null }))
-    } catch (err) {}
+    return handleSuccess(resp);
+  } catch (error) {
+    return handleError(error);
   }
 };
 
-// Get user's total costs by category
-export const getUserTotalCostsByCategory = async (userId) => {
-  return api.apiCall(`/felhasznalo/${userId}/osszKoltesei`);
+export const loginUser = async (credentials) => {
+  try {
+    const resp = await api.post("/felhasznalo/login", {
+      email: credentials.email,
+      password: credentials.password,
+    });
+    return handleSuccess(resp);
+  } catch (error) {
+    return handleError(error);
+  }
 };
 
-// Get user's monthly costs
-export const getUserMonthlyCosts = async (userId) => {
-  return api.apiCall(`/felhasznalo/${userId}/eHaviKoltesei`);
+export const logoutUser = async () => {
+  setToken(null);
+  setUser(null);
+  try {
+    await api.post("/felhasznalo/logout"); // opcionális, ha backend logout endpoint is van
+  } catch { /* ignore */ }
+  return { success: true, message: "Sikeres kijelentkezés" };
 };
 
-// Get user's yearly costs
-export const getUserYearlyCosts = async (userId) => {
-  return api.apiCall(`/felhasznalo/${userId}/eEviKoltesei`);
+export const getCurrentUser = async () => {
+  try {
+    const resp = await api.get("/felhasznalo");
+    return { success: true, data: resp.data };
+  } catch {
+    try {
+      const resp = await api.get("/user");
+      return { success: true, data: resp.data };
+    } catch (error) {
+      return handleError(error);
+    }
+  }
 };
 
-// Create a new group
-export const createGroup = async (groupData) => {
-  return api.apiCall('/csoport/create', {
-    method: 'POST',
-    body: groupData
-  });
+/* ================================
+   User CRUD
+   ================================ */
+export const getUserById = async (id) => {
+  try {
+    const resp = await api.get(`/felhasznalo/${id}`);
+    return handleSuccess(resp);
+  } catch (error) {
+    return handleError(error);
+  }
 };
 
-// Update group
-export const updateGroup = async (id, groupData) => {
-  return api.apiCall(`/csoport/${id}`, {
-    method: 'PUT',
-    body: groupData
-  });
+export const updateUser = async (id, data) => {
+  try {
+    const path = id ? `/felhasznalo/modositas/${id}` : "/felhasznalo/modositas";
+    const resp = await api.put(path, data);
+    return handleSuccess(resp);
+  } catch (error) {
+    return handleError(error);
+  }
 };
 
-// Delete group
-export const deleteGroup = async (id) => {
-  return api.apiCall(`/csoport/${id}`, {
-    method: 'DELETE'
-  });
+export const deleteUser = async (id) => {
+  try {
+    const resp = await api.delete(`/felhasznalo/torles/${id}`);
+    return handleSuccess(resp);
+  } catch (error) {
+    return handleError(error);
+  }
 };
+
+/* ================================
+   Export default
+   ================================ */
+export default api;
