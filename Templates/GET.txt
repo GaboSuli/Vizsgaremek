@@ -48,7 +48,7 @@ POST
 - felhasználó létrehozása
 (http://127.0.0.1:8000/api/felhasznalo/register)
 {
- "name":"", ##Muszály
+ "nev":"", ##Muszály
  "email":"", ##Muszály
  "password":"", ##Muszály
  "password_confirmation":"" ##Muszály
