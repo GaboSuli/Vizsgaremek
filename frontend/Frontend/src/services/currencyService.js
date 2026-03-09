@@ -1,161 +1,80 @@
-// Árfolyam és inflációs adatok
+import { format, subMonths, startOfMonth, endOfMonth } from 'date-fns';
 
-const currencyData = {
-  EUR: {
-    months: [
-      { month: 'Május', year: 2025 },
-      { month: 'június', year: 2025 },
-      { month: 'Július', year: 2025 },
-      { month: 'Augusztus', year: 2025 },
-      { month: 'Szeptember', year: 2025 },
-      { month: 'Október', year: 2025 },
-      { month: 'November', year: 2025 },
-      { month: 'December', year: 2025 },
-      { month: 'Január', year: 2026 },
-      { month: 'február', year: 2026 },
-      { month: 'március', year: 2026 },
-      { month: 'Április', year: 2026 },
-      { month: 'Jelen', year: 2026 }
-    ],
-    prices: [380, 385, 390, 388, 392, 395, 400, 398, 405, 410, 412, 408, 415],
-    current: 415,
-    min: 380,
-    max: 415
-  },
-  USD: {
-    months: [
-      { month: 'Május', year: 2025 },
-      { month: 'június', year: 2025 },
-      { month: 'Július', year: 2025 },
-      { month: 'Augusztus', year: 2025 },
-      { month: 'Szeptember', year: 2025 },
-      { month: 'Október', year: 2025 },
-      { month: 'November', year: 2025 },
-      { month: 'December', year: 2025 },
-      { month: 'Január', year: 2026 },
-      { month: 'február', year: 2026 },
-      { month: 'március', year: 2026 },
-      { month: 'Április', year: 2026 },
-      { month: 'Jelen', year: 2026 }
-    ],
-    prices: [340, 342, 345, 343, 348, 350, 355, 352, 358, 362, 365, 361, 368],
-    current: 368,
-    min: 340,
-    max: 368
-  },
-  Inflation: {
-    months: [
-      { month: 'Május', year: 2025 },
-      { month: 'június', year: 2025 },
-      { month: 'Július', year: 2025 },
-      { month: 'Augusztus', year: 2025 },
-      { month: 'Szeptember', year: 2025 },
-      { month: 'Október', year: 2025 },
-      { month: 'November', year: 2025 },
-      { month: 'December', year: 2025 },
-      { month: 'Január', year: 2026 },
-      { month: 'február', year: 2026 },
-      { month: 'március', year: 2026 },
-      { month: 'Április', year: 2026 },
-      { month: 'Jelen', year: 2026 }
-    ],
-    rates: [4.2, 4.1, 3.9, 3.7, 3.5, 3.2, 3.0, 2.8, 2.9, 3.1, 3.3, 3.5, 3.7],
-    current: 3.7,
-    average: 3.4
-  }
-};
-
-// EUR/HUF árfolyam adatok
-export const getEURRate = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const data = currencyData.EUR;
-      const change = (((data.current - data.prices[0]) / data.prices[0]) * 100).toFixed(1);
-      const currentMonth = data.months[data.months.length - 1];
-      resolve({
-        success: true,
-        currency: 'EUR',
-        current: data.current,
-        previous: data.prices[data.prices.length - 2],
-        min: data.min,
-        max: data.max,
-        change: change,
-        currentMonth: currentMonth,
-        chartData: {
-          labels: data.months,
-          data: data.prices
-        }
-      });
-    }, 200);
-  });
-};
-
-// USD/HUF árfolyam adatok
-export const getUSDRate = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const data = currencyData.USD;
-      const change = (((data.current - data.prices[0]) / data.prices[0]) * 100).toFixed(1);
-      const currentMonth = data.months[data.months.length - 1];
-      resolve({
-        success: true,
-        currency: 'USD',
-        current: data.current,
-        previous: data.prices[data.prices.length - 2],
-        min: data.min,
-        max: data.max,
-        change: change,
-        currentMonth: currentMonth,
-        chartData: {
-          labels: data.months,
-          data: data.prices
-        }
-      });
-    }, 200);
-  });
-};
-
-// Magyar infláció adatok
-export const getInflationRate = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const data = currencyData.Inflation;
-      const currentMonth = data.months[data.months.length - 1];
-      resolve({
-        success: true,
-        indicator: 'Infláció',
-        current: data.current,
-        average: data.average,
-        trend: data.current > data.average ? 'up' : 'down',
-        currentMonth: currentMonth,
-        chartData: {
-          labels: data.months,
-          data: data.rates
-        }
-      });
-    }, 200);
-  });
-};
-
-// Összes pénzügyi indikátor
-export const getAllFinancialIndicators = async () => {
-  return new Promise(async (resolve) => {
+const fetchMonthlyAvg = async (symbol) => {
+  const months = [];
+  const prices = [];
+  
+  for (let i = 9; i >= 0; i--) {
+    const date = subMonths(new Date(), i);
+    
+    const start = format(startOfMonth(date), 'yyyy-MM-dd');
+    const end = format(endOfMonth(date), 'yyyy-MM-dd');
+     
     try {
-      const eurResult = await getEURRate();
-      const usdResult = await getUSDRate();
-      const inflationResult = await getInflationRate();
-
-      resolve({
-        success: true,
-        EUR: eurResult,
-        USD: usdResult,
-        Inflation: inflationResult
-      });
-    } catch (error) {
-      resolve({
-        success: false,
-        error: error.message
-      });
+      const res = await fetch(`https://api.frankfurter.app{start}..${end}?from=HUF&to=${symbol}`);
+      const json = await res.json();
+      
+      if (json.rates) {
+        const dailyRates = Object.values(json.rates).map(d => 1 / d[symbol]);
+        const avg = dailyRates.reduce((a, b) => a + b, 0) / dailyRates.length;
+        
+        months.push(format(date, 'MMM'));
+        prices.push(Number(avg.toFixed(2)));
+      }
+    } catch (e) {
+      console.error(`Hiba a(z) ${symbol} lekérésekor (${start}):`, e);
     }
-  });
+  }
+
+  const current = prices[prices.length - 1];
+  const firstPrice = prices[0];
+
+  return {
+    success: true,
+    currency: symbol,
+    current: current,
+    previous: prices[prices.length - 2],
+    min: Math.min(...prices),
+    max: Math.max(...prices),
+    change: (((current - firstPrice) / firstPrice) * 100).toFixed(1),
+    currentMonth: months[months.length - 1],
+    chartData: { labels: months, data: prices }
+  };
+};
+
+export const getEURRate = () => fetchMonthlyAvg('EUR');
+export const getUSDRate = () => fetchMonthlyAvg('USD');
+
+export const getInflationRate = async () => {
+  return {
+    success: true,
+    indicator: 'Infláció',
+    current: 3.8,
+    average: 4.2,
+    trend: 'down',
+    currentMonth: format(new Date(), 'MMM'),
+    chartData: {
+      labels: ['Jan', 'Feb', 'Mar'],
+      data: [4.5, 4.1, 3.8]
+    }
+  };
+};
+
+export const getAllFinancialIndicators = async () => {
+  try {
+    const [eur, usd, inflation] = await Promise.all([
+      getEURRate(),
+      getUSDRate(),
+      getInflationRate()
+    ]);
+    
+    return {
+      success: true,
+      EUR: eur,
+      USD: usd,
+      Inflation: inflation
+    };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
 };

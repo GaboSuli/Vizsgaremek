@@ -1,20 +1,16 @@
 import axios from "axios";
 
-// Backend API URL
 const API_URL = "http://127.0.0.1:8000/api";
 
-// --- Axios instance ---
 const api = axios.create({
   baseURL: API_URL,
   timeout: 15000,
   headers: { "Content-Type": "application/json" },
 });
 
-// --- LocalStorage kulcsok ---
 const TOKEN_KEY = "auth_token";
 const USER_KEY = "current_user";
 
-// --- Token és user helper függvények ---
 const getToken = () => {
   try { return localStorage.getItem(TOKEN_KEY); } catch { return null; }
 };
@@ -42,7 +38,6 @@ export const getStoredUserInfo = () => {
 
 export const isAuthenticated = () => !!getToken();
 
-// --- Axios interceptors ---
 api.interceptors.request.use((config) => {
   const token = getToken();
   if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -60,7 +55,6 @@ api.interceptors.response.use(
   }
 );
 
-// --- Hibakezelő ---
 const handleError = (error) => {
   if (!error) return { success: false, message: "Ismeretlen hiba" };
 
@@ -77,7 +71,6 @@ const handleError = (error) => {
   return { success: false, message: error.message || "Hálózati hiba" };
 };
 
-// --- Siker handler ---
 const handleSuccess = (resp) => {
   const data = resp?.data || {};
   const token = data.token || data.access_token || data?.data?.token || data?.data?.access_token;
@@ -89,14 +82,12 @@ const handleSuccess = (resp) => {
   return { success: true, status: resp.status, data, token, user };
 };
 
-// --- Auth funkciók ---
 export const registerUser = async (userData) => {
   try {
-    // Laravel backend mezőnevek szerint
     const resp = await api.post("/felhasznalo/register", {
-      nev: userData.nev,                      // backend "nev"
+      nev: userData.nev,                      
       email: userData.email,
-      jelszo: userData.password,               // backend "jelszo"
+      jelszo: userData.password,               
       jelszo_confirmation: userData.password_confirmation || userData.passwordConfirm,
     });
     return handleSuccess(resp);
@@ -109,7 +100,7 @@ export const loginUser = async (credentials) => {
   try {
     const resp = await api.post("/felhasznalo/login", {
       email: credentials.email,
-      jelszo: credentials.password,            // backend "jelszo"
+      jelszo: credentials.password,            
     });
     return handleSuccess(resp);
   } catch (error) {
@@ -127,7 +118,7 @@ export const logoutUser = async () => {
   return { success: true, message: "Sikeres kijelentkezés" };
 };
 
-// --- Get current user ---
+
 export const getCurrentUser = async () => {
   try {
     const resp = await api.get("/felhasznalo");
@@ -142,5 +133,4 @@ export const getCurrentUser = async () => {
   }
 };
 
-// --- Export default Axios instance ---
 export default api;

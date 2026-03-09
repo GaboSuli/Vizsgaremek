@@ -77,7 +77,7 @@ function Foldal() {
 
                 <Row className="mt-4 mb-4">
                     <Col>
-                        <small className="text-muted">Megjegyzés: ez a főoldal kizárólag tájékoztató és navigációs célokat szolgál; nem kezel érzékeny vagy felhasználóspecifikus adatokat.</small>
+                        <small className="text-muted">Megjegyzés: ez az oldal kizárólag tájékoztató és navigációs célokat szolgál; nem kezel érzékeny vagy felhasználóspecifikus adatokat.</small>
                     </Col>
                 </Row>
             </Container>

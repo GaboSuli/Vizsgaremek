@@ -1,26 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { apiCall } from '../services/api.js';
+import React, { useState } from 'react';
 import useAuth from '../context/useAuth.js';
 import './ContactPage.css';
 
 export default function ContactPage() {
-  const auth = useAuth();
+  const { user } = useAuth();
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    name: user?.name || user?.Nev || '',
+    email: user?.email || user?.Email || '',
     messageType: '',
-    message: ''
+    message: '',
+    company: '' // rejtett spam trap
   });
 
-  useEffect(() => {
-    if (auth.user) {
-      setFormData(f => ({
-        ...f,
-        name: auth.user.name || auth.user.Nev || '',
-        email: auth.user.email || auth.user.Email || ''
-      }));
-    }
-  }, [auth.user]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -32,12 +24,8 @@ export default function ContactPage() {
     { value: 'egyuttmukodes', label: 'Együttműködés' }
   ];
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const handleChange = ({ target: { name, value } }) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -46,114 +34,89 @@ export default function ContactPage() {
     setError('');
     setSuccess(false);
 
-    // Simulate API call delay
-    setTimeout(() => {
+    if (formData.company) {
+      setError("Spam gyanús üzenet.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('http://localhost:8000/contact', { // Laravel API URL
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || "Hiba történt");
+
       setSuccess(true);
       setFormData({
-        name: '',
-        email: '',
+        name: user?.name || user?.Nev || '',
+        email: user?.email || user?.Email || '',
         messageType: '',
-        message: ''
+        message: '',
+        company: ''
       });
-      setLoading(false);
-    }, 1000);
+
+    } catch (err) {
+      setError(err.message || "Szerver hiba történt.");
+    }
+
+    setLoading(false);
   };
 
   return (
     <div className="contact-container">
       <div className="contact-hero">
         <h1>📧 Kapcsolat</h1>
-        <p>Kérjük, használja ezt az űrlapot, ha kérdése, javaslata vagy visszajelzése van számunkra.</p>
+        <p>Kérjük, használja az űrlapot kérdéseihez vagy visszajelzéseihez.</p>
       </div>
 
       <div className="contact-content">
         <div className="contact-card">
           <h2>Kapcsolati Űrlap</h2>
 
-          {success && (
-            <div className="success-message">
-              ✅ Üzenet elküldve! Hamarosan válaszolunk.
-            </div>
-          )}
-
-          {error && (
-            <div className="error-message">
-              ❌ {error}
-            </div>
-          )}
+          {success && <div className="success-message">✅ Üzenet elküldve! Hamarosan válaszolunk.</div>}
+          {error && <div className="error-message">❌ {error}</div>}
 
           <form onSubmit={handleSubmit} className="contact-form">
             <div className="form-group">
-              <label htmlFor="name">Név *</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                placeholder="Adja meg a nevét"
-              />
+              <label>Név *</label>
+              <input type="text" name="name" value={formData.name} onChange={handleChange} required />
             </div>
 
             <div className="form-group">
-              <label htmlFor="email">Email cím *</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                placeholder="pelda@email.com"
-              />
+              <label>Email *</label>
+              <input type="email" name="email" value={formData.email} onChange={handleChange} required />
             </div>
 
             <div className="form-group">
-              <label htmlFor="messageType">Üzenet típusa *</label>
-              <select
-                id="messageType"
-                name="messageType"
-                value={formData.messageType}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Válasszon típust...</option>
+              <label>Üzenet típusa *</label>
+              <select name="messageType" value={formData.messageType} onChange={handleChange} required>
+                <option value="">Válasszon...</option>
                 {messageTypes.map(type => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
+                  <option key={type.value} value={type.value}>{type.label}</option>
                 ))}
               </select>
             </div>
 
             <div className="form-group">
-              <label htmlFor="message">Üzenet *</label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleInputChange}
-                required
-                placeholder="Írja le részletesen az üzenetét..."
-                rows="6"
-              />
+              <label>Üzenet *</label>
+              <textarea name="message" value={formData.message} onChange={handleChange} required rows="6" />
             </div>
 
-            <button
-              type="submit"
-              className="submit-btn"
-              disabled={loading}
-            >
+            {/* rejtett spam trap mező */}
+            <input type="text" name="company" value={formData.company} onChange={handleChange} style={{ display: 'none' }} autoComplete="off" />
+
+            <button type="submit" disabled={loading} className="submit-btn">
               {loading ? 'Küldés...' : 'Üzenet küldése'}
             </button>
           </form>
 
           <div className="contact-info">
-            <h3>Egyéb kapcsolattartási lehetőségek</h3>
-            <p>
-              Ha sürgős ügyben keres minket, használhatja az alábbi email címeket:
-            </p>
+            <h3>Egyéb elérhetőségek</h3>
             <ul>
               <li><strong>Támogatás:</strong> cashentis@gmail.com</li>
               <li><strong>Fejlesztők:</strong> dev@vevesbazar.hu</li>

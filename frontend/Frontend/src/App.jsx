@@ -7,7 +7,7 @@ import LoginPage from './components/LoginPage.jsx'
 import RegisterPage from './components/RegisterPage.jsx'
 import LandingPage from './components/LandingPage.jsx'
 import StatisticsPage from './components/StatisticsPage.jsx'
-import VevesiListePage from './components/VevesiListePage.jsx'
+//import VevesiListePage from './components/VevesiListePage.jsx'
 import KuponPage from './components/KuponPage.jsx'
 import ShoppingListPage from './components/ShoppingListPage.jsx'
 import AdminPage from './components/AdminPage.jsx'
@@ -51,7 +51,6 @@ function App() {
       >
         <Route path="/dashboard" element={<LandingPage />} />
         <Route path="/stats" element={<StatisticsPage />} />
-        <Route path="/lista" element={<VevesiListePage />} />
         <Route path="/shopping" element={<ShoppingListPage />} />
         <Route path="/kupon" element={<KuponPage />} />
         <Route path="/user" element={<UserManagementPage />} />
