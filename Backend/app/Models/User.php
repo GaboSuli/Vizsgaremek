@@ -4,13 +4,16 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
+use Database\Factories\UserFactory;
+#[UseFactory(UserFactory::class)]
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /**  */
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -23,6 +26,10 @@ class User extends Authenticatable
         'becenev',
         'email',
         'password',
+        'tema_id',
+        'kuponok',
+        'termekArKovetes',
+        'brokerArKovetes'
     ];
 
     /**
@@ -66,4 +73,5 @@ class User extends Authenticatable
     {
         return $this->hasMany(CsoportTagsag::class,'felhasznalo_id');
     }
+    
 }
