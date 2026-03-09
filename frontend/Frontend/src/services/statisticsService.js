@@ -47,12 +47,8 @@ const osszesAlkategoriasData = {
   }
 };
 
-/**
- * Alkategória havi átlagár-változásának lekérése
- */
 export const getAlkategoriaMonthlyStats = async (alkategoriaId, userId = null) => {
   try {
-    // Try API first, optionally scoped to a user
     const pathBase = userId ? `/felhasznalo/${userId}` : '';
     const response = await apiCall(`${pathBase}/statisztika/id/${alkategoriaId}`);
 
@@ -99,7 +95,6 @@ export const getAlkategoriaMonthlyStats = async (alkategoriaId, userId = null) =
       };
     }
 
-    // Fallback to mock data
     const allData = alkategoriaHaviData;
     const monthlyData = [];
     for (const key in allData) {
@@ -157,13 +152,9 @@ export const getAlkategoriaMonthlyStats = async (alkategoriaId, userId = null) =
   }
 };
 
-/**
- * Összes alkategória aktuális átlagárának lekérése
- */
 export const getAllAlkategoriasStats = async (userId = null) => {
   try {
-    // Try API first
-    const pathBase = userId ? `/felhasznalo/${userId}` : '';
+    const pathBase = userId ? `` : '';
     const response = await apiCall(`${pathBase}/statisztika/all`);
 
     if (response.success && response.data) {
@@ -215,7 +206,6 @@ export const getAllAlkategoriasStats = async (userId = null) => {
       };
     }
 
-    // Fallback to mock data
     const allData = osszesAlkategoriasData;
 
     const transformedData = [];
@@ -279,17 +269,11 @@ export const getAllAlkategoriasStats = async (userId = null) => {
   }
 };
 
-/**
- * Összes alkategória átlagárának havi változása egy adott évben
- */
 export const getAllAlkategoriasStatsForYear = async (year, userId = null) => {
   const pathBase = userId ? `/felhasznalo/${userId}` : '';
   return apiCall(`${pathBase}/statisztika/ev/${year}`);
 };
 
-/**
- * Keresés alkategóriák között
- */
 export const searchAlkategorias = async (searchTerm, userId = null) => {
   try {
     const result = await getAllAlkategoriasStats(userId);

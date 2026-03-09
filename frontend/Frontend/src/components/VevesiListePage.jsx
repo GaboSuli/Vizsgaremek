@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+/*import React, { useState, useEffect } from 'react';
 import useAuth from '../context/useAuth.js';
 import { Container, Row, Col, Card, Button, Table, Badge, Spinner, Alert } from 'react-bootstrap';
 import { getAllVevesiListak, getVevesiListaById, getVevesiListakByUser } from '../services/vevesiListaService';
@@ -19,17 +19,19 @@ export default function VevesiListePage() {
   const loadListaky = async () => {
     try {
       setLoading(true);
-      const userId = auth.user?.id;
-      const result = userId ? await getVevesiListakByUser(userId) : await getAllVevesiListak();
-      
+      const userId = auth.user?.name || auth.user?.Nev; // ID helyett név
+      const result = userId
+        ? await getVevesiListakByUser(userId)
+        : await getAllVevesiListak();
+
       if (result.success) {
-        setListaky(result.data);
+        setListaky(result.data ?? []);
         setError(null);
       } else {
         setError(result.error || 'Hiba az adatok betöltésekor');
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Ismeretlen hiba');
     } finally {
       setLoading(false);
     }
@@ -37,27 +39,26 @@ export default function VevesiListePage() {
 
   const handleSelectLista = async (id) => {
     try {
-      const result = await getVevesiListaById(id);
+      const userId = auth.user?.name || auth.user?.Nev;
+      const result = await getVevesiListaById(id, userId);
       if (result.success) {
         setSelectedLista(result.data);
+      } else {
+        setError(result.error || 'Nem sikerült betölteni a listát');
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Ismeretlen hiba');
     }
   };
 
-  const handleClose = () => {
-    setSelectedLista(null);
-  };
+  const handleClose = () => setSelectedLista(null);
 
   if (loading) {
     return (
-      <Container className="mt-5">
-        <div className="text-center">
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Betöltés...</span>
-          </Spinner>
-        </div>
+      <Container className="mt-5 text-center">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Betöltés...</span>
+        </Spinner>
       </Container>
     );
   }
@@ -73,16 +74,16 @@ export default function VevesiListePage() {
         </Container>
       </div>
 
-      <Container className="lista-content">
+      <Container className="lista-content mt-4">
         {error && (
-          <Alert variant="danger" className="mt-4">
+          <Alert variant="danger">
             <Alert.Heading>Hiba!</Alert.Heading>
             <p>{error}</p>
           </Alert>
         )}
 
         {selectedLista ? (
-          <Row className="mt-4">
+          <Row>
             <Col>
               <Card className="lista-detail-card">
                 <Card.Header className="d-flex justify-content-between align-items-center">
@@ -92,7 +93,9 @@ export default function VevesiListePage() {
                       {new Date(selectedLista.letrehozas).toLocaleDateString('hu-HU')} • {auth.user?.name || auth.user?.Nev || 'te'}
                     </small>
                   </div>
-                  <Button variant="outline-secondary" onClick={handleClose}>Vissza</Button>
+                  <Button variant="outline-secondary" onClick={handleClose}>
+                    Vissza
+                  </Button>
                 </Card.Header>
                 <Card.Body>
                   <Table responsive hover>
@@ -105,22 +108,27 @@ export default function VevesiListePage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {selectedLista.tetelek.map((tetel, index) => (
+                      {(selectedLista.tetelek ?? []).map((tetel, index) => (
                         <tr key={index}>
                           <td>{tetel.Nev}</td>
                           <td className="text-center">
-                            {tetel.Mennyiseg} {tetel.Egyseg}
+                            {tetel.Mennyiseg ?? 0} {tetel.Egyseg ?? ''}
                           </td>
-                          <td className="text-end">{tetel.Ar.toLocaleString()} Ft</td>
+                          <td className="text-end">{(tetel.Ar ?? 0).toLocaleString()} Ft</td>
                           <td className="text-end font-weight-bold">
-                            {(tetel.Ar * tetel.Mennyiseg).toLocaleString()} Ft
+                            {((tetel.Ar ?? 0) * (tetel.Mennyiseg ?? 0)).toLocaleString()} Ft
                           </td>
                         </tr>
                       ))}
                       <tr className="table-summary">
-                        <td colSpan="3" className="text-end font-weight-bold">Összesen:</td>
-                        <td className="text-end font-weight-bold text-primary" style={{ fontSize: '1.1rem' }}>
-                          {selectedLista.osszesen.toLocaleString()} Ft
+                        <td colSpan="3" className="text-end font-weight-bold">
+                          Összesen:
+                        </td>
+                        <td
+                          className="text-end font-weight-bold text-primary"
+                          style={{ fontSize: '1.1rem' }}
+                        >
+                          {(selectedLista.osszesen ?? 0).toLocaleString()} Ft
                         </td>
                       </tr>
                     </tbody>
@@ -130,7 +138,7 @@ export default function VevesiListePage() {
             </Col>
           </Row>
         ) : (
-          <Row className="mt-4">
+          <Row>
             {listaky.length > 0 ? (
               listaky.map((lista) => (
                 <Col lg={4} md={6} sm={12} key={lista.id} className="mb-4">
@@ -138,9 +146,9 @@ export default function VevesiListePage() {
                     <Card.Body>
                       <div className="d-flex justify-content-between align-items-start mb-2">
                         <h5 className="card-title">{lista.nev}</h5>
-                        <Badge bg="info">{lista.darab} tétel</Badge>
+                        <Badge bg="info">{lista.darab ?? 0} tétel</Badge>
                       </div>
-                      
+
                       <small className="text-muted d-block mb-1">
                         {new Date(lista.letrehozas).toLocaleDateString('hu-HU')}
                       </small>
@@ -151,11 +159,13 @@ export default function VevesiListePage() {
                       <div className="lista-footer">
                         <div className="lista-total">
                           <span className="total-label">Összesen:</span>
-                          <span className="total-amount">{lista.osszesen.toLocaleString()} Ft</span>
+                          <span className="total-amount">
+                            {(lista.osszesen ?? 0).toLocaleString()} Ft
+                          </span>
                         </div>
-                        <Button 
-                          variant="primary" 
-                          size="sm" 
+                        <Button
+                          variant="primary"
+                          size="sm"
                           className="w-100 mt-2"
                           onClick={() => handleSelectLista(lista.id)}
                         >
@@ -179,4 +189,4 @@ export default function VevesiListePage() {
       </Container>
     </div>
   );
-}
+}*/
