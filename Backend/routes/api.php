@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/csoportTagsag/torles/{id}',[CsoportTagsagController::class, 'destroy']);
     Route::delete('/kuponok/torles/{id}',[KuponController::class, 'destroy']);
     Route::delete('/felhasznalo/torles/{id}',[UserController::class, 'destroy']);
+    Route::delete('/contact/torles/{id}',[ContactController::class, 'destroy']);
     Route::put('/kuponok/modositas/{id}',[KuponController::class, 'update']);
     Route::put('/felhasznalo/modositas',[UserController::class, 'update']);
     Route::put('/csoport/modositas/{csoportId}',[CsoportokController::class, 'update']);

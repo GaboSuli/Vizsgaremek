@@ -43,6 +43,10 @@ GET
 (http://127.0.0.1:8000/api/csoport/{id}/felhasznalok)
 -- bearer: session token
 
+- összes kitöltött ürlap
+(http://127.0.0.1:8000/api/contact)
+-- bearer: session token (csak nagyobb mint 1 jogosultsagu szintu tud)
+
 POST
 
 - felhasználó létrehozása
@@ -69,6 +73,14 @@ POST
 {
  "csoport_tipus_id":"", ##Muszály
  "megnevezes":"" ##Muszály
+}
+
+- Kitöltött ürlap létrehozása
+(http://127.0.0.1:8000/api/contact/create)
+-- bearer: session token
+{
+ "contactTipusId":"", ##Muszály
+ "text":"" ##Muszály
 }
 
 - csoport tagság létrehozása
@@ -189,3 +201,7 @@ DELETE
 - kupon törlése
 (http://127.0.0.1:8000/api/kuponok/torles/{id})
 -- bearer: session token (csak nagyobb mint 0 jogosultsagu szintu tud)
+
+- Kitöltött ürlap törlése
+(http://127.0.0.1:8000/api/contact/torles/{id})
+-- bearer: session token (csak nagyobb mint 1 jogosultsagu szintu tud)

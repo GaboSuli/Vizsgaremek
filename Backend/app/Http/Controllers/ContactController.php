@@ -82,8 +82,19 @@ class ContactController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Contact $contact)
+    public function destroy(string $id)
     {
-        //
+        $user = auth()->user();
+        if ($user->jogosultsag_szint < 2)
+        {
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+        }
+        $toDelete = Contact::find($id);
+        if (empty($toDelete))
+        {
+            return response(["message"=>"Nem talált ilyen."],404);
+        }
+        $toDelete->delete();
+        return response(["message"=>"Sikeresen törölve."],200);
     }
 }
