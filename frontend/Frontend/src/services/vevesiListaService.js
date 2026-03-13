@@ -1,4 +1,4 @@
-/*import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import useAuth from '../context/useAuth.js';
 import { Container, Row, Col, Card, Button, Table, Badge, Spinner, Alert } from 'react-bootstrap';
 import { getAllVevesiListak, getVevesiListaById, getVevesiListakByUser } from '../services/vevesiListaService';
@@ -12,14 +12,13 @@ export default function VevesiListePage() {
 
   const auth = useAuth();
 
-  // Inline useEffect, nincs missing dependency warning
   useEffect(() => {
     if (!auth.user) return;
 
     const loadListaky = async () => {
       try {
         setLoading(true);
-        const userId = auth.user?.name || auth.user?.Nev; // ID helyett név
+        const userId = auth.user?.name || auth.user?.Nev; 
         const result = userId
           ? await getVevesiListakByUser(userId)
           : await getAllVevesiListak();
@@ -191,4 +190,4 @@ export default function VevesiListePage() {
       </Container>
     </div>
   );
-}*/
+}

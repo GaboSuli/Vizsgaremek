@@ -6,7 +6,6 @@ import './Foldal.css';
 const navItems = [
   { to: '/dashboard', label: 'Főoldal', icon: 'home' },
   { to: '/stats', label: 'Statisztikák', icon: 'chart' },
-  { to: '/lista', label: 'Bevásárlás', icon: 'shopping' },
   { to: '/shopping', label: 'Bevásárlólista', icon: 'cart' },
   { to: '/kupon', label: 'Kuponok', icon: 'ticket' },
   { to: '/user', label: 'Profil', icon: 'user' },
