@@ -60,7 +60,7 @@ export const getEURRate = (months = [], prices = []) => fetchMonthlyAvg('EUR', m
 export const getUSDRate = (months = [], prices = []) => fetchMonthlyAvg('USD', months, prices);
 export const getGBPRate = (months = [], prices = []) => fetchMonthlyAvg('GBP', months, prices);
 export const getCHFRate = (months = [], prices = []) => fetchMonthlyAvg('CHF', months, prices);
-export const getKWDRate = (months = [], prices = []) => fetchMonthlyAvg('KWD', months, prices);
+export const getPLNRate = (months = [], prices = []) => fetchMonthlyAvg('PLN', months, prices);
 
 export const getInflationRate = async () => ({
   success: true,
@@ -75,18 +75,18 @@ export const getInflationRate = async () => ({
   }
 });
 
-export const getAllFinancialIndicators = async (eurMonths = [], eurPrices = [], usdMonths = [], usdPrices = [], gbpMonths = [], gbpPrices = [], chfMonths = [], chfPrices = [], kwdMonths = [], kwdPrices = []) => {
+export const getAllFinancialIndicators = async (eurMonths = [], eurPrices = [], usdMonths = [], usdPrices = [], gbpMonths = [], gbpPrices = [], chfMonths = [], chfPrices = [], plnMonths = [], plnPrices = []) => {
   try {
-    const [eur, usd, gbp, chf, kwd,inflation] = await Promise.all([
+    const [eur, usd, gbp, chf, pln,inflation] = await Promise.all([
       getEURRate(eurMonths, eurPrices),
       getUSDRate(usdMonths, usdPrices),
       getGBPRate(gbpMonths, gbpPrices),
       getCHFRate(chfMonths, chfPrices),
-      getKWDRate(kwdMonths, kwdPrices),
+      getPLNRate(plnMonths, plnPrices),
       getInflationRate()
     ]);
 
-    return { success: true, EUR: eur, USD: usd,GBP: gbp,CHF: chf,KWD: kwd,Inflation: inflation };
+    return { success: true, EUR: eur, USD: usd,GBP: gbp,CHF: chf,PLN: pln,Inflation: inflation };
   } catch (error) {
     return { success: false, error: error.message };
   }

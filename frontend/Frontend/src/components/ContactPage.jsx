@@ -41,7 +41,7 @@ export default function ContactPage() {
     }
 
     try {
-      const res = await fetch('http://localhost:8000/contact', { // Laravel API URL
+      const res = await fetch('http://127.0.0.1:8000/api/contact/create', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

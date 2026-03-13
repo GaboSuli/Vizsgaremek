@@ -5,7 +5,7 @@ import {
   getInflationRate,
   getGBPRate,
   getCHFRate,
-  getKWDRate,
+  getPLNRate,
 } from "../services/currencyService";
 import "./Foldal.css";
 
@@ -14,7 +14,7 @@ export default function PriceChangeSection() {
   const [usdData, setUsdData] = useState(null);
   const [gbpData, setGbpData] = useState(null);
   const [chfData, setChfData] = useState(null);
-  const [kwdData, setKwdData] = useState(null);
+  const [plnData, setPlnData] = useState(null);
 
   const [inflationData, setInflationData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,19 +22,19 @@ export default function PriceChangeSection() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [eur, usd, gbp, chf, kwd, inflation] = await Promise.all([
+        const [eur, usd, gbp, chf, pln, inflation] = await Promise.all([
           getEURRate(),
           getUSDRate(),
           getGBPRate(),
           getCHFRate(),
-          getKWDRate(),
+          getPLNRate(),
           getInflationRate(),
         ]);
         setEurData(eur);
         setUsdData(usd);
         setGbpData(gbp);
         setChfData(chf);
-        setKwdData(kwd),
+        setPlnData(pln),
         ( setInflationData(inflation));
       } catch (error) {
         console.error("Hiba az adatok betöltéskor:", error);
@@ -135,20 +135,20 @@ export default function PriceChangeSection() {
               </div>
             </div>
           )}
-          {kwdData && (
+          {plnData && (
             <div
-              className={`price-card trend-${kwdData.change >= 0 ? "up" : "down"}`}
+              className={`price-card trend-${plnData.change >= 0 ? "up" : "down"}`}
             >
-              <div className="price-icon">$</div>
+              <div className="price-icon">zł</div>
               <div className="price-info">
-                <h3>{kwdData.current} Ft</h3>
+                <h3>{plnData.current} Ft</h3>
                 <p>
-                  KWD/HUF ({kwdData.change > 0 ? "+" : ""}
-                  {kwdData.change}%)
+                  PLN/HUF ({plnData.change > 0 ? "+" : ""}
+                  {plnData.change}%)
                 </p>
-                {kwdData.currentMonth && (
+                {plnData.currentMonth && (
                   <small className="date-info">
-                    {kwdData.currentMonth.month} {kwdData.currentMonth.year}
+                    {plnData.currentMonth.month} {plnData.currentMonth.year}
                   </small>
                 )}
               </div>
@@ -190,6 +190,15 @@ export default function PriceChangeSection() {
                   </span>
                   <span className="timeline-gbp">
                     £:{gbpData.chartData.data[index]} Ft
+                  </span>
+                  <span className="timeline-gbp">
+                    ₣:{chfData.chartData.data[index]} Ft
+                  </span>
+                  <span className="timeline-gbp">
+                    ₣:{chfData.chartData.data[index]} Ft
+                  </span>
+                  <span>
+
                   </span>
                   <span className="timeline-inflation">
                     I: {inflationData.chartData.data[index]}%
