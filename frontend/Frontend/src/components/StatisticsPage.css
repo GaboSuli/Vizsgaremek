@@ -36,13 +36,10 @@
 .statistics-content {
   padding: 2rem 0;
 }
-
 .statistics-section {
-  padding: 3rem 0;
   background: white;
   border-top: 1px solid #e9ecef;
 }
-
 .statistics-section:nth-child(even) {
   background: #f8f9fa;
 }
@@ -51,9 +48,6 @@
 .statistics-section h2 {
   text-align: center;
   color: #333;
-  font-weight: 700;
-  font-size: 2rem;
-  margin-bottom: 2rem;
   padding-top: 1rem;
 }
 

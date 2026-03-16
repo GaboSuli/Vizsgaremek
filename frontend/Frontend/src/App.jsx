@@ -23,7 +23,14 @@ function App() {
   return (
     <Routes>
       {/* public pages */}
-      <Route path="/" element={<FirstPage />} />
+      <Route
+        path="/"
+        element={
+          <PublicRoute>
+            <FirstPage />
+          </PublicRoute>
+        }
+      />
       <Route
         path="/login"
         element={

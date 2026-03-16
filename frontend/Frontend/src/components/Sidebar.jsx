@@ -108,23 +108,24 @@ export default function Sidebar({ collapsed, onToggle }) {
       <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
 
         <div className="sidebar-top">
-          <NavLink to="/dashboard" className="logo">
-            <div className="logo-mark">VB</div>
-            {!collapsed && <div className="logo-text">VevesBazar</div>}
-          </NavLink>
-
-          <button
-            className="collapse-btn"
-            onClick={() => {
-              if (window.innerWidth < 768) {
-                setMobileOpen(!mobileOpen);
-              } else {
-                onToggle();
-              }
-            }}
-          >
-            {collapsed ? '›' : '‹'}
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+            <NavLink to="/dashboard" className="logo">
+              <div className="logo-mark">VB</div>
+              {!collapsed && <div className="logo-text">VevesBazar</div>}
+            </NavLink>
+            <button
+              className="collapse-btn"
+              onClick={() => {
+                if (window.innerWidth < 768) {
+                  setMobileOpen(!mobileOpen);
+                } else {
+                  onToggle();
+                }
+              }}
+            >
+              {collapsed ? '›' : '‹'}
+            </button>
+          </div>
         </div>
 
         {user && !collapsed && (
@@ -134,29 +135,43 @@ export default function Sidebar({ collapsed, onToggle }) {
         )}
 
         <nav className="nav">
-          {navItems.map(item => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-              onClick={() => setMobileOpen(false)}
-            >
+          {user && (
+            (user.jogosultsag_szint > 2
+              ? [
+                  { to: '/kupon', label: 'Kuponok', icon: 'ticket' },
+                  { to: '/admin', label: 'Admin', icon: 'settings' }
+                ]
+              : navItems.filter(item => {
+                  if (item.to === '/admin') {
+                    return user.jogosultsag_szint > 2;
+                  }
+                  return true;
+                })
+            ).map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                onClick={() => setMobileOpen(false)}
+              >
+                <span className="nav-icon">
+                  <Icon name={item.icon}/>
+                </span>
+                {!collapsed && (
+                  <span className="nav-label">{item.label}</span>
+                )}
+              </NavLink>
+            ))
+          )}
+
+          {user && (
+            <button className="nav-item logout" onClick={handleLogout}>
               <span className="nav-icon">
-                <Icon name={item.icon}/>
+                <Icon name="settings"/>
               </span>
-
-              {!collapsed && (
-                <span className="nav-label">{item.label}</span>
-              )}
-            </NavLink>
-          ))}
-
-          <button className="nav-item logout" onClick={handleLogout}>
-            <span className="nav-icon">
-              <Icon name="settings"/>
-            </span>
-            {!collapsed && <span className="nav-label">Kijelentkezés</span>}
-          </button>
+              {!collapsed && <span className="nav-label">Kijelentkezés</span>}
+            </button>
+          )}
         </nav>
 
         <div className="sidebar-bottom">

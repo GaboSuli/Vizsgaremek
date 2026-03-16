@@ -178,13 +178,15 @@ export default function KuponPage() {
             </div>
           </Col>
           <Col xs={12} md={6} className="text-end">
-            <Button 
-              variant="primary" 
-              onClick={() => handleOpenModal()}
-              className="btn-add-kupon"
-            >
-              + Új Kupon
-            </Button>
+            {auth.user && auth.user.jogosultsag_szint > 2 && (
+              <Button 
+                variant="primary" 
+                onClick={() => handleOpenModal()}
+                className="btn-add-kupon"
+              >
+                + Új Kupon
+              </Button>
+            )}
           </Col>
         </Row>
 
@@ -199,7 +201,9 @@ export default function KuponPage() {
           </Alert>
         ) : (
           <Row>
-            {filteredKupons.map(kupon => (
+            {filteredKupons
+              .filter(k => filter !== 'expired' ? !isKuponExpired(k.LejarasiDatum) : true)
+              .map(kupon => (
               <Col key={kupon.id} xs={12} md={6} lg={4} className="mb-4">
                 <Card className={`kupon-card ${isKuponExpired(kupon.LejarasiDatum) ? 'expired' : ''}`}>
                   <Card.Body>
@@ -238,22 +242,16 @@ export default function KuponPage() {
                     </div>
 
                     <div className="kupon-actions">
-                      <Button 
-                        variant="outline-primary" 
-                        size="sm"
-                        onClick={() => handleOpenModal(kupon)}
-                        className="btn-action"
-                      >
-                        Szerkesztés
-                      </Button>
-                      <Button 
-                        variant="outline-danger" 
-                        size="sm"
-                        onClick={() => handleDelete(kupon.id)}
-                        className="btn-action"
-                      >
-                        Törlés
-                      </Button>
+                      {auth.user && auth.user.jogosultsag_szint > 2 && (
+                        <>
+                          <Button variant="outline-secondary" size="sm" onClick={() => handleOpenModal(kupon)}>
+                            Szerkesztés
+                          </Button>
+                          <Button variant="outline-danger" size="sm" onClick={() => handleDelete(kupon.id)}>
+                            Törlés
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </Card.Body>
                 </Card>

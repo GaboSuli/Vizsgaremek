@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiCall } from '../services/api.js';
 import { Container, Row, Col, Card, Spinner, Alert } from 'react-bootstrap';
 import { Pie, Bar } from 'react-chartjs-2';
 import {
@@ -28,28 +29,16 @@ ChartJS.register(
 );
 
 export default function UserStatistics() {
-  const [userData, setUserData] = useState({
-    name: 'Kovács János',
-    email: 'kovacs.janos@example.com',
-    joinDate: '2024-06-15',
-    totalBudget: 850000,
-    spentBudget: 542000,
-    shoppingLists: 24,
-    activeGroups: 5,
-    couponsUsed: 12,
-    couponsAvailable: 8,
-    productTracked: 47,
-    savedAmount: 125000
-  });
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const [loading, setLoading] = useState(false);
-
-  const budgetPercentage = (userData.spentBudget / userData.totalBudget * 100).toFixed(1);
-  const remainingBudget = userData.totalBudget - userData.spentBudget;
-  const savingsPercentage = (userData.savedAmount / userData.spentBudget * 100).toFixed(1);
+  const budgetPercentage = userData && userData.totalBudget ? (userData.spentBudget / userData.totalBudget * 100).toFixed(1) : 0;
+  const remainingBudget = userData && userData.totalBudget ? userData.totalBudget - userData.spentBudget : 0;
+  const savingsPercentage = userData && userData.spentBudget ? (userData.savedAmount / userData.spentBudget * 100).toFixed(1) : 0;
 
   // Budget Chart Data
-  const budgetChartData = {
+  const budgetChartData = userData ? {
     labels: ['Felhasznált', 'Maradék'],
     datasets: [
       {
@@ -60,10 +49,10 @@ export default function UserStatistics() {
         borderWidth: 2
       }
     ]
-  };
+  } : { labels: [], datasets: [] };
 
   // Activity Chart Data
-  const activityChartData = {
+  const activityChartData = userData ? {
     labels: ['Bevásárlólista', 'Csoportok', 'Felhasznált kuponok', 'Elérhető kuponok', 'Követett termékek'],
     datasets: [
       {
@@ -92,8 +81,44 @@ export default function UserStatistics() {
         borderWidth: 1
       }
     ]
-  };
+  } : { labels: [], datasets: [] };
+  useEffect(() => {
+    const fetchUserData = async () => {
+      setLoading(true);
+      setError('');
+      const resp = await apiCall('/felhasznalo');
+      if (resp.success && resp.data) {
+        // Map backend fields to expected frontend fields if needed
+        setUserData({
+          name: resp.data.Nev || resp.data.name || '',
+          email: resp.data.Email || resp.data.email || '',
+          joinDate: resp.data.created_at || resp.data.joinDate || '',
+          totalBudget: resp.data.totalBudget || 0,
+          spentBudget: resp.data.spentBudget || 0,
+          shoppingLists: resp.data.shoppingLists || 0,
+          activeGroups: resp.data.activeGroups || 0,
+          couponsUsed: resp.data.couponsUsed || 0,
+          couponsAvailable: resp.data.couponsAvailable || 0,
+          productTracked: resp.data.productTracked || 0,
+          savedAmount: resp.data.savedAmount || 0
+        });
+      } else {
+        setError('Nem sikerült betölteni a felhasználói adatokat.');
+      }
+      setLoading(false);
+    };
+    fetchUserData();
+  }, []);
 
+  if (loading) {
+    return <div className="user-statistics-loading">Betöltés...</div>;
+  }
+  if (error) {
+    return <div className="user-statistics-error">{error}</div>;
+  }
+  if (!userData) {
+    return null;
+  }
   return (
     <Container className="user-statistics mt-5">
       <Row className="mb-4">
@@ -101,7 +126,6 @@ export default function UserStatistics() {
           <h1 className="page-title">Felhasználó Statisztikái</h1>
         </Col>
       </Row>
-
       {/* User Info Card */}
       <Row className="mb-4">
         <Col lg={12}>
@@ -112,7 +136,7 @@ export default function UserStatistics() {
                   <h3 className="user-name">{userData.name}</h3>
                   <p className="user-email">{userData.email}</p>
                   <small className="text-muted">
-                    Csatlakozás: {new Date(userData.joinDate).toLocaleDateString('hu-HU')}
+                    Csatlakozás: {userData.joinDate ? new Date(userData.joinDate).toLocaleDateString('hu-HU') : ''}
                   </small>
                 </Col>
                 <Col lg={6} className="text-lg-end text-start mt-3 mt-lg-0">
@@ -136,7 +160,6 @@ export default function UserStatistics() {
           </Card>
         </Col>
       </Row>
-
       {/* Budget Overview */}
       <Row className="mb-4">
         <Col lg={6}>
@@ -176,7 +199,6 @@ export default function UserStatistics() {
             </Card.Body>
           </Card>
         </Col>
-
         <Col lg={6}>
           <Card className="stat-card">
             <Card.Body>
@@ -205,7 +227,6 @@ export default function UserStatistics() {
           </Card>
         </Col>
       </Row>
-
       {/* Charts */}
       <Row className="mb-4">
         <Col lg={6}>
@@ -229,7 +250,6 @@ export default function UserStatistics() {
             </Card.Body>
           </Card>
         </Col>
-
         <Col lg={6}>
           <Card className="chart-card">
             <Card.Header>
@@ -258,7 +278,6 @@ export default function UserStatistics() {
           </Card>
         </Col>
       </Row>
-
       {/* Statistics Grid */}
       <Row>
         <Col lg={3} sm={6} className="mb-3">

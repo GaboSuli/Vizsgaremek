@@ -8,51 +8,73 @@ export default function AdminPage() {
   const [serverStatus, setServerStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const apiEndpoints = [
+    // GET endpoints
     {
-      method: 'POST',
-      endpoint: '/felhasznalo/register',
-      description: 'Felhasználó regisztrációja'
-    },
-    {
-      method: 'POST',
-      endpoint: '/felhasznalo/login',
-      description: 'Felhasználó bejelentkezése'
+      method: 'GET',
+      endpoint: '/felhasznalo/vevesiListak',
+      description: 'Egy felhasználó összes vevési listája (bearer: session token)'
     },
     {
       method: 'GET',
-      endpoint: '/felhasznalo/{id}',
-      description: 'Felhasználó adatai'
+      endpoint: '/felhasznalo/csoportjai',
+      description: 'Egy felhasználó csoportjai (bearer: session token)'
     },
     {
       method: 'GET',
-      endpoint: '/felhasznalo/{id}/csoportjai',
-      description: 'Felhasználó csoportjai'
+      endpoint: '/csoport/{id}/vevesiListak',
+      description: 'Egy csoport összes vevési listája (bearer: session token)'
     },
     {
       method: 'GET',
-      endpoint: '/felhasznalo/{id}/vevesiListak',
-      description: 'Felhasználó bevásárlólistái'
+      endpoint: '/felhasznalo/osszKoltesei',
+      description: 'Egy felhasználó összes költségei alkategoriák szerint (bearer: session token)'
     },
     {
       method: 'GET',
-      endpoint: '/vevesiListak',
-      description: 'Összes bevásárlólista'
+      endpoint: '/felhasznalo/eHaviKoltesei',
+      description: 'Egy felhasználó összes költsége ebben a hónapban (bearer: session token)'
     },
     {
       method: 'GET',
-      endpoint: '/vevesiLista/{id}',
-      description: 'Specifikus bevásárlólista'
+      endpoint: '/felhasznalo/eEviKoltesei',
+      description: 'Egy felhasználó összes költsége ebben az évben (bearer: session token)'
     },
     {
-      method: 'POST',
-      endpoint: '/vevesiListak',
-      description: 'Új bevásárlólista létrehozása'
+      method: 'GET',
+      endpoint: '/statisztika/all',
+      description: 'Összes alkategória átlag árának havi váltakozása'
+    },
+    {
+      method: 'GET',
+      endpoint: '/statisztika/id/{id}',
+      description: 'Egy alkategória átlag árának havi váltakozása'
+    },
+    {
+      method: 'GET',
+      endpoint: '/statisztika/ev/{ev}',
+      description: 'Összes alkategória jelenlegi átlagára ebben az évben'
     },
     {
       method: 'GET',
       endpoint: '/kuponok/get',
       description: 'Összes kupon'
-    }
+    },
+    {
+      method: 'GET',
+      endpoint: '/felhasznalo',
+      description: 'Felhasználó nyilvános adatai (bearer: session token)'
+    },
+    {
+      method: 'GET',
+      endpoint: '/csoport/{id}/felhasznalok',
+      description: 'Csoport felhasználói (bearer: session token)'
+    },
+    {
+      method: 'GET',
+      endpoint: '/contact',
+      description: 'Összes kitöltött ürlap (bearer: session token, csak nagyobb mint 1 jogosultságú szintű tud)'
+    },
+    // ...existing code...
   ];
 
   const checkServerStatus = async () => {
