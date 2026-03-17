@@ -130,7 +130,6 @@ export default function Sidebar({ collapsed, onToggle }) {
 
         {user && !collapsed && (
           <div className="sidebar-user">
-            <small>{user.name || user.Nev || 'Felhasználó'}</small>
           </div>
         )}
 
