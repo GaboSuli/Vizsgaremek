@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Kupon;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -55,5 +56,6 @@ class DatabaseSeeder extends Seeder
         ]);
         
         $users = User::factory()->count(25)->create();
+        $kupons = Kupon::factory()->count(25)->create();
     }
 }
