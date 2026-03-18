@@ -1,3 +1,71 @@
+// Csoporthoz tartozó vevési lista lekérése
+export async function getCsoportVevesiListak(csoportId) {
+  try {
+    const resp = await api.get(`/csoport/${csoportId}/vevesiListak`);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+// Új vevési lista elem hozzáadása
+export async function addVevesiObjektum(data) {
+  try {
+    const resp = await api.post('/vevesiObjektum/create', data);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+// Vevési objektum módosítása
+export async function updateVevesiObjektum(objektumId, data) {
+  try {
+    const resp = await api.put(`/vevesiObjektum/modositas/${objektumId}`, data);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+// Vevési objektum törlése
+export async function deleteVevesiObjektum(objektumId) {
+  try {
+    const resp = await api.delete(`/vevesiObjektum/torles/${objektumId}`);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+}
+// Új tag hozzáadása csoporthoz
+export async function addCsoportTag(csoport_id, felhasznalo_id) {
+  try {
+    const resp = await api.post('/csoportTagsag/create', { csoport_id, felhasznalo_id });
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+// Csoport tagság módosítása (becenév, jogosultság)
+export async function editCsoportTag(csoportId, data) {
+  try {
+    const resp = await api.put(`/csoportTagsag/modositas/${csoportId}`, data);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+// Csoport tagság törlése
+export async function deleteCsoportTag(tagsagId) {
+  try {
+    const resp = await api.delete(`/csoportTagsag/torles/${tagsagId}`);
+    return resp.data;
+  } catch (err) {
+    throw err;
+  }
+}
 import axios from 'axios';
 
 const api = axios.create({
@@ -157,6 +225,16 @@ export async function apiCall(path, options = {}) {
     if (!includeAuth) {
       if (prevAuth) api.defaults.headers.common['Authorization'] = prevAuth;
     }
+  }
+}
+
+// Lekéri a bejelentkezett felhasználó csoportjait
+export async function getFelhasznaloCsoportjai() {
+  try {
+    const resp = await api.get('/felhasznalo/csoportjai');
+    return resp.data;
+  } catch (err) {
+    throw err;
   }
 }
 
