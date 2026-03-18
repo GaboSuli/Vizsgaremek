@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use DateInterval;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,16 +18,14 @@ class KuponFactory extends Factory
      */
     public function definition(): array
     {
-        $fakeDate1 = fake()->date();
-        $indatetime = strtotime($fakeDate1);
         return [
-            'kezdesi_datum' => $fakeDate1,
-            'lejarasi_datum' => date_add($indatetime,DateInterval::createFromDateString("7 days")),
-            'kod' => fake()->company(),
+            'kezdesi_datum' => fake()->date(),
+            'lejarasi_datum' => fake()->date(),
+            'kod' => fake()->word(),
             'kedvezmeny' => random_int(20,99),
             'megjegyzes' => fake()->paragraph(),
-            'hasznalasi_hely' => fake()->address(),
-            'feltolto_kuponos_id' => random_int(0,1)
+            'hasznalasi_hely' => fake()->url(),
+            'feltolto_kuponos_id' => User::inRandomOrder()->value('id')
         ];
     }
 }
