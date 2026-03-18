@@ -46,7 +46,6 @@ export default function UserProfile() {
         setCostsByCategory([]);
         setMonthlyCosts(null);
         setYearlyCosts(null);
-        console.error('Adatok lekérése sikertelen:', err);
       }
       setLoading(false);
     };
