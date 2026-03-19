@@ -10,6 +10,7 @@ import StatisticsPage from './components/StatisticsPage.jsx'
 //import VevesiListePage from './components/VevesiListePage.jsx'
 import KuponPage from './components/KuponPage.jsx'
 import ShoppingListPage from './components/ShoppingListPage.jsx'
+import GroupDetailPage from './components/GroupDetailPage.jsx'
 import AdminPage from './components/AdminPage.jsx'
 import ContactPage from './components/ContactPage.jsx'
 import UserManagementPage from './components/UserManagementPage.jsx'
@@ -59,6 +60,7 @@ function App() {
         <Route path="/dashboard" element={<LandingPage />} />
         <Route path="/stats" element={<StatisticsPage />} />
         <Route path="/shopping" element={<ShoppingListPage />} />
+        <Route path="/csoport/:id" element={<GroupDetailPage />} />
         <Route path="/kupon" element={<KuponPage />} />
         <Route path="/user" element={<UserManagementPage />} />
         <Route path="/contact" element={<ContactPage />} />

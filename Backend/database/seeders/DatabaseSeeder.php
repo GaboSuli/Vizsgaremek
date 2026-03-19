@@ -2,6 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Alkategoriak;
+use App\Models\Csoportok;
+use App\Models\CsoportTagsag;
+use App\Models\Kategoriak;
+use App\Models\Kupon;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -44,6 +49,24 @@ class DatabaseSeeder extends Seeder
         DB::table('csoport_tipusok')->insert([
             'megnevezes' => 'Vállalat'
         ]);
+        DB::table('mennyiseg_tipusok')->insert([
+            'mertekegyseg' => 'kg'
+        ]);
+        DB::table('mennyiseg_tipusok')->insert([
+            'mertekegyseg' => 'g'
+        ]);
+        DB::table('mennyiseg_tipusok')->insert([
+            'mertekegyseg' => 'dkg'
+        ]);
+        DB::table('mennyiseg_tipusok')->insert([
+            'mertekegyseg' => 'liter'
+        ]);
+        DB::table('mennyiseg_tipusok')->insert([
+            'mertekegyseg' => 'darab'
+        ]);
+        DB::table('mennyiseg_tipusok')->insert([
+            'mertekegyseg' => 'centiliter'
+        ]);
         // Then create the test user
         User::create([
             'nev' => 'Admin',
@@ -54,6 +77,11 @@ class DatabaseSeeder extends Seeder
             'jogosultsag_szint'=>255
         ]);
         
-        $users = User::factory()->count(25)->create();
+        $users = User::factory()->count(500)->create();
+        $kupons = Kupon::factory()->count(10)->create();
+        $csoportok = Csoportok::factory()->count(100)->create();
+        $kategoriak = Kategoriak::factory()->count(20)->create();
+        $alkategoriak = Alkategoriak::factory()->count(200)->create();
+        $csoportTagsagok = CsoportTagsag::factory()->count(300)->create();
     }
 }
