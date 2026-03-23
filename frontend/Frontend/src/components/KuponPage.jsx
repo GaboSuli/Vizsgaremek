@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import useAuth from '../context/useAuth.js';
 import { Container, Row, Col, Card, Button, Table, Badge, Spinner, Alert, Modal, Form } from 'react-bootstrap';
 import { getAllKupons, createKupon, updateKupon, deleteKupon, getActiveKupons, getExpiredKupons } from '../services/kuponService';
@@ -10,7 +10,8 @@ export default function KuponPage() {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [filter, setFilter] = useState('all'); // all, active, expired
+  const [filter, setFilter] = useState('all'); 
+  const [allKupons, setAllKupons] = useState([]); 
   const [formData, setFormData] = useState({
     Kod: '',
     HasznalatiHely: '',
@@ -21,36 +22,71 @@ export default function KuponPage() {
 
   const auth = useAuth();
 
-  useEffect(() => {
-    if (auth.user) loadKupons();
-  }, [auth.user]);
-
-  const loadKupons = async () => {
+  const loadAllKupons = useCallback(async () => {
     try {
       setLoading(true);
       const userId = auth.user?.id;
       const result = await getAllKupons(userId);
-      setKupons(result.data);
+      const list = (result && Array.isArray(result.data)) ? result.data : [];
+      setAllKupons(list.filter(Boolean));
+      // if current filter is 'all' show full list, otherwise we'll fetch filtered in another effect
+      if (filter === 'all') setKupons(list.filter(Boolean));
       setError(null);
     } catch (err) {
-      setError(err.message || 'Hiba a kuponok betöltésekor');
+      setError(err?.message || 'Hiba a kuponok betöltésekor');
+      setKupons([]);
+      setAllKupons([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [auth.user, filter]);
+
+  const loadFilteredKupons = useCallback(async () => {
+    if (!auth.user) return;
+    try {
+      setLoading(true);
+      const userId = auth.user?.id;
+      if (filter === 'active') {
+        const resp = await getActiveKupons(userId);
+        setKupons((resp && Array.isArray(resp.data)) ? resp.data : []);
+      } else if (filter === 'expired') {
+        const resp = await getExpiredKupons(userId);
+        setKupons((resp && Array.isArray(resp.data)) ? resp.data : []);
+      } else {
+        // all
+        setKupons(allKupons);
+      }
+      setError(null);
+    } catch (err) {
+      setError(err?.message || 'Hiba a kuponok betöltésekor');
+      setKupons([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [auth.user, filter, allKupons]);
+
+  useEffect(() => {
+    if (auth.user) loadAllKupons();
+    else {
+      setAllKupons([]);
+      setKupons([]);
+      setLoading(false);
+    }
+  }, [auth.user, loadAllKupons]);
+
+  useEffect(() => {
+    // when filter changes, fetch accordingly
+    if (auth.user) loadFilteredKupons();
+  }, [filter, auth.user, loadFilteredKupons]);
 
   const getFilteredKupons = () => {
-    const today = new Date().toISOString().split('T')[0];
-    
-    switch (filter) {
-      case 'active':
-        return kupons.filter(k => k.KezdesiDatum <= today && k.LejarasiDatum >= today);
-      case 'expired':
-        return kupons.filter(k => k.LejarasiDatum < today);
-      default:
-        return kupons;
-    }
+    // kupons is already filtered by backend when filter !== 'all'
+    return kupons.filter(Boolean);
   };
+
+  const todayForCounts = new Date().toISOString().split('T')[0];
+  const activeCount = allKupons.filter(k => k && k.KezdesiDatum && k.LejarasiDatum && k.KezdesiDatum <= todayForCounts && k.LejarasiDatum >= todayForCounts).length;
+  const expiredCount = allKupons.filter(k => k && k.LejarasiDatum && k.LejarasiDatum < todayForCounts).length;
 
   const handleOpenModal = (kupon = null) => {
     if (kupon) {
@@ -166,14 +202,14 @@ export default function KuponPage() {
                 onClick={() => setFilter('active')}
                 className="filter-btn"
               >
-                Aktív ({getFilteredKupons().length})
+                Aktív ({activeCount})
               </Button>
               <Button 
                 variant={filter === 'expired' ? 'danger' : 'outline-danger'}
                 onClick={() => setFilter('expired')}
                 className="filter-btn"
               >
-                Lejárt
+                Lejárt ({expiredCount})
               </Button>
             </div>
           </Col>

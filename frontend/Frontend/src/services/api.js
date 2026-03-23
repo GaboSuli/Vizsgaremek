@@ -1,78 +1,8 @@
-// Csoporthoz tartozó vevési lista lekérése
-export async function getCsoportVevesiListak(csoportId) {
-  try {
-    const resp = await api.get(`/csoport/${csoportId}/vevesiListak`);
-    return resp.data;
-  } catch (err) {
-    throw err;
-  }
-}
-
-// Új vevési lista elem hozzáadása
-export async function addVevesiObjektum(data) {
-  try {
-    const resp = await api.post('/vevesiObjektum/create', data);
-    return resp.data;
-  } catch (err) {
-    throw err;
-  }
-}
-
-// Vevési objektum módosítása
-export async function updateVevesiObjektum(objektumId, data) {
-  try {
-    const resp = await api.put(`/vevesiObjektum/modositas/${objektumId}`, data);
-    return resp.data;
-  } catch (err) {
-    throw err;
-  }
-}
-
-// Vevési objektum törlése
-export async function deleteVevesiObjektum(objektumId) {
-  try {
-    const resp = await api.delete(`/vevesiObjektum/torles/${objektumId}`);
-    return resp.data;
-  } catch (err) {
-    throw err;
-  }
-}
-// Új tag hozzáadása csoporthoz
-export async function addCsoportTag(csoport_id, felhasznalo_id) {
-  try {
-    const resp = await api.post('/csoportTagsag/create', { csoport_id, felhasznalo_id });
-    return resp.data;
-  } catch (err) {
-    throw err;
-  }
-}
-
-// Csoport tagság módosítása (becenév, jogosultság)
-export async function editCsoportTag(csoportId, data) {
-  try {
-    const resp = await api.put(`/csoportTagsag/modositas/${csoportId}`, data);
-    return resp.data;
-  } catch (err) {
-    throw err;
-  }
-}
-
-// Csoport tagság törlése
-export async function deleteCsoportTag(tagsagId) {
-  try {
-    const resp = await api.delete(`/csoportTagsag/torles/${tagsagId}`);
-    return resp.data;
-  } catch (err) {
-    throw err;
-  }
-}
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
-  headers: {
-    'Content-Type': 'application/json'
-  },
+  baseURL: 'http://127.0.0.1:8000/api',
+  headers: { 'Content-Type': 'application/json' },
   timeout: 15000
 });
 
@@ -144,6 +74,7 @@ api.interceptors.response.use((res) => res, (error) => {
 async function handleError(err) {
   const result = { success: false, status: null, message: 'Hiba történt', errors: null };
   if (!err) return result;
+
   if (err.response) {
     result.status = err.response.status;
     result.message = (err.response.data && (err.response.data.message || err.response.data.msg)) || err.message || 'Hiba a szerverről';
@@ -156,7 +87,6 @@ async function handleError(err) {
     if (err.response.status === 409) {
       result.message = err.response.data && (err.response.data.message || 'Konfliktus: erőforrás már létezik');
     }
-
   } else {
     result.message = err.message || 'Hálózati hiba';
   }
@@ -228,14 +158,37 @@ export async function apiCall(path, options = {}) {
   }
 }
 
-// Lekéri a bejelentkezett felhasználó csoportjait
+// Helpers used across the app (use apiCall to get normalized responses)
+export async function getCsoportVevesiListak(csoportId) {
+  return await apiCall(`/csoport/${csoportId}/vevesiListak`);
+}
+
+export async function addVevesiObjektum(data) {
+  return await apiCall('/vevesiObjektum/create', { method: 'POST', body: data });
+}
+
+export async function updateVevesiObjektum(objektumId, data) {
+  return await apiCall(`/vevesiObjektum/modositas/${objektumId}`, { method: 'PUT', body: data });
+}
+
+export async function deleteVevesiObjektum(objektumId) {
+  return await apiCall(`/vevesiObjektum/torles/${objektumId}`, { method: 'DELETE' });
+}
+
+export async function addCsoportTag(csoport_id, felhasznalo_id) {
+  return await apiCall('/csoportTagsag/create', { method: 'POST', body: { csoport_id, felhasznalo_id } });
+}
+
+export async function editCsoportTag(csoportId, data) {
+  return await apiCall(`/csoportTagsag/modositas/${csoportId}`, { method: 'PUT', body: data });
+}
+
+export async function deleteCsoportTag(tagsagId) {
+  return await apiCall(`/csoportTagsag/torles/${tagsagId}`, { method: 'DELETE' });
+}
+
 export async function getFelhasznaloCsoportjai() {
-  try {
-    const resp = await api.get('/felhasznalo/csoportjai');
-    return resp.data;
-  } catch (err) {
-    throw err;
-  }
+  return await apiCall('/felhasznalo/csoportjai');
 }
 
 export default api;
