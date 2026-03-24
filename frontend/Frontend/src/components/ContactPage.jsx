@@ -18,10 +18,10 @@ export default function ContactPage() {
   const [error, setError] = useState('');
 
   const messageTypes = [
-    { value: 'kerdes', label: 'Kérdés' },
-    { value: 'hiba', label: 'Hiba bejelentés' },
-    { value: 'javaslat', label: 'Javaslat' },
-    { value: 'egyuttmukodes', label: 'Együttműködés' }
+    { value: '1', label: 'Kérdés' },
+    { value: '2', label: 'Hiba bejelentés' },
+    { value: '3', label: 'Javaslat' },
+    { value: '4', label: 'Együttműködés' }
   ];
 
   const handleChange = ({ target: { name, value } }) => {
@@ -41,19 +41,22 @@ export default function ContactPage() {
     }
 
     try {
-      const payload = {
-        name: formData.name,
-        email: formData.email,
-        messageType: formData.messageType,
-        message: formData.message
+      const token = localStorage.getItem('auth_token');
+
+      // 1) Save to backend database
+      const backendPayload = {
+        contactTipusId: formData.messageType,
+        text: formData.message
       };
 
       const res = await fetch('http://127.0.0.1:8000/api/contact/create', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(backendPayload)
       });
 
       let data;
@@ -65,7 +68,23 @@ export default function ContactPage() {
         throw new Error('A szerver hibás választ adott (nem JSON). Ellenőrizd az API-t.');
       }
 
-      if (!res.ok) throw new Error(data.message || "Hiba történt");
+      if (!res.ok) throw new Error(data.message || JSON.stringify(data.validacios_hibak) || "Hiba történt");
+
+      // 2) Send email via Express email server
+      const typeLabel = messageTypes.find(t => t.value === formData.messageType)?.label || formData.messageType;
+
+      const emailPayload = {
+        name: formData.name,
+        email: formData.email,
+        messageType: typeLabel,
+        message: formData.message
+      };
+
+      await fetch('http://localhost:5000/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(emailPayload)
+      });
 
       setSuccess(true);
 
