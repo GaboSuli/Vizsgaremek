@@ -45,6 +45,8 @@ export default function ContactPage() {
 
       // 1) Save to backend database
       const backendPayload = {
+        nev: formData.name,
+        email: formData.email,
         contactTipusId: formData.messageType,
         text: formData.message
       };
