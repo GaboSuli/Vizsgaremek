@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { addVevesiObjektum } from "../services/api";
+import './AddItemForm.css'
 
 export default function AddItemForm({ vevesListaId, onSuccess }) {
   const [megnevezes, setMegnevezes] = useState("");
@@ -34,7 +35,7 @@ export default function AddItemForm({ vevesListaId, onSuccess }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{marginBottom:16}}>
+    <form onSubmit={handleSubmit} className="add-item-form" style={{marginBottom:16}}>
       <input
         type="text"
         placeholder="Termék neve"

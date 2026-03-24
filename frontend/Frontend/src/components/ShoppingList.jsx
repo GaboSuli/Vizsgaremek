@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getCsoportVevesiListak } from "../services/api";
 import AddItemForm from "./AddItemForm";
 import ShoppingListItem from "./ShoppingListItem";
+import './ShoppingListItem.css'
 
 export default function ShoppingList({ csoportId }) {
   const [listak, setListak] = useState([]);

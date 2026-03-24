@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import useAuth from '../context/useAuth.js';
 import { Container, Row, Col, Card, Button, Table, Badge, Spinner, Alert, Modal, Form, InputGroup } from 'react-bootstrap';
 import {
@@ -10,7 +10,8 @@ import {
   removeItemFromList,
   deleteShoppingList,
   estimateTotalCost,
-  getShoppingListStats
+  getShoppingListStats,
+  getShoppingListById
 } from '../services/shoppingListService';
 import './ShoppingListPage.css';
 
@@ -39,27 +40,56 @@ export default function ShoppingListPage() {
 
   const auth = useAuth();
 
-  useEffect(() => {
-    if (auth.user) loadLists();
-  }, [auth.user]);
-
-  const loadLists = async () => {
+  const loadLists = useCallback(async () => {
     try {
       setLoading(true);
       const userId = auth.user?.id;
       const result = userId ? await getShoppingListsByUser(userId) : await getAllShoppingLists();
-      setLists(result.data);
-      
+
+      // Normalize result.data into an array to avoid rendering errors when API returns null/undefined/single object
+      let listsData = [];
+      if (result && result.data) {
+        if (Array.isArray(result.data)) listsData = result.data;
+        else listsData = [result.data];
+      } else {
+        // If the service returned an error object without data, fallback to empty list
+        listsData = [];
+      }
+
+      // Normalize field names from backend (lowercase keys) to UI expected keys
+      listsData = listsData.map(l => {
+        const items = l.VevesiLista || l.vevesi_lista || l.vevesiLista || l.items || [];
+        const nev = l.Nev || l.nev || l.megnevezes || '';
+        const letrehoz = l.Letrehozas || l.letrehozas || l.created_at || '';
+        const osszesen = l.Osszesen || l.osszesen || l.total || 0;
+        const tetelek = l.TeteiekSzama || l.teteiek_szama || (Array.isArray(items) ? items.length : 0);
+        return {
+          ...l,
+          Nev: nev,
+          Letrehozas: letrehoz,
+          Osszesen: osszesen,
+          TeteiekSzama: tetelek,
+          VevesiLista: items
+        };
+      });
+
+      setLists(listsData);
+
       const statsResult = await getShoppingListStats(userId);
-      setStats(statsResult.data);
-      
+      setStats(statsResult && statsResult.data ? statsResult.data : null);
+
       setError(null);
     } catch (err) {
       setError(err.message || 'Hiba a betöltéskor');
     } finally {
       setLoading(false);
     }
-  };
+  }, [auth.user]);
+
+  // Call loadLists when auth.user becomes available. loadLists is defined above.
+  useEffect(() => {
+    if (auth.user) loadLists();
+  }, [auth.user, loadLists]);
 
   const handleOpenListModal = (list = null) => {
     if (list) {
@@ -91,20 +121,34 @@ export default function ShoppingListPage() {
 
     try {
       setLoading(true);
-      let result;
-
       if (editingListId) {
-        result = await updateShoppingList(editingListId, listFormData);
-        setLists(lists.map(l => l.id === editingListId ? result.data : l));
+        const result = await updateShoppingList(editingListId, listFormData);
+        if (result && result.success) {
+          await loadLists();
+          setShowModal(false);
+          setError(null);
+        } else {
+          setError(result.message || 'Hiba a mentéskor');
+        }
       } else {
-        result = await createShoppingList(listFormData);
-        setLists([...lists, result.data]);
+        // Backend requires felhasznalo_id and csoport_id. Include current user id and the list name as 'nev'.
+        const payload = {
+          felhasznalo_id: auth.user?.id || null,
+          csoport_id: null,
+          nev: listFormData.Nev
+        };
+        const result = await createShoppingList(payload);
+        if (result && result.success) {
+          // reload lists from server to get consistent structure
+          await loadLists();
+          setShowModal(false);
+          setError(null);
+        } else {
+          setError(result.message || 'Hiba a mentéskor');
+        }
       }
-
-      setShowModal(false);
-      setError(null);
     } catch (err) {
-      setError(err.error || 'Hiba a mentéskor');
+      setError(err.error || err.message || 'Hiba a mentéskor');
     } finally {
       setLoading(false);
     }
@@ -118,18 +162,32 @@ export default function ShoppingListPage() {
 
     try {
       setLoading(true);
-      const result = await addItemToList(selectedList.id, itemFormData);
-      setSelectedList(result.data);
-      
-      setLists(lists.map(l => l.id === selectedList.id ? result.data : l));
-      setShowItemModal(false);
-      
-      const estimateResult = await estimateTotalCost(selectedList.id);
-      setTotalEstimate(estimateResult.data);
-      
-      setError(null);
+      // Map UI form fields to the backend expected keys to avoid validation (422)
+      const itemPayload = {
+        megnevezes: itemFormData.Megnevezes,
+        alKategoria_id: itemFormData.Alkategoria || null,
+        ar: itemFormData.Ar || 0,
+        mennyiseg: itemFormData.Mennyiseg || 0,
+        mennyiseg_tipus: itemFormData.MennyisegTipusMertekegyseg
+      };
+
+      const result = await addItemToList(selectedList.id, itemPayload);
+      if (result && result.success) {
+        // refresh the selected list from server
+        const refreshed = await getShoppingListById(selectedList.id);
+        if (refreshed && refreshed.success) {
+          setSelectedList(refreshed.data);
+          await loadLists();
+        }
+        setShowItemModal(false);
+        const estimateResult = await estimateTotalCost(selectedList.id);
+        setTotalEstimate(estimateResult.data);
+        setError(null);
+      } else {
+        setError(result.message || 'Hiba az elemhozzáadáskor');
+      }
     } catch (err) {
-      setError(err.error || 'Hiba az elemhozzáadáskor');
+      setError(err.error || err.message || 'Hiba az elemhozzáadáskor');
     } finally {
       setLoading(false);
     }
@@ -139,13 +197,19 @@ export default function ShoppingListPage() {
     if (window.confirm('Biztosan törölni szeretné ezt a tételt?')) {
       try {
         const result = await removeItemFromList(selectedList.id, itemId);
-        setSelectedList(result.data);
-        setLists(lists.map(l => l.id === selectedList.id ? result.data : l));
-        
-        const estimateResult = await estimateTotalCost(selectedList.id);
-        setTotalEstimate(estimateResult.data);
+        if (result && result.success) {
+          const refreshed = await getShoppingListById(selectedList.id);
+          if (refreshed && refreshed.success) {
+            setSelectedList(refreshed.data);
+            await loadLists();
+          }
+          const estimateResult = await estimateTotalCost(selectedList.id);
+          setTotalEstimate(estimateResult.data);
+        } else {
+          setError(result.message || 'Hiba a törléskor');
+        }
       } catch (err) {
-        setError(err.error || 'Hiba a törléskor');
+        setError(err.error || err.message || 'Hiba a törléskor');
       }
     }
   };
@@ -153,14 +217,18 @@ export default function ShoppingListPage() {
   const handleDeleteList = async (id) => {
     if (window.confirm('Biztosan törölni szeretné ezt a bevásárlólistát?')) {
       try {
-        await deleteShoppingList(id);
-        setLists(lists.filter(l => l.id !== id));
-        if (selectedList?.id === id) {
-          setSelectedList(null);
-          setTotalEstimate(null);
+        const result = await deleteShoppingList(id);
+        if (result && result.success) {
+          await loadLists();
+          if (selectedList?.id === id) {
+            setSelectedList(null);
+            setTotalEstimate(null);
+          }
+        } else {
+          setError(result.message || 'Hiba a törléskor');
         }
       } catch (err) {
-        setError(err.error || 'Hiba a törléskor');
+        setError(err.error || err.message || 'Hiba a törléskor');
       }
     }
   };
@@ -168,6 +236,9 @@ export default function ShoppingListPage() {
   const handleSelectList = async (list) => {
     setSelectedList(list);
     try {
+      // refresh selected list from server
+      const refreshed = await getShoppingListById(list.id);
+      if (refreshed && refreshed.success) setSelectedList(refreshed.data);
       const estimateResult = await estimateTotalCost(list.id);
       setTotalEstimate(estimateResult.data);
     } catch (err) {
@@ -270,22 +341,22 @@ export default function ShoppingListPage() {
                 <Alert variant="info">Nincsenek bevásárlólisták. Hozzon létre egy új listát!</Alert>
               </Col>
             ) : (
-              lists.map(list => (
+              (lists || []).map(list => (
                 <Col key={list.id} xs={12} md={6} lg={4} className="mb-4">
                   <Card className="list-card">
                     <Card.Body>
-                      <h5 className="list-title">{list.Nev}</h5>
+                      <h5 className="list-title">{list?.Nev || 'Név nélkül'}</h5>
                       <div className="list-meta">
                         <small className="text-muted">
-                          Létrehozva: {list.Letrehozas}
+                          Létrehozva: {list?.Letrehozas || '-'}
                         </small>
                       </div>
                       <div className="list-info mb-3">
                         <span className="info-badge">
-                          <strong>{list.TeteiekSzama}</strong> tétel
+                          <strong>{list?.TeteiekSzama ?? (Array.isArray(list?.VevesiLista) ? list.VevesiLista.length : 0)}</strong> tétel
                         </span>
                         <span className="info-badge total">
-                          <strong>{(list.Osszesen / 1000).toFixed(1)}k Ft</strong>
+                          <strong>{((list?.Osszesen || 0) / 1000).toFixed(1)}k Ft</strong>
                         </span>
                       </div>
                       <div className="list-actions">
@@ -363,7 +434,7 @@ export default function ShoppingListPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {selectedList.VevesiLista.map(item => (
+                    {(selectedList?.VevesiLista || []).map(item => (
                       <tr key={item.id}>
                         <td><strong>{item.Megnevezes}</strong></td>
                         <td>{item.Alkategoria}</td>
@@ -383,7 +454,7 @@ export default function ShoppingListPage() {
                     ))}
                     <tr className="summary-row">
                       <td colSpan="4"><strong>Összesen:</strong></td>
-                      <td><strong>{(selectedList.Osszesen / 1000).toFixed(1)}k Ft</strong></td>
+                      <td><strong>{((selectedList?.Osszesen || 0) / 1000).toFixed(1)}k Ft</strong></td>
                       <td></td>
                     </tr>
                   </tbody>
