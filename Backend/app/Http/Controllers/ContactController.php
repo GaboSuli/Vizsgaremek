@@ -49,8 +49,8 @@ class ContactController extends Controller
             return response(["validacios_hibak"=>$validator->errors()->toArray()],400);
         }
         $newRec = new Contact();
-        $newRec->nev = $user->nev;
-        $newRec->email = $user->email;
+        $newRec->nev = $request->nev;
+        $newRec->email = $request->email;
         $newRec->contactTipusId = $request->contactTipusId;
         $newRec->text = $request->text;
         $newRec->save();
