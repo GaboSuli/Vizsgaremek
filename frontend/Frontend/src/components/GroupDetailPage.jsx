@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { apiCall } from "../services/api";
 import GroupMembersList from "./GroupMembersList";
 import AddMemberForm from "./AddMemberForm";
 import ShoppingList from "./ShoppingList";
+import './GroupDetailPage.css';
 
 export default function GroupDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [members, setMembers] = useState([]);
-  const [group, setGroup] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -30,23 +31,62 @@ export default function GroupDetailPage() {
     // eslint-disable-next-line
   }, [id]);
 
-  if (loading) return <div>Betöltés...</div>;
-  if (error) return <div style={{color:'red', margin:'16px 0'}}>Hiba: {error}</div>;
+  if (loading) {
+    return (
+      <div className="page-container">
+        <div className="loading-state">
+          <div className="spinner"></div>
+          <p>Betöltés...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page-container">
+        <div className="alert alert-danger">{error}</div>
+        <button className="btn btn-secondary" onClick={() => navigate('/groups')}>← Vissza a csoportokhoz</button>
+      </div>
+    );
+  }
 
   return (
-    <div style={{maxWidth:600, margin:'0 auto', padding:'24px 0'}}>
-      <h2 style={{marginBottom:24}}>Csoport részletei</h2>
-      {/* <div>{group && group.megnevezes}</div> */}
+    <div className="gd-page">
+      <div className="page-container">
+        <div className="page-header">
+          <div>
+            <button className="btn btn-ghost gd-back" onClick={() => navigate('/groups')}>← Csoportok</button>
+            <h1 className="page-title">Csoport részletei</h1>
+          </div>
+        </div>
 
-      <section style={{marginBottom:32}}>
-        <h3 style={{marginBottom:12}}>Tagok kezelése</h3>
-        <AddMemberForm csoportId={id} onSuccess={fetchMembers} />
-        <GroupMembersList members={members} csoportId={id} onChange={fetchMembers} />
-      </section>
+        <div className="gd-grid">
+          {/* Members panel */}
+          <div className="card gd-panel">
+            <div className="gd-panel-header">
+              <span>👥</span>
+              <h2>Tagok ({members.length})</h2>
+            </div>
+            <div className="gd-panel-body">
+              <AddMemberForm csoportId={id} onSuccess={fetchMembers} />
+              <GroupMembersList members={members} csoportId={id} onChange={fetchMembers} />
+            </div>
+          </div>
 
-      <section>
-        <ShoppingList csoportId={id} />
-      </section>
+          {/* Shopping lists panel */}
+          <div className="card gd-panel">
+            <div className="gd-panel-header">
+              <span>🛒</span>
+              <h2>Bevásárlólisták</h2>
+            </div>
+            <div className="gd-panel-body">
+              <ShoppingList csoportId={id} />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
+

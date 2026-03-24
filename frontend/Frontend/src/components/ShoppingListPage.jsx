@@ -272,66 +272,43 @@ export default function ShoppingListPage() {
   }
 
   return (
-    <div className="shopping-list-page">
-      <section className="shopping-hero">
-        <div className="hero-content">
-          <h1 className="hero-title">🛒 Bevásárlólista Kezelő</h1>
-          <p className="hero-subtitle">Hozzon létre bevásárlólistákat és becsülje meg a költségeket</p>
+    <div className="sl-page">
+      <div className="page-container">
+        {/* Page header */}
+        <div className="page-header" style={{display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:'16px'}}>
+          <div>
+            <h1 className="page-title">🛒 Bevásárlólisták</h1>
+            <p className="page-subtitle">Hozz létre és kezeld bevásárlólistáidat</p>
+          </div>
+          <button className="btn btn-primary" onClick={() => handleOpenListModal()}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Új lista
+          </button>
         </div>
-      </section>
 
-      <Container className="shopping-content">
-        {error && <Alert variant="danger" onClose={() => setError(null)} dismissible>{error}</Alert>}
+        {error && <div className="alert alert-danger" style={{marginBottom:'20px'}}>{error}</div>}
 
-        {/* Statisztikák */}
+        {/* Stats row */}
         {stats && (
-          <Row className="stats-grid mb-4">
-            <Col xs={12} sm={6} md={3}>
-              <Card className="stat-card">
-                <Card.Body>
-                  <h6 className="stat-label">Összes lista</h6>
-                  <h3 className="stat-value">{stats.totalLists}</h3>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col xs={12} sm={6} md={3}>
-              <Card className="stat-card">
-                <Card.Body>
-                  <h6 className="stat-label">Összesen tételek</h6>
-                  <h3 className="stat-value">{stats.totalItems}</h3>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col xs={12} sm={6} md={3}>
-              <Card className="stat-card">
-                <Card.Body>
-                  <h6 className="stat-label">Összköltség</h6>
-                  <h3 className="stat-value">{(stats.totalCost / 1000).toFixed(0)}k Ft</h3>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col xs={12} sm={6} md={3}>
-              <Card className="stat-card">
-                <Card.Body>
-                  <h6 className="stat-label">Átlag/Lista</h6>
-                  <h3 className="stat-value">{stats.averageCostPerList / 1000 | 0}k Ft</h3>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
+          <div className="dashboard-stats" style={{marginBottom:'28px'}}>
+            {[
+              { label: 'Összes lista', value: stats.totalLists },
+              { label: 'Összes tétel', value: stats.totalItems },
+              { label: 'Összköltség', value: `${(stats.totalCost / 1000).toFixed(0)}k Ft` },
+              { label: 'Átlag/lista', value: `${(stats.averageCostPerList / 1000) | 0}k Ft` },
+            ].map((s, i) => (
+              <div key={i} className="stat-card">
+                <div>
+                  <div className="stat-label">{s.label}</div>
+                  <div className="stat-value">{s.value}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
 
-        <Row className="mb-4">
-          <Col>
-            <Button 
-              variant="primary" 
-              onClick={() => handleOpenListModal()}
-              className="btn-new-list"
-            >
-              + Új Bevásárlólista
-            </Button>
-          </Col>
-        </Row>
 
         {!selectedList ? (
           // Lista nézet
@@ -471,7 +448,7 @@ export default function ShoppingListPage() {
             </Card.Body>
           </Card>
         )}
-      </Container>
+      </div>
 
       {/* Lista módosítás Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>

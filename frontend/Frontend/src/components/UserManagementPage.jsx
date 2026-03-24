@@ -125,87 +125,123 @@ export default function UserManagementPage() {
   };
 
   return (
-    <div className="user-management-container">
-      <div className="user-management-hero">
-        <h1>👤 Felhasználó Kezelés</h1>
-        <p>Fiókod kezelése és más felhasználók adatainak lekérdezése</p>
-      </div>
+    <div className="um-page">
+      <div className="page-container" style={{maxWidth: 720}}>
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Fiók beállítások</h1>
+            <p className="page-subtitle">Profilod kezelése és adatok lekérdezése</p>
+          </div>
+        </div>
 
-      <div className="user-management-tabs">
-        <button className={`tab-button ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>📋 Profilom</button>
-        <button className={`tab-button ${activeTab === 'update' ? 'active' : ''}`} onClick={() => setActiveTab('update')}>✏️ Módosítás</button>
-        <button className={`tab-button ${activeTab === 'query' ? 'active' : ''}`} onClick={() => setActiveTab('query')}>🔍 Lekérdezés</button>
-        <button className={`tab-button ${activeTab === 'delete' ? 'active' : ''}`} onClick={() => setActiveTab('delete')}>🗑️ Törlés</button>
-      </div>
+        <div className="tabs" style={{marginBottom:'1.5rem'}}>
+          <button className={`tab-item${activeTab === 'profile' ? ' active' : ''}`} onClick={() => setActiveTab('profile')}>Profilom</button>
+          <button className={`tab-item${activeTab === 'update' ? ' active' : ''}`} onClick={() => setActiveTab('update')}>Módosítás</button>
+          <button className={`tab-item${activeTab === 'query' ? ' active' : ''}`} onClick={() => setActiveTab('query')}>Lekérdezés</button>
+          <button className={`tab-item${activeTab === 'delete' ? ' active' : ''}`} onClick={() => setActiveTab('delete')}>Fiók törlése</button>
+        </div>
 
-      <div className="user-management-content">
-        {error && <div className="alert alert-danger">{error}</div>}
-        {success && <div className="alert alert-success">{success}</div>}
+        {error && <div className="alert alert-danger" style={{marginBottom:'1rem'}}>{error}</div>}
+        {success && <div className="alert alert-success" style={{marginBottom:'1rem'}}>{success}</div>}
 
         {activeTab === 'profile' && (
-          <div className="tab-content">
-            <h2>Saját Profil Adatok</h2>
-            {loading ? <div className="loading">Betöltés...</div> : (
-              userData ? (
-                <div className="profile-data">
-                  <div className="data-card">
-                    <div className="data-item"><strong>Név:</strong> {userData.nev || 'Nincs megadva'}</div>
-                    <div className="data-item"><strong>Becenév:</strong> {userData.becenev || 'Nincs megadva'}</div>
-                    <div className="data-item"><strong>Profilkép URL:</strong> {userData.profilkep_url || 'user.png'}</div>
-                    <div className="data-item"><strong>Email:</strong> {userData.email || 'Nincs megadva'}</div>
+          <div className="card" style={{padding:'1.75rem'}}>
+            <h2 style={{fontSize:'1.1rem', fontWeight:700, marginBottom:'1.25rem', color:'var(--clr-text)'}}>Saját profil adatok</h2>
+            {loading ? (
+              <div className="loading-state"><div className="spinner"></div><p>Betöltés...</p></div>
+            ) : userData ? (
+              <div style={{display:'flex', flexDirection:'column', gap:'0.9rem'}}>
+                {[
+                  {label:'Név', value: userData.nev},
+                  {label:'Becenév', value: userData.becenev},
+                  {label:'Email', value: userData.email},
+                  {label:'Profilkép URL', value: userData.profilkep_url || 'user.png'},
+                ].map(({label, value}) => (
+                  <div key={label} className="um-profile-row">
+                    <span className="um-label">{label}</span>
+                    <span className="um-value">{value || <span style={{color:'var(--clr-text-muted)'}}>Nincs megadva</span>}</span>
                   </div>
-                </div>
-              ) : <p>Nincs elérhető adat</p>
-            )}
+                ))}
+              </div>
+            ) : <p style={{color:'var(--clr-text-muted)'}}>Nincs elérhető adat</p>}
           </div>
         )}
 
         {activeTab === 'update' && (
-          <div className="tab-content">
-            <h2>Adatok Módosítása</h2>
-            <form onSubmit={handleUpdate}>
-              {['nev','becenev','email','profilkep_url'].map((field) => (
-                <div className="form-group" key={field}>
-                  <label>{field === 'nev' ? 'Név' : field === 'becenev' ? 'Becenév' : field === 'email' ? 'Email' : 'Profilkép URL'}</label>
-                  <input type={field==='email' ? 'email':'text'} name={field} value={updateForm[field]} onChange={handleUpdateFormChange} disabled={loading} required={field==='nev'||field==='email'} />
+          <div className="card" style={{padding:'1.75rem'}}>
+            <h2 style={{fontSize:'1.1rem', fontWeight:700, marginBottom:'1.25rem', color:'var(--clr-text)'}}>Adatok módosítása</h2>
+            <form onSubmit={handleUpdate} style={{display:'flex', flexDirection:'column', gap:'1rem'}}>
+              {[
+                {field:'nev', label:'Név', type:'text', required:true},
+                {field:'becenev', label:'Becenév', type:'text'},
+                {field:'email', label:'Email', type:'email', required:true},
+                {field:'profilkep_url', label:'Profilkép URL', type:'text'},
+              ].map(({field, label, type, required}) => (
+                <div key={field} className="form-group">
+                  <label className="form-label">{label} {required && '*'}</label>
+                  <input
+                    className="form-control"
+                    type={type}
+                    name={field}
+                    value={updateForm[field]}
+                    onChange={handleUpdateFormChange}
+                    disabled={loading}
+                    required={required}
+                  />
                 </div>
               ))}
-              <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Módosítás...' : 'Módosítás'}</button>
+              <button type="submit" className="btn btn-primary" disabled={loading} style={{alignSelf:'flex-start'}}>
+                {loading ? 'Módosítás...' : 'Mentés'}
+              </button>
             </form>
           </div>
         )}
 
         {activeTab === 'query' && (
-          <div className="tab-content">
-            <h2>Más Felhasználó Adatainak Lekérdezése</h2>
-            <div className="query-section">
-              <div className="form-group">
-                <label>Felhasználó ID</label>
-                <input type="text" value={queryId} onChange={(e) => setQueryId(e.target.value)} placeholder="Add meg a felhasználó azonosítóját" disabled={loading} />
+          <div className="card" style={{padding:'1.75rem'}}>
+            <h2 style={{fontSize:'1.1rem', fontWeight:700, marginBottom:'1.25rem', color:'var(--clr-text)'}}>Felhasználó lekérdezése</h2>
+            <div style={{display:'flex', gap:'0.75rem', alignItems:'flex-end', marginBottom:'1.25rem'}}>
+              <div className="form-group" style={{flex:1}}>
+                <label className="form-label">Felhasználó azonosítója</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  value={queryId}
+                  onChange={e => setQueryId(e.target.value)}
+                  placeholder="pl. 42"
+                  disabled={loading}
+                />
               </div>
-              <button onClick={handleQuery} className="btn-primary" disabled={loading}>{loading ? 'Lekérdezés...' : 'Lekérdezés'}</button>
+              <button className="btn btn-primary" onClick={handleQuery} disabled={loading}>
+                {loading ? 'Keresés...' : 'Lekérdezés'}
+              </button>
             </div>
             {queryResult && (
-              <div className="query-result">
-                <h3>Lekérdezett Adatok</h3>
-                <div className="data-card">
-                  <div className="data-item"><strong>Név:</strong> {queryResult.Nev}</div>
-                  <div className="data-item"><strong>Becenév:</strong> {queryResult.Becenev}</div>
-                  <div className="data-item"><strong>Profilkép URL:</strong> {queryResult.ProfilKepURL}</div>
-                </div>
+              <div style={{display:'flex', flexDirection:'column', gap:'0.9rem'}}>
+                {[
+                  {label:'Név', value: queryResult.Nev},
+                  {label:'Becenév', value: queryResult.Becenev},
+                  {label:'Profilkép URL', value: queryResult.ProfilKepURL},
+                ].map(({label, value}) => (
+                  <div key={label} className="um-profile-row">
+                    <span className="um-label">{label}</span>
+                    <span className="um-value">{value || <span style={{color:'var(--clr-text-muted)'}}>Nincs megadva</span>}</span>
+                  </div>
+                ))}
               </div>
             )}
           </div>
         )}
 
         {activeTab === 'delete' && (
-          <div className="tab-content">
-            <h2>Fiók Törlése</h2>
-            <div className="delete-warning">
-              <div className="warning-icon">⚠️</div>
-              <p>A fiók törlése végleges művelet. Az összes adatod elveszik, és nem lehet visszaállítani.</p>
-              <button onClick={handleDelete} className="btn-danger" disabled={loading}>{loading ? 'Törlés...' : 'Fiók Törlése'}</button>
+          <div className="card" style={{padding:'1.75rem', borderColor:'var(--clr-danger)'}}>
+            <h2 style={{fontSize:'1.1rem', fontWeight:700, marginBottom:'1rem', color:'var(--clr-danger)'}}>Fiók törlése</h2>
+            <div className="alert alert-danger" style={{marginBottom:'1.25rem'}}>
+              ⚠️ A fiók törlése végleges. Az összes adatod elveszik, és nem lehet visszaállítani.
             </div>
+            <button className="btn btn-danger" onClick={handleDelete} disabled={loading}>
+              {loading ? 'Törlés...' : 'Fiók törlése'}
+            </button>
           </div>
         )}
       </div>

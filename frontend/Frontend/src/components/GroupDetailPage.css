@@ -1,0 +1,49 @@
+/* ── GroupDetailPage ─────────────────────── */
+.gd-page {
+  min-height: 100vh;
+}
+
+.gd-back {
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  padding: 0.3rem 0;
+  color: var(--clr-text-muted);
+}
+
+.gd-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.gd-panel {
+  padding: 0;
+  overflow: hidden;
+}
+
+.gd-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.1rem 1.5rem;
+  background: var(--clr-bg);
+  border-bottom: 1px solid var(--clr-border);
+}
+
+.gd-panel-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--clr-text);
+  margin: 0;
+}
+
+.gd-panel-body {
+  padding: 1.25rem 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .gd-grid {
+    grid-template-columns: 1fr;
+  }
+}

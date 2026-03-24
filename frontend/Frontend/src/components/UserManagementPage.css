@@ -1,32 +1,37 @@
-.user-management-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+/* ── UserManagementPage ──────────────────── */
+.um-page {
+  min-height: 100vh;
 }
 
-.user-management-hero {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.user-management-hero h1 {
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.user-management-hero p {
-  color: #666;
-  font-size: 16px;
-}
-
-.user-management-tabs {
+.um-profile-row {
   display: flex;
-  gap: 10px;
-  margin-bottom: 30px;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
-  overflow-x: auto;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--clr-border);
+  font-size: 0.9rem;
 }
+
+.um-profile-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.um-label {
+  color: var(--clr-text-muted);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.um-value {
+  color: var(--clr-text);
+  font-weight: 500;
+  text-align: right;
+  word-break: break-all;
+}
+
+/* form-control re-use from ContactPage.css */
 
 .tab-button {
   padding: 10px 20px;

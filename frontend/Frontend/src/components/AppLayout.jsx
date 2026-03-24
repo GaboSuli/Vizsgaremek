@@ -6,12 +6,9 @@ export default function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="app-layout">
-      <Sidebar
-        collapsed={collapsed}
-        onToggle={() => setCollapsed(c => !c)}
-      />
-      <main className={`main-content ${collapsed ? 'sidebar-collapsed' : ''}`}>
+    <div className={`app-shell ${collapsed ? 'sidebar-is-collapsed' : ''}`}>
+      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(c => !c)} />
+      <main className="app-main">
         <Outlet />
       </main>
     </div>
