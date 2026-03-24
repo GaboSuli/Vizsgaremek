@@ -117,13 +117,13 @@ export default function ContactPage() {
 
           {success && (
             <div className="success-message">
-              ✅ Üzenet elküldve! Hamarosan válaszolunk.
+               Üzenet elküldve! Hamarosan válaszolunk.
             </div>
           )}
 
           {error && (
             <div className="error-message">
-              ❌ {error}
+              {error}
             </div>
           )}
 
