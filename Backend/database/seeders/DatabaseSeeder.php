@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
             'nev' => 'Admin',
             'becenev' => 'Admin',
             'email' => 'admin@example.com',
-            'password' => bcrypt('$RandomHashCode1℃'),
+            'password' => bcrypt('12345678'),
             'tema_id' => 1,
             'jogosultsag_szint'=>255
         ]);

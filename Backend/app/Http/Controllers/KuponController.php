@@ -39,10 +39,10 @@ class KuponController extends Controller
         $validator = Validator::make($request->all(),[
             'kezdesi_datum' => 'required|date',
             'lejarasi_datum' => 'required|date',
-            'kod' => 'required|string',
-            'kedvezmeny' => 'required|string',
+            'kod' => 'required|string|min:1',
+            'kedvezmeny' => 'required|string|min:1',
             'megjegyzes' => 'string',
-            'hasznalasi_hely' => 'required|string',
+            'hasznalasi_hely' => 'required|string|min:1',
         ]);
         if ($validator->fails())
         {
@@ -88,10 +88,10 @@ class KuponController extends Controller
         $validator = Validator::make($request->all(),[
             'kezdesi_datum' => 'date',
             'lejarasi_datum' => 'date',
-            'kod' => 'string',
-            'kedvezmeny' => 'string',
+            'kod' => 'string|min:1',
+            'kedvezmeny' => 'string|min:1',
             'megjegyzes' => 'string',
-            'hasznalasi_hely' => 'string',
+            'hasznalasi_hely' => 'string|min:1',
         ]);
         if ($validator->fails())
         {

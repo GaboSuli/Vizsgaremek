@@ -128,12 +128,6 @@ export default function Sidebar({ collapsed, onToggle }) {
           </div>
         </div>
 
-        {user && !collapsed && (
-          <div className="sidebar-user">
-            <small>{user.name || user.Nev || 'Felhasználó'}</small>
-          </div>
-        )}
-
         <nav className="nav">
           {user && (
             (user.jogosultsag_szint > 2

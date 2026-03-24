@@ -15,6 +15,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->id()->onDelete('cascade');;
             $table->timestamps();
+            $table->string("megnevezes");
             $table->unsignedBigInteger('felhasznalo_id');
             $table->foreign('felhasznalo_id')->references('id')->on('users');
             $table->unsignedBigInteger('csoport_id')->nullable();

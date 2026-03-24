@@ -61,7 +61,7 @@ class VevesObjektumController extends Controller
         $validator = Validator::make($request->all(),[
             'veves_lista_id' => 'required|exists:veves_lista,id',
             'alKategoria_id' => 'required|exists:alkategoriak,id',
-            'megnevezes' => 'string',
+            'megnevezes' => 'string|min:1',
             'ar' => 'required|numeric|min:0',
             'mennyiseg' => 'required|numeric|min:0'
         ]);
@@ -255,11 +255,11 @@ public function show2(int $ev)
         }
         $validator = Validator::make($request->all(),
         [
-            'alKategoria_id' => 'exists:user,id',
-            'megnevezes' => 'string',
-            'ar' => 'integer|min:0',
-            'mennyiseg' => 'float|min:0',
-            'elfogadott_statisztikara' => 'boolean'
+            'alKategoria_id' => 'exists:alkategoriak,id',
+            'megnevezes' => 'string|min:1',
+            'ar' => 'numeric|min:0',
+            'mennyiseg' => 'numeric|min:0',
+            'elfogadott_statisztikara' => 'numeric|in:0,1'
         ]);
         if ($validator->fails())
         {

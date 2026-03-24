@@ -39,16 +39,18 @@ class ContactController extends Controller
         $authUser = auth()->user();
         $validator = Validator::make($request->all(),
         [
+            'nev' => 'required|string|min:1',
+            'email' => 'required|email',
             'contactTipusId' => 'required|exists:contact_tipusok,id',
-            'text' => 'required|string'
+            'text' => 'required|string|min:1'
         ]);
         if ($validator->fails())
         {
             return response(["validacios_hibak"=>$validator->errors()->toArray()],400);
         }
         $newRec = new Contact();
-        $newRec->nev = $user->nev;
-        $newRec->email = $user->email;
+        $newRec->nev = $request->nev;
+        $newRec->email = $request->email;
         $newRec->contactTipusId = $request->contactTipusId;
         $newRec->text = $request->text;
         $newRec->save();

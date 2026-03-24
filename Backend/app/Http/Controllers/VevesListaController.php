@@ -34,7 +34,8 @@ class VevesListaController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'felhasznalo_id' => 'required|exists:users,id',
-            'csoport_id' => 'exists:csoportok,id'
+            'csoport_id' => 'exists:csoportok,id',
+            'megnevezes' => 'required|string|min:1'
         ]);
         if ($validator->fails())
         {
@@ -59,6 +60,7 @@ class VevesListaController extends Controller
         $newRec = new VevesLista();
         $newRec->felhasznalo_id = $request->felhasznalo_id;
         $newRec->csoport_id = $request->csoport_id;
+        $newRec->megnevezes = $request->megnevezes;
         $newRec->save();
         return response()->json(['message'=>'sikeres feltöltes'],201);
     }

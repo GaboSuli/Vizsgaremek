@@ -100,196 +100,197 @@ export const getAllShoppingLists = async () => {
 
 // Get shopping lists by user ID
 export const getShoppingListsByUser = async (felhasznaloId) => {
-  const response = await apiCall(`/felhasznalo/${felhasznaloId}/vevesiListak`);
-  
+  // Backend exposes the current user's lists at /felhasznalo/vevesiListak (authenticated)
+  const response = await apiCall(`/felhasznalo/vevesiListak`);
+   
   if (!response.success) {
-    const userLists = mockShoppingLists.filter(l => l.FelhasznaloId === felhasznaloId);
-    return {
-      success: true,
-      data: userLists,
-      count: userLists.length,
-      struktura: "OsszVevesiLista"
-    };
-  }
+     const userLists = mockShoppingLists.filter(l => l.FelhasznaloId === felhasznaloId);
+     return {
+       success: true,
+       data: userLists,
+       count: userLists.length,
+       struktura: "OsszVevesiLista"
+     };
+   }
 
-  return response;
-};
+   return response;
+ };
 
-// Get shopping lists by group ID
-export const getShoppingListsByGroup = async (csoportId) => {
-  const response = await apiCall(`/csoport/${csoportId}/vevesiListak`);
-  
-  if (!response.success) {
-    const groupLists = mockShoppingLists.filter(l => l.CsoportId === csoportId);
-    return {
-      success: true,
-      data: groupLists,
-      count: groupLists.length,
-      struktura: "OsszVevesiLista"
-    };
-  }
+ // Get shopping lists by group ID
+ export const getShoppingListsByGroup = async (csoportId) => {
+   const response = await apiCall(`/csoport/${csoportId}/vevesiListak`);
+   
+   if (!response.success) {
+     const groupLists = mockShoppingLists.filter(l => l.CsoportId === csoportId);
+     return {
+       success: true,
+       data: groupLists,
+       count: groupLists.length,
+       struktura: "OsszVevesiLista"
+     };
+   }
 
-  return response;
-};
+   return response;
+ };
 
-// Get specific shopping list by ID
-export const getShoppingListById = async (id) => {
-  const response = await apiCall(`/vevesiLista/${id}`);
-  
-  if (!response.success) {
-    const list = mockShoppingLists.find(l => l.id === id);
-    if (list) {
-      return {
-        success: true,
-        data: list,
-        struktura: "VevesiLista"
-      };
-    }
-    return response;
-  }
+ // Get specific shopping list by ID
+ export const getShoppingListById = async (id) => {
+   const response = await apiCall(`/vevesiLista/${id}`);
+   
+   if (!response.success) {
+     const list = mockShoppingLists.find(l => l.id === id);
+     if (list) {
+       return {
+         success: true,
+         data: list,
+         struktura: "VevesiLista"
+       };
+     }
+     return response;
+   }
 
-  return response;
-};
+   return response;
+ };
 
-// Create shopping list
-export const createShoppingList = async (listData) => {
-  return apiCall('/vevesiListak', {
-    method: 'POST',
-    body: listData
-  });
-};
+ // Create shopping list
+ export const createShoppingList = async (listData) => {
+   // Backend route for creating a list is /vevesiLista/create (authenticated)
+   return apiCall('/vevesiLista/create', {
+     method: 'POST',
+     body: listData
+   });
+ };
 
-// Update shopping list
-export const updateShoppingList = async (id, listData) => {
-  return apiCall(`/vevesiLista/${id}`, {
-    method: 'PUT',
-    body: listData
-  });
-};
+ // Update shopping list
+ export const updateShoppingList = async (id, listData) => {
+   // If backend has a different update route, adjust accordingly. Keep the current path as-is for now.
+   return apiCall(`/vevesiLista/${id}`, {
+     method: 'PUT',
+     body: listData
+   });
+ };
 
-// Delete shopping list
-export const deleteShoppingList = async (id) => {
-  return apiCall(`/vevesiLista/${id}`, {
-    method: 'DELETE'
-  });
-};
+ // Delete shopping list
+ export const deleteShoppingList = async (id) => {
+   // Backend delete route is /vevesiLista/torles/{id}
+   return apiCall(`/vevesiLista/torles/${id}`, {
+     method: 'DELETE'
+   });
+ };
 
-// Add item to shopping list
-export const addItemToList = async (listId, itemData) => {
-  return apiCall(`/vevesiLista/${listId}/tetel`, {
-    method: 'POST',
-    body: itemData
-  });
-};
+ // Create shopping list item (vevesi objektum)
+ export const createVevesiObjektum = async (itemData) => {
+   return apiCall('/vevesiObjektum/create', {
+     method: 'POST',
+     body: itemData
+   });
+ };
 
-// Remove item from shopping list
-export const removeItemFromList = async (listId, itemId) => {
-  return apiCall(`/vevesiLista/${listId}/tetel/${itemId}`, {
-    method: 'DELETE'
-  });
-};
+ // Add item to shopping list via vevesiObjektum endpoint
+ export const addItemToList = async (listId, itemData) => {
+   const payload = { ...itemData, veves_lista_id: listId };
+   return createVevesiObjektum(payload);
+ };
 
-// Estimate total cost
-export const estimateTotalCost = async (listId) => {
-  const response = await getShoppingListById(listId);
-  
-  if (!response.success || !response.data) {
-    return {
-      success: false,
-      data: null,
-      message: 'Nem sikerült az ár becslése'
-    };
-  }
+ // Remove item from shopping list using vevesiObjektum delete endpoint
+ export const removeItemFromList = async (listId, itemId) => {
+   // backend deletes objektum by id
+   return apiCall(`/vevesiObjektum/torles/${itemId}`, { method: 'DELETE' });
+ };
 
-  const list = response.data;
-  const items = list.VevesiLista || list.items || [];
-  
-  const total = items.reduce((sum, item) => {
-    return sum + ((item.Ar || item.ar || 0) * (item.Mennyiseg || item.mennyiseg || 0));
-  }, 0);
+ // Estimate total cost
+ export const estimateTotalCost = async (listId) => {
+   const response = await getShoppingListById(listId);
+   
+   if (!response.success || !response.data) {
+     return {
+       success: false,
+       data: null,
+       message: 'Nem sikerült az ár becslése'
+     };
+   }
 
-  const estimatedCost = {
-    totalItems: items.length,
-    baseCost: total,
-    estimatedWithTax: Math.round(total * 1.27),
-    currency: "HUF",
-    description: `Nagyjából ${Math.round(total / 1000)}k - ${Math.round((total * 1.27) / 1000)}k Ft (ÁFA nélkül és azzal)`
-  };
+   const list = response.data;
+   const items = list.VevesiLista || list.items || [];
+   
+   const total = items.reduce((sum, item) => {
+     return sum + ((item.Ar || item.ar || 0) * (item.Mennyiseg || item.mennyiseg || 0));
+   }, 0);
 
-  return {
-    success: true,
-    data: estimatedCost,
-    message: 'Ár sikeresen megbecsülve'
-  };
-};
+   const estimatedCost = {
+     totalItems: items.length,
+     baseCost: total,
+     estimatedWithTax: Math.round(total * 1.27),
+     currency: "HUF",
+     description: `Nagyjából ${Math.round(total / 1000)}k - ${Math.round((total * 1.27) / 1000)}k Ft (ÁFA nélkül és azzal)`
+   };
 
-// Create shopping list item (vevesi objektum)
-export const createVevesiObjektum = async (itemData) => {
-  return apiCall('/vevesiObjektum/create', {
-    method: 'POST',
-    body: itemData
-  });
-};
+   return {
+     success: true,
+     data: estimatedCost,
+     message: 'Ár sikeresen megbecsülve'
+   };
+ };
 
-// Get shopping list statistics
-export const getShoppingListStats = async (userId = null) => {
-  const response = userId ? await getShoppingListsByUser(userId) : await getAllShoppingLists();
+ // Get shopping list statistics
+ export const getShoppingListStats = async (userId = null) => {
+   const response = userId ? await getShoppingListsByUser(userId) : await getAllShoppingLists();
 
-  if (!response.success) {
-    return {
-      success: false,
-      data: null
-    };
-  }
+   if (!response.success) {
+     return {
+       success: false,
+       data: null
+     };
+   }
 
-  const lists = Array.isArray(response.data) ? response.data : [response.data];
-  let totalItems = 0;
-  let totalCost = 0;
+   const lists = Array.isArray(response.data) ? response.data : [response.data];
+   let totalItems = 0;
+   let totalCost = 0;
 
-  lists.forEach(list => {
-    const items = list.VevesiLista || list.items || [];
-    totalItems += items.length;
-    items.forEach(item => {
-      totalCost += (item.Ar || item.ar || 0) * (item.Mennyiseg || item.mennyiseg || 0);
-    });
-  });
+   lists.forEach(list => {
+     const items = list.VevesiLista || list.items || [];
+     totalItems += items.length;
+     items.forEach(item => {
+       totalCost += (item.Ar || item.ar || 0) * (item.Mennyiseg || item.mennyiseg || 0);
+     });
+   });
 
-  return {
-    success: true,
-    data: {
-      totalLists: lists.length,
-      totalItems: totalItems,
-      totalCost: totalCost,
-      averageCostPerList: lists.length > 0 ? Math.round(totalCost / lists.length) : 0,
-      averageItemsPerList: lists.length > 0 ? (totalItems / lists.length).toFixed(2) : 0
-    }
-  };
-};
+   return {
+     success: true,
+     data: {
+       totalLists: lists.length,
+       totalItems: totalItems,
+       totalCost: totalCost,
+       averageCostPerList: lists.length > 0 ? Math.round(totalCost / lists.length) : 0,
+       averageItemsPerList: lists.length > 0 ? (totalItems / lists.length).toFixed(2) : 0
+     }
+   };
+ };
 
-// Get all coupons
-export const getAllCoupons = async () => {
-  return apiCall('/kuponok/get');
-};
+ // Get all coupons
+ export const getAllCoupons = async () => {
+   return apiCall('/kuponok/get');
+ };
 
-// Create a new coupon
-export const createCoupon = async (couponData) => {
-  return apiCall('/kuponok/create', {
-    method: 'POST',
-    body: couponData
-  });
-};
+ // Create a new coupon
+ export const createCoupon = async (couponData) => {
+   return apiCall('/kuponok/create', {
+     method: 'POST',
+     body: couponData
+   });
+ };
 
-// Update coupon
-export const updateCoupon = async (id, couponData) => {
-  return apiCall(`/kuponok/${id}`, {
-    method: 'PUT',
-    body: couponData
-  });
-};
+ // Update coupon
+ export const updateCoupon = async (id, couponData) => {
+   return apiCall(`/kuponok/${id}`, {
+     method: 'PUT',
+     body: couponData
+   });
+ };
 
-// Delete coupon
-export const deleteCoupon = async (id) => {
-  return apiCall(`/kuponok/${id}`, {
-    method: 'DELETE'
-  });
-};
+ // Delete coupon
+ export const deleteCoupon = async (id) => {
+   return apiCall(`/kuponok/${id}`, {
+     method: 'DELETE'
+   });
+ };
