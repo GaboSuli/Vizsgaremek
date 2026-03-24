@@ -39,6 +39,8 @@ class ContactController extends Controller
         $authUser = auth()->user();
         $validator = Validator::make($request->all(),
         [
+            'nev' => 'required|string|min:1',
+            'email' => 'required|email',
             'contactTipusId' => 'required|exists:contact_tipusok,id',
             'text' => 'required|string|min:1'
         ]);

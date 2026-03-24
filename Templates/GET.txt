@@ -78,7 +78,9 @@ POST
 - Kitöltött ürlap létrehozása
 (http://127.0.0.1:8000/api/contact/create)
 -- bearer: session token
-{
+{ 
+ "nev":"", ##Muszály 
+ "email":"", ##Muszály
  "contactTipusId":"", ##Muszály
  "text":"" ##Muszály
 }
