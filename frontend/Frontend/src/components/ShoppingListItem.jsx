@@ -1,5 +1,6 @@
 import React from "react";
 import { updateVevesiObjektum, deleteVevesiObjektum } from "../services/api";
+import './ShoppingListItem.css'
 
 export default function ShoppingListItem({ item, onChange }) {
   const handleStatusToggle = async () => {
@@ -25,21 +26,17 @@ export default function ShoppingListItem({ item, onChange }) {
   };
 
   return (
-    <li style={{marginBottom:10, padding:8, border:'1px solid #eee', borderRadius:4, background:'#fafcff'}}>
-      <div style={{fontWeight:500, marginBottom:2}}>{item.megnevezes}</div>
-      <div style={{fontSize:14, color:'#555'}}>
-        {item.ar} Ft × {item.mennyiseg}
-        {item.alkategoria && (
-          <span style={{marginLeft:8, color:'#888'}}>({item.alkategoria})</span>
-        )}
+    <li className="shopping-item">
+      <div style={{flex:1}}>
+        <div className="name">{item.megnevezes}</div>
+        <div className="meta">{item.ar} Ft × {item.mennyiseg} {item.alkategoria && (<span>({item.alkategoria})</span>)}</div>
+        <div className="meta">Hozzáadta: {item.hozzaado_nev || item.hozzaado || "?"}</div>
       </div>
-      <div style={{fontSize:13, color:'#888'}}>Hozzáadta: {item.hozzaado_nev || item.hozzaado || "?"}</div>
-      <div style={{marginTop:4}}>
-        Státusz: <span style={{color: item.status === "megveve" ? "green" : "#c00", fontWeight:500}}>{item.status === "megveve" ? "Megvéve" : "Nincs meg"}</span>
-        <button onClick={handleStatusToggle} style={{marginLeft:12, padding:'2px 10px', borderRadius:4, border:'1px solid #007bff', background:'#f5faff', color:'#007bff', cursor:'pointer'}}>
+      <div style={{display:'flex',flexDirection:'column',gap:8}}>
+        <button className="btn-primary" onClick={handleStatusToggle}>
           {item.status === "megveve" ? "Jelöld nincs meg" : "Jelöld megvéve"}
         </button>
-        <button onClick={handleDelete} style={{marginLeft:8, padding:'2px 10px', borderRadius:4, border:'1px solid #c00', background:'#fff5f5', color:'#c00', cursor:'pointer'}}>Törlés</button>
+        <button className="btn btn-outline-danger" onClick={handleDelete}>Törlés</button>
       </div>
     </li>
   );
