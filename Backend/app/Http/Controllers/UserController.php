@@ -129,12 +129,12 @@ class UserController extends Controller
         $validator = Validator::make($request->all(),
         [
             'felhasznalo_id_valtoztatni' => 'exists:users,id',
-            'nev' => 'string',
+            'nev' => 'string|min:1',
             'becenev' => 'string',
-            'profilkep_url' => 'string',
-            'kuponok' => 'numeric|min:0|max:1',
-            'termekArKovetes' => 'numeric|min:0|max:1',
-            'brokerArKovetes' => 'numeric|min:0|max:1',
+            'profilkep_url' => 'string|min:1',
+            'kuponok' => 'numeric|in:0,1',
+            'termekArKovetes' => 'numeric|in:0,1',
+            'brokerArKovetes' => 'numeric|in:0,1',
             'jogosultsag_szint' => 'numeric|min:0'
         ]);
         if ($validator->fails())
