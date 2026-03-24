@@ -34,7 +34,7 @@ class CsoportokController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'csoport_tipus_id' => 'required|exists:csoport_tipusok,id', 
-            'megnevezes' => 'required|string',
+            'megnevezes' => 'required|string|min:1',
         ]);
         if ($validator->fails())
         {
