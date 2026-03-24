@@ -40,7 +40,7 @@ class ContactController extends Controller
         $validator = Validator::make($request->all(),
         [
             'contactTipusId' => 'required|exists:contact_tipusok,id',
-            'text' => 'required|string'
+            'text' => 'required|string|min:1'
         ]);
         if ($validator->fails())
         {

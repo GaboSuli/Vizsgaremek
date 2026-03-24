@@ -15,7 +15,7 @@ class UserController extends Controller
     {
         //Validálás
         $validated = $request->validate([
-            'nev' => 'required|string|max:255',
+            'nev' => 'required|string|min:1|max:255',
             //e-mail egyedi legyen a user táblában
             //e-mail formailag helyes
             'email' => 'required|email|unique:users',
