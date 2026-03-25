@@ -16,6 +16,7 @@ import ContactPage from './components/ContactPage.jsx'
 import UserManagementPage from './components/UserManagementPage.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import PublicRoute from './components/PublicRoute.jsx'
+import AdminRoute from './components/AdminRoute.jsx'
 import AppLayout from './components/AppLayout.jsx'
 
 function App() {
@@ -65,7 +66,11 @@ function App() {
         <Route path="/kupon" element={<KuponPage />} />
         <Route path="/user" element={<UserManagementPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/admin" element={
+          <AdminRoute>
+            <AdminPage />
+          </AdminRoute>
+        } />
         <Route index element={<Navigate to="/dashboard" replace />} />
       </Route>
 
