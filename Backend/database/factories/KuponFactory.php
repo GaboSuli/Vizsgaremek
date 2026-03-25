@@ -17,11 +17,9 @@ class KuponFactory extends Factory
      */
     public function definition(): array
     {
-        $fakeDate1 = fake()->date();
-        $indatetime = strtotime($fakeDate1);
         return [
-            'kezdesi_datum' => $fakeDate1,
-            'lejarasi_datum' => date_add($indatetime,DateInterval::createFromDateString("7 days")),
+            'kezdesi_datum' => fake()->date(),
+            'lejarasi_datum' => fake()->date(),
             'kod' => fake()->company(),
             'kedvezmeny' => random_int(20,99),
             'megjegyzes' => fake()->paragraph(),
