@@ -65,7 +65,7 @@ class CsoportTagsagController extends Controller
      */
     public function show(User $user, string $id)
     {
-        $authUser = CsoportTagsag::where("csoport_id","=",$id)->where("felhasznalo_id","=",auth()->user())->first();
+        $authUser = CsoportTagsag::where("csoport_id","=",$id)->where("felhasznalo_id","=",auth()->id())->first();
         if (empty($authUser))
         {
             return response(["message"=>"Nincs jogosultságod ehhez."],403);
