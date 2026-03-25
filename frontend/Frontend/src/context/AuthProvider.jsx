@@ -100,7 +100,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser, isAdmin: !!(user && (user.jogosultsag_szint === 255 || user.Jogosultsag_szint === 255)) }}>
       {children}
     </AuthContext.Provider>
   );

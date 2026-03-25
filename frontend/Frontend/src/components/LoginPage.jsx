@@ -34,8 +34,8 @@ export default function LoginPage({ initialMode } = {}) {
         const res = await login({ email: formData.email, password: formData.password });
         if (res.success) {
           const loggedInUser = res.data?.user;
-          const szint = loggedInUser?.jogosultsag_szint ?? loggedInUser?.Jogosultsag_szint ?? 0;
-          const destination = szint >= 255 ? '/admin' : from;
+          const szint = Number(loggedInUser?.jogosultsag_szint ?? loggedInUser?.Jogosultsag_szint ?? 0);
+          const destination = szint === 255 ? '/admin' : from;
           navigate(destination, { replace: true });
           return;
         }

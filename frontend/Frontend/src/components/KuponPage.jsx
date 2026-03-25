@@ -1,24 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import useAuth from '../context/useAuth.js';
-import { Container, Row, Col, Card, Button, Table, Badge, Spinner, Alert, Modal, Form } from 'react-bootstrap';
-import { getAllKupons, createKupon, updateKupon, deleteKupon, getActiveKupons, getExpiredKupons } from '../services/kuponService';
+import { getAllKupons, getActiveKupons, getExpiredKupons } from '../services/kuponService';
 import './KuponPage.css';
 
 export default function KuponPage() {
   const [kupons, setKupons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [editingId, setEditingId] = useState(null);
-  const [filter, setFilter] = useState('all'); 
-  const [allKupons, setAllKupons] = useState([]); 
-  const [formData, setFormData] = useState({
-    Kod: '',
-    HasznalatiHely: '',
-    KezdesiDatum: new Date().toISOString().split('T')[0],
-    LejarasiDatum: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
-    Megjegyzes: ''
-  });
+  const [filter, setFilter] = useState('all');
+  const [allKupons, setAllKupons] = useState([]);
 
   const auth = useAuth();
 
@@ -88,85 +78,7 @@ export default function KuponPage() {
   const activeCount = allKupons.filter(k => k && k.KezdesiDatum && k.LejarasiDatum && k.KezdesiDatum <= todayForCounts && k.LejarasiDatum >= todayForCounts).length;
   const expiredCount = allKupons.filter(k => k && k.LejarasiDatum && k.LejarasiDatum < todayForCounts).length;
 
-  const handleOpenModal = (kupon = null) => {
-    if (kupon) {
-      setEditingId(kupon.id);
-      setFormData({
-        Kod: kupon.Kod,
-        HasznalatiHely: kupon.HasznalatiHely,
-        KezdesiDatum: kupon.KezdesiDatum,
-        LejarasiDatum: kupon.LejarasiDatum,
-        Megjegyzes: kupon.Megjegyzes
-      });
-    } else {
-      setEditingId(null);
-      setFormData({
-        Kod: '',
-        HasznalatiHely: '',
-        KezdesiDatum: new Date().toISOString().split('T')[0],
-        LejarasiDatum: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
-        Megjegyzes: ''
-      });
-    }
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setEditingId(null);
-  };
-
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSave = async () => {
-    if (!formData.Kod.trim()) {
-      alert('Kérjük adjon meg egy kupon kódot!');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      let result;
-      
-      if (editingId) {
-        result = await updateKupon(editingId, formData);
-        const updatedKupons = kupons.map(k => k.id === editingId ? result.data : k);
-        setKupons(updatedKupons);
-      } else {
-        result = await createKupon(formData);
-        setKupons([...kupons, result.data]);
-      }
-      
-      handleCloseModal();
-      setError(null);
-    } catch (err) {
-      setError(err.error || 'Hiba a mentéskor');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm('Biztosan törölni szeretné ezt a kupont?')) {
-      try {
-        await deleteKupon(id);
-        setKupons(kupons.filter(k => k.id !== id));
-        setError(null);
-      } catch (err) {
-        setError(err.error || 'Hiba a törléskor');
-      }
-    }
-  };
-
-  const isKuponExpired = (lejarasiDatum) => {
-    return new Date(lejarasiDatum) < new Date();
-  };
+  const isKuponExpired = (lejarasiDatum) => new Date(lejarasiDatum) < new Date();
 
   const isKuponActive = (kezdesiDatum, lejarasiDatum) => {
     const today = new Date().toISOString().split('T')[0];
@@ -183,11 +95,6 @@ export default function KuponPage() {
             <h1 className="page-title">Kuponok</h1>
             <p className="page-subtitle">Kezelje és kövesse nyomon kedvezményes kuponjait</p>
           </div>
-          {auth.user && auth.user.jogosultsag_szint > 2 && (
-            <button className="btn btn-primary" onClick={() => handleOpenModal()}>
-              + Új Kupon
-            </button>
-          )}
         </div>
 
         {error && <div className="alert alert-danger">{error} <button className="alert-close" onClick={() => setError(null)}>×</button></div>}
@@ -214,7 +121,7 @@ export default function KuponPage() {
           <div className="empty-state">
             <div className="empty-icon">🎟️</div>
             <h3>Nincsenek {filter === 'active' ? 'aktív' : filter === 'expired' ? 'lejárt' : ''} kuponok</h3>
-            <p>Hozzon létre egy új kupont a jobb felső gombbal.</p>
+            <p>A kuponokat az admin kezeli.</p>
           </div>
         ) : (
           <div className="kp-grid">
@@ -255,96 +162,11 @@ export default function KuponPage() {
                     </div>
                   )}
                 </div>
-
-                <div className="kp-card-actions">
-                  {auth.user && auth.user.jogosultsag_szint > 2 && (
-                    <>
-                      <button className="btn btn-secondary btn-sm" onClick={() => handleOpenModal(kupon)}>Szerkesztés</button>
-                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(kupon.id)}>Törlés</button>
-                    </>
-                  )}
-                </div>
               </div>
             ))}
           </div>
         )}
       </div>
-
-      {/* Modal */}
-      <Modal show={showModal} onHide={handleCloseModal} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{editingId ? 'Kupon szerkesztése' : 'Új kupon létrehozása'}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Kupon kód *</Form.Label>
-              <Form.Control
-                type="text"
-                name="Kod"
-                value={formData.Kod}
-                onChange={handleFormChange}
-                placeholder="pl. TAVASZ2025"
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Felhasználási hely</Form.Label>
-              <Form.Control
-                type="text"
-                name="HasznalatiHely"
-                value={formData.HasznalatiHely}
-                onChange={handleFormChange}
-                placeholder="pl. Online és offline"
-              />
-            </Form.Group>
-
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Kezdési dátum</Form.Label>
-                  <Form.Control
-                    type="date"
-                    name="KezdesiDatum"
-                    value={formData.KezdesiDatum}
-                    onChange={handleFormChange}
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Lejárási dátum</Form.Label>
-                  <Form.Control
-                    type="date"
-                    name="LejarasiDatum"
-                    value={formData.LejarasiDatum}
-                    onChange={handleFormChange}
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Megjegyzés</Form.Label>
-              <Form.Control
-                as="textarea"
-                name="Megjegyzes"
-                value={formData.Megjegyzes}
-                onChange={handleFormChange}
-                placeholder="pl. 20% kedvezmény"
-                rows={3}
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <button className="btn btn-secondary" onClick={handleCloseModal}>Mégse</button>
-          <button className="btn btn-primary" onClick={handleSave} disabled={loading}>
-            {loading ? <span className="spinner" style={{width:16,height:16,borderWidth:2,display:'inline-block',marginRight:6}}></span> : null}
-            {editingId ? 'Mentés' : 'Létrehozás'}
-          </button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 }

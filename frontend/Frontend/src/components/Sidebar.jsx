@@ -76,8 +76,11 @@ const profileItems = [
       </svg>
     )
   },
+];
+
+const adminItems = [
   {
-    to: '/admin', label: 'Admin',
+    to: '/admin', label: 'Admin Panel',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="3"/>
@@ -85,11 +88,22 @@ const profileItems = [
       </svg>
     )
   },
+  {
+    to: '/kupon', label: 'Kupon moderátor',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 4.5C2 3.12 3.12 2 4.5 2h15C20.88 2 22 3.12 22 4.5v6c-1 0-2 1-2 2s1 2 2 2v6c0 1.38-1.12 2.5-2.5 2.5h-15C3.12 22 2 20.88 2 19.5v-6c1 0 2-1 2-2s-1-2-2-2v-6z"/>
+        <line x1="9" y1="9" x2="9.01" y2="9"/>
+        <line x1="15" y1="15" x2="15.01" y2="15"/>
+        <line x1="9.5" y1="14.5" x2="14.5" y2="9.5"/>
+      </svg>
+    )
+  },
 ];
 
 export default function Sidebar({ collapsed, onToggle }) {
   const navigate = useNavigate();
-  const { logout, user } = useAuth();
+  const { logout, user, isAdmin } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -174,6 +188,23 @@ export default function Sidebar({ collapsed, onToggle }) {
               </NavLink>
             ))}
           </div>
+
+          {isAdmin && (
+            <div className="sidebar-nav-group">
+              {!collapsed && <span className="sidebar-nav-label" style={{color:'var(--clr-warning, #f59e0b)'}}>Admin</span>}
+              {adminItems.map(item => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  onClick={closeMobile}
+                  className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
+                >
+                  <span className="sidebar-nav-icon">{item.icon}</span>
+                  {!collapsed && <span className="sidebar-nav-text">{item.label}</span>}
+                </NavLink>
+              ))}
+            </div>
+          )}
         </nav>
 
         {/* User + Logout */}
