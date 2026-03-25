@@ -32,7 +32,13 @@ export default function LoginPage({ initialMode } = {}) {
     try {
       if (isLogin) {
         const res = await login({ email: formData.email, password: formData.password });
-        if (res.success) { navigate(from, { replace: true }); return; }
+        if (res.success) {
+          const loggedInUser = res.data?.user;
+          const szint = loggedInUser?.jogosultsag_szint ?? loggedInUser?.Jogosultsag_szint ?? 0;
+          const destination = szint >= 255 ? '/admin' : from;
+          navigate(destination, { replace: true });
+          return;
+        }
         setError(res.errors ? Object.values(res.errors).flat().join(' ') : res.message || 'Sikertelen bejelentkezés');
       } else {
         if (!formData.name.trim()) { setError('A név megadása kötelező'); return; }
