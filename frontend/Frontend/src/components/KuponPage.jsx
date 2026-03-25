@@ -176,126 +176,99 @@ export default function KuponPage() {
   const filteredKupons = getFilteredKupons();
 
   return (
-    <div className="kupon-page">
-      <section className="kupon-hero">
-        <div className="hero-content">
-          <h1 className="hero-title">🎟️ Kuponok Kezelése</h1>
-          <p className="hero-subtitle">Hozzon létre, szerkesszen és kezeljen kuponokat</p>
+    <div className="kp-page">
+      <div className="page-container">
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Kuponok</h1>
+            <p className="page-subtitle">Kezelje és kövesse nyomon kedvezményes kuponjait</p>
+          </div>
+          {auth.user && auth.user.jogosultsag_szint > 2 && (
+            <button className="btn btn-primary" onClick={() => handleOpenModal()}>
+              + Új Kupon
+            </button>
+          )}
         </div>
-      </section>
 
-      <Container className="kupon-content">
-        {error && <Alert variant="danger" onClose={() => setError(null)} dismissible>{error}</Alert>}
+        {error && <div className="alert alert-danger">{error} <button className="alert-close" onClick={() => setError(null)}>×</button></div>}
 
-        <Row className="mb-4 filter-section">
-          <Col xs={12} md={6}>
-            <div className="btn-group-filter">
-              <Button 
-                variant={filter === 'all' ? 'primary' : 'outline-primary'}
-                onClick={() => setFilter('all')}
-                className="filter-btn"
-              >
-                Összes ({kupons.length})
-              </Button>
-              <Button 
-                variant={filter === 'active' ? 'success' : 'outline-success'}
-                onClick={() => setFilter('active')}
-                className="filter-btn"
-              >
-                Aktív ({activeCount})
-              </Button>
-              <Button 
-                variant={filter === 'expired' ? 'danger' : 'outline-danger'}
-                onClick={() => setFilter('expired')}
-                className="filter-btn"
-              >
-                Lejárt ({expiredCount})
-              </Button>
-            </div>
-          </Col>
-          <Col xs={12} md={6} className="text-end">
-            {auth.user && auth.user.jogosultsag_szint > 2 && (
-              <Button 
-                variant="primary" 
-                onClick={() => handleOpenModal()}
-                className="btn-add-kupon"
-              >
-                + Új Kupon
-              </Button>
-            )}
-          </Col>
-        </Row>
+        {/* Filter tabs */}
+        <div className="tabs" style={{marginBottom:'1.5rem'}}>
+          <button className={`tab-item${filter === 'all' ? ' active' : ''}`} onClick={() => setFilter('all')}>
+            Összes <span className="badge badge-primary" style={{marginLeft:6}}>{allKupons.length}</span>
+          </button>
+          <button className={`tab-item${filter === 'active' ? ' active' : ''}`} onClick={() => setFilter('active')}>
+            Aktív <span className="badge badge-success" style={{marginLeft:6}}>{activeCount}</span>
+          </button>
+          <button className={`tab-item${filter === 'expired' ? ' active' : ''}`} onClick={() => setFilter('expired')}>
+            Lejárt <span className="badge badge-danger" style={{marginLeft:6}}>{expiredCount}</span>
+          </button>
+        </div>
 
         {loading ? (
-          <div className="text-center py-5">
-            <Spinner animation="border" variant="primary" />
-            <p className="mt-3">Kuponok betöltése...</p>
+          <div className="loading-state">
+            <div className="spinner"></div>
+            <p>Kuponok betöltése...</p>
           </div>
         ) : filteredKupons.length === 0 ? (
-          <Alert variant="info">
-            Nincsenek {filter === 'active' ? 'aktív' : filter === 'expired' ? 'lejárt' : ''} kuponok.
-          </Alert>
+          <div className="empty-state">
+            <div className="empty-icon">🎟️</div>
+            <h3>Nincsenek {filter === 'active' ? 'aktív' : filter === 'expired' ? 'lejárt' : ''} kuponok</h3>
+            <p>Hozzon létre egy új kupont a jobb felső gombbal.</p>
+          </div>
         ) : (
-          <Row>
+          <div className="kp-grid">
             {filteredKupons
               .filter(k => filter !== 'expired' ? !isKuponExpired(k.LejarasiDatum) : true)
               .map(kupon => (
-              <Col key={kupon.id} xs={12} md={6} lg={4} className="mb-4">
-                <Card className={`kupon-card ${isKuponExpired(kupon.LejarasiDatum) ? 'expired' : ''}`}>
-                  <Card.Body>
-                    <div className="kupon-header">
-                      <h5 className="kupon-kod">{kupon.Kod}</h5>
-                      <div>
-                        {isKuponActive(kupon.KezdesiDatum, kupon.LejarasiDatum) ? (
-                          <Badge bg="success">Aktív</Badge>
-                        ) : isKuponExpired(kupon.LejarasiDatum) ? (
-                          <Badge bg="danger">Lejárt</Badge>
-                        ) : (
-                          <Badge bg="warning">Hamarosan</Badge>
-                        )}
-                      </div>
-                    </div>
+              <div key={kupon.id} className={`kp-card${isKuponExpired(kupon.LejarasiDatum) ? ' expired' : ''}`}>
+                <div className="kp-card-header">
+                  <span className="kp-kod">{kupon.Kod}</span>
+                  {isKuponActive(kupon.KezdesiDatum, kupon.LejarasiDatum) ? (
+                    <span className="badge badge-success">Aktív</span>
+                  ) : isKuponExpired(kupon.LejarasiDatum) ? (
+                    <span className="badge badge-danger">Lejárt</span>
+                  ) : (
+                    <span className="badge badge-warning">Hamarosan</span>
+                  )}
+                </div>
 
-                    <div className="kupon-details">
-                      <div className="detail-item">
-                        <span className="label">Felhasználási hely:</span>
-                        <span className="value">{kupon.HasznalatiHely}</span>
-                      </div>
-                      <div className="detail-item">
-                        <span className="label">Kezdési dátum:</span>
-                        <span className="value">{kupon.KezdesiDatum}</span>
-                      </div>
-                      <div className="detail-item">
-                        <span className="label">Lejárási dátum:</span>
-                        <span className="value">{kupon.LejarasiDatum}</span>
-                      </div>
-                      {kupon.Megjegyzes && (
-                        <div className="detail-item">
-                          <span className="label">Megjegyzés:</span>
-                          <span className="value">{kupon.Megjegyzes}</span>
-                        </div>
-                      )}
+                <div className="kp-details">
+                  {kupon.HasznalatiHely && (
+                    <div className="kp-detail-row">
+                      <span className="kp-detail-label">Felhasználási hely</span>
+                      <span className="kp-detail-value">{kupon.HasznalatiHely}</span>
                     </div>
+                  )}
+                  <div className="kp-detail-row">
+                    <span className="kp-detail-label">Kezdési dátum</span>
+                    <span className="kp-detail-value">{kupon.KezdesiDatum}</span>
+                  </div>
+                  <div className="kp-detail-row">
+                    <span className="kp-detail-label">Lejárat</span>
+                    <span className={`kp-detail-value${isKuponExpired(kupon.LejarasiDatum) ? ' expired-text' : ''}`}>{kupon.LejarasiDatum}</span>
+                  </div>
+                  {kupon.Megjegyzes && (
+                    <div className="kp-detail-row">
+                      <span className="kp-detail-label">Megjegyzés</span>
+                      <span className="kp-detail-value">{kupon.Megjegyzes}</span>
+                    </div>
+                  )}
+                </div>
 
-                    <div className="kupon-actions">
-                      {auth.user && auth.user.jogosultsag_szint > 2 && (
-                        <>
-                          <Button variant="outline-secondary" size="sm" onClick={() => handleOpenModal(kupon)}>
-                            Szerkesztés
-                          </Button>
-                          <Button variant="outline-danger" size="sm" onClick={() => handleDelete(kupon.id)}>
-                            Törlés
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
+                <div className="kp-card-actions">
+                  {auth.user && auth.user.jogosultsag_szint > 2 && (
+                    <>
+                      <button className="btn btn-secondary btn-sm" onClick={() => handleOpenModal(kupon)}>Szerkesztés</button>
+                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(kupon.id)}>Törlés</button>
+                    </>
+                  )}
+                </div>
+              </div>
             ))}
-          </Row>
+          </div>
         )}
-      </Container>
+      </div>
 
       {/* Modal */}
       <Modal show={showModal} onHide={handleCloseModal} centered>
@@ -365,13 +338,11 @@ export default function KuponPage() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Mégse
-          </Button>
-          <Button variant="primary" onClick={handleSave} disabled={loading}>
-            {loading ? <Spinner animation="border" size="sm" className="me-2" /> : null}
+          <button className="btn btn-secondary" onClick={handleCloseModal}>Mégse</button>
+          <button className="btn btn-primary" onClick={handleSave} disabled={loading}>
+            {loading ? <span className="spinner" style={{width:16,height:16,borderWidth:2,display:'inline-block',marginRight:6}}></span> : null}
             {editingId ? 'Mentés' : 'Létrehozás'}
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </div>

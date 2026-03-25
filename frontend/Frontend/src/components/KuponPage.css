@@ -1,201 +1,101 @@
-.kupon-page {
+/* ── KuponPage ───────────────────────────── */
+.kp-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
 }
 
-/* Hero Section */
-.kupon-hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 3rem 1rem;
-  text-align: center;
-  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
-  margin-bottom: 2rem;
+/* Cards grid */
+.kp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1.25rem;
 }
 
-.hero-content {
-  max-width: 800px;
-  margin: 0 auto;
+/* Individual card */
+.kp-card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: box-shadow var(--transition), transform var(--transition);
 }
 
-.hero-title {
-  font-size: 2.5rem;
+.kp-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.kp-card.expired {
+  opacity: 0.65;
+  background: #f8f9fa;
+}
+
+.kp-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--clr-border);
+}
+
+.kp-kod {
+  font-size: 1rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: var(--clr-primary);
+  word-break: break-all;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.05em;
 }
 
-.hero-subtitle {
-  font-size: 1.1rem;
-  font-weight: 300;
-  opacity: 0.95;
-  margin-bottom: 0;
+.kp-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  flex: 1;
 }
 
-/* Content */
-.kupon-content {
-  padding: 2rem 0;
-}
-
-/* Filter Section */
-.filter-section {
+.kp-detail-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-}
-
-.btn-group-filter {
-  display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.filter-btn {
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.btn-add-kupon {
-  font-weight: 600;
-  padding: 0.6rem 1.5rem;
-  transition: all 0.3s ease;
-}
-
-.btn-add-kupon:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-}
-
-/* Kupon Card */
-.kupon-card {
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-  background: white;
-  height: 100%;
-  overflow: hidden;
-}
-
-.kupon-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(102, 126, 234, 0.15);
-}
-
-.kupon-card.expired {
-  opacity: 0.7;
-  background-color: #fafafa;
-}
-
-.kupon-card .card-body {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Kupon Header */
-.kupon-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.kupon-kod {
-  font-weight: 700;
-  color: #667eea;
-  font-size: 1.1rem;
-  margin: 0;
-  word-break: break-all;
-  flex: 1;
-  margin-right: 0.5rem;
-}
-
-/* Kupon Details */
-.kupon-details {
-  flex: 1;
-  margin-bottom: 1rem;
-}
-
-.detail-item {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 0.8rem;
-  padding-bottom: 0.8rem;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.detail-item:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-
-.detail-item .label {
-  font-weight: 600;
-  color: #666;
   font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 0.3rem;
 }
 
-.detail-item .value {
-  color: #333;
-  font-size: 0.95rem;
+.kp-detail-label {
+  color: var(--clr-text-muted);
+  font-weight: 500;
 }
 
-/* Kupon Actions */
-.kupon-actions {
+.kp-detail-value {
+  color: var(--clr-text);
+  font-weight: 500;
+  text-align: right;
+}
+
+.kp-detail-value.expired-text {
+  color: var(--clr-danger);
+}
+
+.kp-card-actions {
   display: flex;
   gap: 0.5rem;
-  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--clr-border);
 }
 
-.btn-action {
-  flex: 1;
-  font-weight: 600;
-  transition: all 0.3s ease;
+.btn-sm {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8rem;
 }
 
-.btn-action:hover {
-  transform: translateY(-2px);
-}
-
-/* Modal */
-.modal-content {
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-}
-
-.modal-header {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
-  border-radius: 12px 12px 0 0;
-}
-
-.modal-title {
-  font-weight: 700;
-  color: #333;
-}
-
-/* Form */
-.form-label {
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 0.5rem;
-  font-size: 0.95rem;
-}
-
-.form-control,
-.form-control:focus {
-  border-radius: 8px;
-  border: 1px solid #dee2e6;
-  transition: all 0.3s ease;
+@media (max-width: 576px) {
+  .kp-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .form-control:focus {

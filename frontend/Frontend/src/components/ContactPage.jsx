@@ -45,6 +45,8 @@ export default function ContactPage() {
 
       // 1) Save to backend database
       const backendPayload = {
+        nev: formData.name,
+        email: formData.email,
         contactTipusId: formData.messageType,
         text: formData.message
       };
@@ -104,107 +106,69 @@ export default function ContactPage() {
   };
 
   return (
-    <div>
-      <h1>📧 Kapcsolat</h1>
-      <p>Kérjük, használja az űrlapot kérdéseihez vagy visszajelzéseihez.</p>
+    <div className="contact-page">
+      <div className="page-container" style={{maxWidth: 760}}>
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Kapcsolat</h1>
+            <p className="page-subtitle">Kérdése van? Értesítse a fejlesztői csapatot</p>
+          </div>
+        </div>
 
-      <div className="contact-content">
-        <div className="contact-card">
-
-          <h2>Kapcsolati Űrlap</h2>
-
+        <div className="card" style={{padding: '2rem'}}>
           {success && (
-            <div className="success-message">
-              ✅ Üzenet elküldve! Hamarosan válaszolunk.
+            <div className="alert alert-success" style={{marginBottom:'1.5rem'}}>
+              Üzenet sikeresen elküldve! Hamarosan válaszolunk.
             </div>
           )}
-
           {error && (
-            <div className="error-message">
-              ❌ {error}
+            <div className="alert alert-danger" style={{marginBottom:'1.5rem'}}>
+              {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="contact-form">
-
-            <div className="form-group">
-              <label>Név *</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
+          <form onSubmit={handleSubmit} style={{display:'flex', flexDirection:'column', gap:'1.2rem'}}>
+            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'1rem'}}>
+              <div className="form-group">
+                <label className="form-label">Név *</label>
+                <input className="form-control" type="text" name="name" value={formData.name} onChange={handleChange} required />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Email *</label>
+                <input className="form-control" type="email" name="email" value={formData.email} onChange={handleChange} required />
+              </div>
             </div>
 
             <div className="form-group">
-              <label>Email *</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Üzenet típusa *</label>
-              <select
-                name="messageType"
-                value={formData.messageType}
-                onChange={handleChange}
-                required
-              >
+              <label className="form-label">Üzenet típusa *</label>
+              <select className="form-control" name="messageType" value={formData.messageType} onChange={handleChange} required>
                 <option value="">Válasszon...</option>
                 {messageTypes.map(type => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
+                  <option key={type.value} value={type.value}>{type.label}</option>
                 ))}
               </select>
             </div>
 
             <div className="form-group">
-              <label>Üzenet *</label>
-              <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                rows="6"
-              />
+              <label className="form-label">Üzenet *</label>
+              <textarea className="form-control" name="message" value={formData.message} onChange={handleChange} required rows={5} style={{resize:'vertical'}} />
             </div>
 
-            {/* rejtett spam trap */}
-            <input
-              type="text"
-              name="company"
-              value={formData.company}
-              onChange={handleChange}
-              style={{ display: 'none' }}
-              autoComplete="off"
-            />
+            {/* honeypot spam trap */}
+            <input type="text" name="company" value={formData.company} onChange={handleChange} style={{display:'none'}} autoComplete="off" />
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="submit-btn"
-            >
+            <button type="submit" className="btn btn-primary" disabled={loading} style={{alignSelf:'flex-start'}}>
               {loading ? 'Küldés...' : 'Üzenet küldése'}
             </button>
-
           </form>
+        </div>
 
-          <div className="contact-info">
-            <h3>Egyéb elérhetőségek</h3>
-            <ul>
-              <li><strong>Támogatás:</strong> cashentis@gmail.com</li>
-              <li><strong>Fejlesztők:</strong> dev@vevesbazar.hu</li>
-            </ul>
+        <div className="card" style={{padding:'1.5rem', marginTop:'1.5rem'}}>
+          <h3 style={{fontSize:'1rem', fontWeight:600, color:'var(--clr-text)', marginBottom:'1rem'}}>Egyéb elérhetőségek</h3>
+          <div style={{display:'flex', flexDirection:'column', gap:'0.5rem', fontSize:'0.9rem', color:'var(--clr-text-muted)'}}>
+            <span><strong style={{color:'var(--clr-text)'}}>Támogatás:</strong> cashentis@gmail.com</span>
+            <span><strong style={{color:'var(--clr-text)'}}>Fejlesztők:</strong> dev@vevesbazar.hu</span>
           </div>
-
         </div>
       </div>
     </div>

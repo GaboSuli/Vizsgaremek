@@ -3,36 +3,21 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../context/useAuth.js';
 import './LoginPage.css';
 
-
 export default function LoginPage({ initialMode } = {}) {
   const { login, register } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [isLogin, setIsLogin] = useState(initialMode !== 'register');
-
-  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [formData, setFormData] = useState({
-    
-    name: '',
-    email: '',
-    password: '',
-    passwordConfirm: '',
-    
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', passwordConfirm: '' });
 
-  // determine where we should go after auth
   const from = location.state?.from?.pathname || '/dashboard';
 
   useEffect(() => {
-    // if user toggles into register based on query params
     const params = new URLSearchParams(location.search);
-    const pageParam = (params.get('page') || '').toLowerCase();
-    if (pageParam === 'register') {
-      setIsLogin(false);
-    }
+    if ((params.get('page') || '').toLowerCase() === 'register') setIsLogin(false);
   }, [location.search]);
 
   const handleChange = (e) => {
@@ -44,150 +29,120 @@ export default function LoginPage({ initialMode } = {}) {
     e.preventDefault();
     setLoading(true);
     setError('');
-
     try {
       if (isLogin) {
-
         const res = await login({ email: formData.email, password: formData.password });
-        if (res.success) {
-          navigate(from, { replace: true });
-          return;
-        }
-        // otherwise show error
-        if (res.errors) {
-          const joined = Object.values(res.errors).flat().join(' ');
-          setError(joined || res.message);
-
-        } else {
-          setError(res.message || 'Sikertelen bejelentkezés');
-        }
+        if (res.success) { navigate(from, { replace: true }); return; }
+        setError(res.errors ? Object.values(res.errors).flat().join(' ') : res.message || 'Sikertelen bejelentkezés');
       } else {
-        if (!formData.name.trim()) {
-          setError('A név megadása kötelező');
-          return;
-        }
-        if (formData.password !== formData.passwordConfirm) {
-          setError('A jelszavak nem egyeznek');
-          return;
-        }
-
+        if (!formData.name.trim()) { setError('A név megadása kötelező'); return; }
+        if (formData.password !== formData.passwordConfirm) { setError('A jelszavak nem egyeznek'); return; }
         const res = await register({
-          nev: formData.name,
-          email: formData.email,
-          password: formData.password,
-          password_confirmation: formData.passwordConfirm
+          nev: formData.name, email: formData.email,
+          password: formData.password, password_confirmation: formData.passwordConfirm
         });
-
-        if (res.success) {
-          // after successful signup we consider user logged in
-          navigate(from, { replace: true });
-          return;
-        }
-        if (res.errors) {
-          const joined = Object.values(res.errors).flat().join(' ');
-          setError(joined || res.message);
-        } else {
-          setError(res.message || 'Sikertelen regisztráció');
-        }
+        if (res.success) { navigate(from, { replace: true }); return; }
+        setError(res.errors ? Object.values(res.errors).flat().join(' ') : res.message || 'Sikertelen regisztráció');
       }
-    } catch (err) {
-      setError('Hálózati hiba történt');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    } catch { setError('Hálózati hiba történt'); }
+    finally { setLoading(false); }
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h1>{isLogin ? 'Bejelentkezés' : 'Regisztráció'}</h1>
+    <div className="auth-root">
+      {/* Left panel — Branding */}
+      <div className="auth-brand">
+        <div className="auth-brand-content">
+          <div className="auth-brand-logo">
+            <div className="fp-logo-icon">
+              <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                <circle cx="12" cy="12" r="10" fill="white" fillOpacity="0.25"/>
+                <path d="M8 12l3 3 5-5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <span className="auth-brand-name">Szaldon</span>
+          </div>
+          <h2 className="auth-brand-headline">Bevásárlás örömmel,<br/>tervezés könnyedén</h2>
+          <p className="auth-brand-sub">Csatlakozz a közösséghez és tedd hatékonyabbá a mindennapi bevásárlást.</p>
+          <div className="auth-brand-features">
+            {['Közös bevásárlólisták csoportokkal', 'Kuponok és kedvezmények egy helyen', 'Kiadási statisztikák és trendek', 'Ingyenes és könnyen kezelhető'].map((f, i) => (
+              <div key={i} className="auth-brand-feature">
+                <div className="auth-brand-check">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="12" height="12">
+                    <path d="M20 6L9 17l-5-5"/>
+                  </svg>
+                </div>
+                <span>{f}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
-        {error && <div className="alert alert-danger">{error}</div>}
+      {/* Right panel — Form */}
+      <div className="auth-form-panel">
+        <div className="auth-form-wrapper">
+          <div className="auth-form-header">
+            <h1 className="auth-form-title">
+              {isLogin ? 'Üdv vissza 👋' : 'Fiók létrehozása'}
+            </h1>
+            <p className="auth-form-sub">
+              {isLogin ? 'Jelentkezz be a fiókodba' : 'Regisztrálj ingyen, pár másodperc alatt'}
+            </p>
+          </div>
 
-        <form onSubmit={handleSubmit}>
-          {!isLogin && (
-            <div className="mb-3">
-              <label className="form-label">Név</label>
-              <input
-                type="text"
-                className="form-control"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                disabled={loading}
-                autoComplete="name"
-              />
+          {error && (
+            <div className="alert alert-danger" style={{marginBottom: '20px', borderRadius: 'var(--r-md)'}}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16" style={{flexShrink:0}}>
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              {error}
             </div>
           )}
 
-          <div className="mb-3">
-            <label className="form-label">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              disabled={loading}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">Jelszó</label>
-            <input
-              type="password"
-              className="form-control"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              minLength="8"
-              disabled={loading}
-            />
-          </div>
-
-          {!isLogin && (
-            <div className="mb-3">
-              <label className="form-label">Jelszó megerősítése</label>
-              <input
-                type="password"
-                className="form-control"
-                name="passwordConfirm"
-                value={formData.passwordConfirm}
-                onChange={handleChange}
-                required
-                minLength="8"
-                disabled={loading}
-              />
+          <form onSubmit={handleSubmit} className="auth-form">
+            {!isLogin && (
+              <div className="form-group">
+                <label className="form-label">Teljes név</label>
+                <input type="text" className="form-control" name="name" value={formData.name}
+                  onChange={handleChange} required disabled={loading} autoComplete="name" placeholder="Pl. Kiss Béla" />
+              </div>
+            )}
+            <div className="form-group">
+              <label className="form-label">Email cím</label>
+              <input type="email" className="form-control" name="email" value={formData.email}
+                onChange={handleChange} required disabled={loading} autoComplete="email" placeholder="pelda@email.hu" />
             </div>
-          )}
-
-          <button
-            type="submit"
-            className="btn btn-primary w-100 mb-3"
-            disabled={loading}
-          >
-            {loading ? 'Betöltés...' : (isLogin ? 'Bejelentkezés' : 'Regisztráció')}
-          </button>
-        </form>
-
-        <div className="text-center">
-          <p>
-            {isLogin ? 'Még nincs fiókod? ' : 'Van már fiókod? '}
-            <button
-              className="btn-link"
-              onClick={() => {
-                setIsLogin(!isLogin);
-                setError('');
-              }}
-              disabled={loading}
-            >
-              {isLogin ? 'Regisztrálj' : 'Bejelentkezés'}
+            <div className="form-group">
+              <label className="form-label">Jelszó</label>
+              <input type="password" className="form-control" name="password" value={formData.password}
+                onChange={handleChange} required minLength="8" disabled={loading}
+                autoComplete={isLogin ? 'current-password' : 'new-password'} placeholder="Minimum 8 karakter" />
+            </div>
+            {!isLogin && (
+              <div className="form-group">
+                <label className="form-label">Jelszó megerősítése</label>
+                <input type="password" className="form-control" name="passwordConfirm" value={formData.passwordConfirm}
+                  onChange={handleChange} required minLength="8" disabled={loading}
+                  autoComplete="new-password" placeholder="Jelszó ismétlése" />
+              </div>
+            )}
+            <button type="submit" className="btn btn-primary" style={{width:'100%', justifyContent:'center', padding:'13px', marginTop:'8px'}} disabled={loading}>
+              {loading ? (
+                <>
+                  <span className="spinner spinner-sm"/>
+                  {isLogin ? 'Bejelentkezés...' : 'Regisztráció...'}
+                </>
+              ) : (isLogin ? 'Bejelentkezés' : 'Regisztráció')}
             </button>
-          </p>
+          </form>
+
+          <div className="auth-toggle">
+            <span>{isLogin ? 'Még nincs fiókod?' : 'Már van fiókod?'}</span>
+            <button className="auth-toggle-btn" onClick={() => { setIsLogin(!isLogin); setError(''); }} disabled={loading}>
+              {isLogin ? 'Regisztrálj ingyen' : 'Bejelentkezés'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

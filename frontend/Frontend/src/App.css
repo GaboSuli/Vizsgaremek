@@ -1,37 +1,44 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#root {
+/* App Shell Layout */
+.app-shell {
+  display: flex;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background: var(--clr-bg);
 }
 
-.loading {
+.app-main {
+  flex: 1;
+  min-width: 0;
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+  background: var(--clr-bg);
+}
+
+.app-shell.sidebar-is-collapsed .app-main {
+  margin-left: var(--sidebar-collapsed-w);
+}
+
+/* Loading screen */
+.loading-screen {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  font-size: 24px;
-  font-weight: 600;
-  color: white;
+  background: var(--clr-bg);
+  flex-direction: column;
+  gap: 16px;
+  color: var(--clr-text-3);
+  font-size: var(--text-sm);
 }
 
-.page-wrapper {
-  min-height: 100vh;
-  padding: 2rem 1rem;
-  background-color: #f5f5f5;
+/* Mobile: sidebar overlays content */
+@media (max-width: 768px) {
+  .app-main {
+    margin-left: 0;
+  }
+  .app-shell.sidebar-is-collapsed .app-main {
+    margin-left: 0;
+  }
 }
 
 /* Navbar stílusok */

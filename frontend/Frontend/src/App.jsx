@@ -7,10 +7,10 @@ import LoginPage from './components/LoginPage.jsx'
 import RegisterPage from './components/RegisterPage.jsx'
 import LandingPage from './components/LandingPage.jsx'
 import StatisticsPage from './components/StatisticsPage.jsx'
-//import VevesiListePage from './components/VevesiListePage.jsx'
 import KuponPage from './components/KuponPage.jsx'
 import ShoppingListPage from './components/ShoppingListPage.jsx'
 import GroupDetailPage from './components/GroupDetailPage.jsx'
+import GroupsPage from './components/GroupsPage.jsx'
 import AdminPage from './components/AdminPage.jsx'
 import ContactPage from './components/ContactPage.jsx'
 import UserManagementPage from './components/UserManagementPage.jsx'
@@ -58,6 +58,7 @@ function App() {
         }
       >
         <Route path="/dashboard" element={<LandingPage />} />
+        <Route path="/groups" element={<GroupsPage />} />
         <Route path="/stats" element={<StatisticsPage />} />
         <Route path="/shopping" element={<ShoppingListPage />} />
         <Route path="/csoport/:id" element={<GroupDetailPage />} />
