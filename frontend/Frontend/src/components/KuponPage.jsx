@@ -121,6 +121,7 @@ export default function KuponPage() {
           <div className="empty-state">
             <div className="empty-icon">🎟️</div>
             <h3>Nincsenek {filter === 'active' ? 'aktív' : filter === 'expired' ? 'lejárt' : ''} kuponok</h3>
+            <p>A kuponokat az admin kezeli.</p>
           </div>
         ) : (
           <div className="kp-grid">
