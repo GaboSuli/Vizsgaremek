@@ -119,7 +119,7 @@ export default function KuponPage() {
           </div>
         ) : filteredKupons.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-icon">🎟️</div>
+            <div className="empty-icon" >🎟️</div>
             <h3>Nincsenek {filter === 'active' ? 'aktív' : filter === 'expired' ? 'lejárt' : ''} kuponok</h3>
           </div>
         ) : (
