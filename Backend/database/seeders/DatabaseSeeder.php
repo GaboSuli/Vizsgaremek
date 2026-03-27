@@ -8,6 +8,8 @@ use App\Models\CsoportTagsag;
 use App\Models\Kategoriak;
 use App\Models\Kupon;
 use App\Models\User;
+use App\Models\VevesLista;
+use App\Models\VevesObjektum;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -77,11 +79,13 @@ class DatabaseSeeder extends Seeder
             'jogosultsag_szint'=>255
         ]);
         
-        $users = User::factory()->count(500)->create();
+        $users = User::factory()->count(100)->create();
         $kupons = Kupon::factory()->count(10)->create();
         $csoportok = Csoportok::factory()->count(100)->create();
         $kategoriak = Kategoriak::factory()->count(20)->create();
         $alkategoriak = Alkategoriak::factory()->count(200)->create();
         $csoportTagsagok = CsoportTagsag::factory()->count(300)->create();
+        $vevesListak = VevesLista::factory()->count(1000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
     }
 }

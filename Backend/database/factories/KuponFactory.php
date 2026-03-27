@@ -22,8 +22,8 @@ class KuponFactory extends Factory
             'lejarasi_datum' => fake()->date(),
             'kod' => fake()->company(),
             'kedvezmeny' => random_int(20,99),
-            'megjegyzes' => fake()->paragraph(),
-            'hasznalasi_hely' => fake()->address(),
+            'megjegyzes' => implode(fake()->words(random_int(0,5))),
+            'hasznalasi_hely' => fake()->country(),
             'feltolto_kuponos_id' => User::inRandomOrder()->value('id')
         ];
     }
