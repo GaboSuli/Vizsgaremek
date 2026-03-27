@@ -168,6 +168,7 @@ function ThemeSettings({ initialTemaId }) {
   const auth = useAuth();
   const { isDarkMode, toggleTheme } = useTheme();
   const [temaId, setTemaId] = useState(String(initialTemaId ?? '1'));
+  const [originalTemaId] = useState(String(initialTemaId ?? '1'));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -177,24 +178,13 @@ function ThemeSettings({ initialTemaId }) {
     setTemaId(String(initialTemaId ?? '1'));
   }, [initialTemaId]);
 
-  // Sync global theme when initialTemaId changes
-  useEffect(() => {
-    const shouldBeDark = Number(initialTemaId) === 2;
-    const currentlyDark = isDarkMode;
-    
-    // Only toggle if there's a mismatch
-    if (shouldBeDark !== currentlyDark) {
-      toggleTheme();
-    }
-  }, [initialTemaId, isDarkMode, toggleTheme]);
-
   const themes = [
     { id: '1', label: 'Világos', icon: '☀️', desc: 'Fehér háttér, könnyű olvasás nappal' },
     { id: '2', label: 'Sötét', icon: '🌙', desc: 'Sötét háttér, kíméletes az éjszakai olvasáshoz' },
   ];
 
   const handleSave = async () => {
-    if (String(temaId) === String(initialTemaId)) {
+    if (String(temaId) === String(originalTemaId)) {
       setSuccess('Nincs változás a mentéshez.');
       return;
     }
@@ -204,15 +194,16 @@ function ThemeSettings({ initialTemaId }) {
     try {
       const resp = await authService.updateUser({ tema_id: Number(temaId) });
       if (resp.success) {
-        await auth.refreshUser();
-        setSuccess('Téma sikeresen mentve!');
-        // Sync global theme immediately
+        // Sync global theme BEFORE refreshing user
         const shouldBeDark = Number(temaId) === 2;
         if (shouldBeDark && !isDarkMode) {
           toggleTheme();
         } else if (!shouldBeDark && isDarkMode) {
           toggleTheme();
         }
+        
+        await auth.refreshUser();
+        setSuccess('Téma sikeresen mentve!');
       } else {
         setError(resp.message || 'Hiba történt a mentés során.');
       }
