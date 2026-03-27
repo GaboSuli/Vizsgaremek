@@ -289,3 +289,38 @@
   .sidebar-hamburger { display: flex; }
   .sidebar-overlay { display: block; }
 }
+
+/* ── Dark mode support ──────────────────── */
+
+[data-theme='dark'] .sidebar {
+  background: var(--clr-surface);
+  border-right-color: var(--clr-border);
+}
+
+[data-theme='dark'] .sidebar-header {
+  border-bottom-color: var(--clr-border);
+}
+
+[data-theme='dark'] .sidebar-nav-item {
+  color: var(--clr-text-2);
+}
+
+[data-theme='dark'] .sidebar-nav-item:hover,
+[data-theme='dark'] .sidebar-nav-item.active {
+  color: var(--clr-primary);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+[data-theme='dark'] .sidebar-user {
+  background: rgba(99, 102, 241, 0.05);
+}
+
+[data-theme='dark'] .sidebar-logout-btn {
+  color: var(--clr-text-3);
+}
+
+[data-theme='dark'] .sidebar-logout-btn:hover {
+  color: var(--clr-danger);
+  background: rgba(239, 68, 68, 0.1);
+}
+

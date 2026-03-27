@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as authService from '../services/authService.js';
 import useAuth from '../context/useAuth.js';
+import useTheme from '../context/useTheme.js';
 import Button from './ui/Button.jsx';
 import './UserManagementPage.css';
 
@@ -165,10 +166,27 @@ function ProfileForm({ initialData, onSaved }) {
 
 function ThemeSettings({ initialTemaId }) {
   const auth = useAuth();
+  const { isDarkMode, toggleTheme } = useTheme();
   const [temaId, setTemaId] = useState(String(initialTemaId ?? '1'));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // Sync when initialTemaId changes (after API save)
+  useEffect(() => {
+    setTemaId(String(initialTemaId ?? '1'));
+  }, [initialTemaId]);
+
+  // Sync global theme when initialTemaId changes
+  useEffect(() => {
+    const shouldBeDark = Number(initialTemaId) === 2;
+    const currentlyDark = isDarkMode;
+    
+    // Only toggle if there's a mismatch
+    if (shouldBeDark !== currentlyDark) {
+      toggleTheme();
+    }
+  }, [initialTemaId, isDarkMode, toggleTheme]);
 
   const themes = [
     { id: '1', label: 'Világos', icon: '☀️', desc: 'Fehér háttér, könnyű olvasás nappal' },
@@ -186,8 +204,15 @@ function ThemeSettings({ initialTemaId }) {
     try {
       const resp = await authService.updateUser({ tema_id: Number(temaId) });
       if (resp.success) {
-        setSuccess('Téma sikeresen mentve!');
         await auth.refreshUser();
+        setSuccess('Téma sikeresen mentve!');
+        // Sync global theme immediately
+        const shouldBeDark = Number(temaId) === 2;
+        if (shouldBeDark && !isDarkMode) {
+          toggleTheme();
+        } else if (!shouldBeDark && isDarkMode) {
+          toggleTheme();
+        }
       } else {
         setError(resp.message || 'Hiba történt a mentés során.');
       }
