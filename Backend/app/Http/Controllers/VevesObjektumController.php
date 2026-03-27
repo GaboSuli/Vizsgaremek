@@ -107,7 +107,7 @@ class VevesObjektumController extends Controller
      */
     public function show(string $id)
     {
-        $stats = VevesObjektum::where("alKategoria_id","=",$id)->with("alKategoria")->with("vevesLista")->get();
+        $stats = VevesObjektum::where("alKategoria_id","=",$id)->where("csoport_id","=",null)->with("alKategoria")->with("vevesLista")->get();
         $statisztika = array();
         $endResult = array();
         foreach ($stats as $key => $temp) {
