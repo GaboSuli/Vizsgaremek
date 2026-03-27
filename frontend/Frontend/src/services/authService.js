@@ -133,4 +133,34 @@ export const getCurrentUser = async () => {
   }
 };
 
+export const updateUser = async (fields) => {
+  try {
+    // Only send fields that are provided (no felhasznalo_id_valtoztatni for own profile)
+    const resp = await api.put("/felhasznalo/modositas", fields);
+    return handleSuccess(resp);
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const deleteUser = async (userId) => {
+  try {
+    const resp = await api.delete(`/felhasznalo/torles/${userId}`);
+    setToken(null);
+    setUser(null);
+    return { success: true, data: resp.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const getUserById = async (id) => {
+  try {
+    const resp = await api.get(`/felhasznalo/${id}`);
+    return { success: true, data: resp.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export default api;
