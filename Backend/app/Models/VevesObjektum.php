@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class VevesObjektum extends Model
 {
+    use HasFactory;
     protected $table = "veves_objekt";
     function alKategoria()
     {
