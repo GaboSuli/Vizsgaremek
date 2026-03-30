@@ -33,7 +33,6 @@ class VevesListaController extends Controller
     public function store(User $user, Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'felhasznalo_id' => 'required|exists:users,id',
             'csoport_id' => 'exists:csoportok,id',
             'megnevezes' => 'required|string|min:1'
         ]);
@@ -43,22 +42,18 @@ class VevesListaController extends Controller
         }
         if (!empty($request->csoport_id))
         {
-            $authCheck = CsoportTagsag::where("felhasznalo_id","=",auth()->id())::where("csoport_id","=",$request->csoport_id)->first();
+            $authCheck = CsoportTagsag::where("felhasznalo_id","=",auth()->id())->where("csoport_id","=",$request->csoport_id)->first();
             if (empty($authCheck))
             {
                 return response(["message"=>"Nincs jogosultságod ehhez."],403);
             }
-            elseif ($authCheck->jogosultsag_szing < 1)
+            elseif ($authCheck->jogosultsag_szint < 1)
             {
                 return response(["message"=>"Nincs jogosultságod ehhez."],403);
             }
         }
-        elseif ($request->felhasznalo_id != auth()->id())
-        {
-           return response(["message"=>"Nincs jogosultságod ehhez."],403); 
-        }
         $newRec = new VevesLista();
-        $newRec->felhasznalo_id = $request->felhasznalo_id;
+        $newRec->felhasznalo_id = auth()->id();
         $newRec->csoport_id = $request->csoport_id;
         $newRec->megnevezes = $request->megnevezes;
         $newRec->save();
@@ -126,7 +121,7 @@ class VevesListaController extends Controller
             {
                 return response(["message"=>"Nincs jogosultságod ehhez."],403);
             }
-            elseif ($authCheck->jogosultsag_szing < 1)
+            elseif ($authCheck->jogosultsag_szint < 1)
             {
                 return response(["message"=>"Nincs jogosultságod ehhez."],403);
             }
