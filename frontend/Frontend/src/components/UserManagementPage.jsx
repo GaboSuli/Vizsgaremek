@@ -4,6 +4,7 @@ import * as authService from '../services/authService.js';
 import useAuth from '../context/useAuth.js';
 import useTheme from '../context/useTheme.js';
 import Button from './ui/Button.jsx';
+import ToggleSwitch from './ui/ToggleSwitch.jsx';
 import './UserManagementPage.css';
 
 /* ── small reusable sub-components ─────────── */
@@ -164,82 +165,42 @@ function ProfileForm({ initialData, onSaved }) {
 
 /* ── ThemeSettings ──────────────────────────── */
 
-function ThemeSettings({ initialTemaId }) {
+function ThemeSettings() {
   const auth = useAuth();
-  const { isDarkMode, toggleTheme } = useTheme();
-  const [temaId, setTemaId] = useState(String(initialTemaId ?? '1'));
-  const [originalTemaId] = useState(String(initialTemaId ?? '1'));
-  const [loading, setLoading] = useState(false);
+  const { isDarkMode } = useTheme();
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const savedRef = React.useRef(isDarkMode);
 
-  // Sync when initialTemaId changes (after API save)
+  // Sync to backend whenever the theme changes
   useEffect(() => {
-    setTemaId(String(initialTemaId ?? '1'));
-  }, [initialTemaId]);
-
-  const themes = [
-    { id: '1', label: 'Világos', icon: '☀️', desc: 'Fehér háttér, könnyű olvasás nappal' },
-    { id: '2', label: 'Sötét', icon: '🌙', desc: 'Sötét háttér, kíméletes az éjszakai olvasáshoz' },
-  ];
-
-  const handleSave = async () => {
-    if (String(temaId) === String(originalTemaId)) {
-      setSuccess('Nincs változás a mentéshez.');
-      return;
-    }
-    setLoading(true);
-    setError('');
-    setSuccess('');
-    try {
-      const resp = await authService.updateUser({ tema_id: Number(temaId) });
-      if (resp.success) {
-        // Sync global theme BEFORE refreshing user
-        const shouldBeDark = Number(temaId) === 2;
-        if (shouldBeDark && !isDarkMode) {
-          toggleTheme();
-        } else if (!shouldBeDark && isDarkMode) {
-          toggleTheme();
-        }
-        
-        await auth.refreshUser();
-        setSuccess('Téma sikeresen mentve!');
-      } else {
-        setError(resp.message || 'Hiba történt a mentés során.');
-      }
-    } catch {
-      setError('Hiba történt a mentés során.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (savedRef.current === isDarkMode) return;
+    savedRef.current = isDarkMode;
+    const newTemaId = isDarkMode ? 2 : 1;
+    authService.updateUser({ tema_id: newTemaId })
+      .then(async (resp) => {
+        if (resp.success) await auth.refreshUser();
+      })
+      .catch(() => {
+        setError('Nem sikerült menteni a beállítást a szerverre.');
+      });
+  }, [isDarkMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="ump-form">
       {error && <div className="alert alert-danger">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
 
-      <div className="ump-theme-grid">
-        {themes.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            className={`ump-theme-card${temaId === t.id ? ' ump-theme-card--active' : ''}`}
-            onClick={() => { setTemaId(t.id); setSuccess(''); setError(''); }}
-            disabled={loading}
-          >
-            <span className="ump-theme-card__icon">{t.icon}</span>
-            <span className="ump-theme-card__label">{t.label}</span>
-            <span className="ump-theme-card__desc">{t.desc}</span>
-            {temaId === t.id && <span className="ump-theme-card__check">✓</span>}
-          </button>
-        ))}
-      </div>
-
-      <div className="ump-form__actions" style={{ marginTop: '1.25rem' }}>
-        <Button variant="primary" loading={loading} onClick={handleSave}>
-          Téma mentése
-        </Button>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+        <div>
+          <p style={{ margin: 0, fontWeight: 600, color: 'var(--clr-text)' }}>
+            {isDarkMode ? '🌙 Sötét mód' : '☀️ Világos mód'}
+          </p>
+          <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: 'var(--clr-text-3)' }}>
+            {isDarkMode
+              ? 'Sötét háttér, kíméletes az éjszakai olvasáshoz'
+              : 'Fehér háttér, könnyű olvasás nappal'}
+          </p>
+        </div>
+        <ToggleSwitch showLabel={false} size="md" />
       </div>
     </div>
   );
@@ -374,7 +335,7 @@ export default function UserManagementPage() {
             title="Megjelenés"
             subtitle="Válaszd ki az alkalmazás témáját"
           >
-            <ThemeSettings initialTemaId={user?.tema_id ?? 1} />
+            <ThemeSettings />
           </SectionCard>
         )}
 

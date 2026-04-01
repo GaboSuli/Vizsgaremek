@@ -29,7 +29,7 @@
 
 .kp-card.expired {
   opacity: 0.65;
-  background: #f8f9fa;
+  background: var(--clr-surface-2);
 }
 
 .kp-card-header {
@@ -99,12 +99,12 @@
 }
 
 .form-control:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  border-color: var(--clr-primary);
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
 }
 
 .form-control::placeholder {
-  color: #adb5bd;
+  color: var(--clr-text-3);
 }
 
 /* Responsive */

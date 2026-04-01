@@ -1,11 +1,16 @@
 :root{
   --bg-gradient-start: #f8fbff;
   --bg-gradient-end: #eef6ff;
-  --accent: #0d6efd;
-  --muted: #6c757d;
-  --card-bg: #ffffff;
+  --accent: var(--clr-primary, #0d6efd);
+  --muted: var(--clr-text-3, #6c757d);
+  --card-bg: var(--clr-surface, #ffffff);
   --radius: 12px;
   --max-width: 1100px;
+}
+
+[data-theme='dark'] {
+  --bg-gradient-start: #0f172a;
+  --bg-gradient-end: #1e293b;
 }
 
 .landing-container{
@@ -23,17 +28,17 @@
 
 .display-5{
   font-weight: 700;
-  color: hsl(217, 80%, 20%);
+  color: var(--clr-text);
 }
 .lead{
-  color: hsl(217, 18%, 30%);
+  color: var(--clr-text-2);
   font-size: 1.05rem;
 }
 
 .card{
   border: none;
   border-radius: var(--radius);
-  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 
 .card-title{
@@ -41,17 +46,17 @@
 }
 
 .btn-primary{
-  background: linear-gradient(90deg, var(--accent), #2663ff);
+  background: linear-gradient(90deg, var(--accent), var(--clr-primary-dark, #2663ff));
   border: none;
-  box-shadow: 0 6px 18px rgba(13,110,253,0.12);
+  box-shadow: var(--shadow-primary);
   border-radius: 8px;
   padding: 0.5rem 1rem;
 }
 
 .btn-secondary{
   background: transparent;
-  border: 1px solid rgba(33,37,41,0.08);
-  color: #212529;
+  border: 1px solid var(--clr-border);
+  color: var(--clr-text);
   border-radius: 8px;
   padding: 0.45rem 0.9rem;
 }
@@ -61,7 +66,7 @@
 }
 
 h2{
-  color: hsl(217, 14%, 22%);
+  color: var(--clr-text);
   margin-bottom: 0.75rem;
 }
 
@@ -93,7 +98,7 @@ small.text-muted{
 }
 
 #navbar{
-  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.04);
+  box-shadow: var(--shadow-xs);
 }
 
 a{
@@ -115,7 +120,7 @@ a:hover{
 .sidebar{
   width: 260px;
   background: var(--card-bg);
-  box-shadow: 2px 0 12px rgba(16,24,40,0.06);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   padding: 1rem;
@@ -149,18 +154,18 @@ a:hover{
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background: linear-gradient(180deg, var(--accent), #2663ff);
-  color: #fff;
+  background: linear-gradient(180deg, var(--accent), var(--clr-primary-dark, #2663ff));
+  color: var(--clr-text-inv);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  box-shadow: 0 6px 18px rgba(13,110,253,0.12);
+  box-shadow: var(--shadow-primary);
 }
 
 .logo-text{
   font-weight: 700;
-  color: hsl(217,14%,22%);
+  color: var(--clr-text);
   letter-spacing: 0.2px;
 }
 
@@ -188,7 +193,7 @@ a:hover{
   border-radius: 10px;
   background: transparent;
   border: none;
-  color: hsl(217,18%,30%);
+  color: var(--clr-text-2);
   font-weight: 600;
   cursor: pointer;
   text-align: left;
@@ -196,13 +201,13 @@ a:hover{
 }
 
 .nav-item:hover{
-  background: rgba(13,110,253,0.04);
+  background: var(--clr-primary-xlight, rgba(13,110,253,0.04));
   transform: translateX(4px);
 }
 
 .nav-item.active{
-  background: linear-gradient(90deg, rgba(13,110,253,0.08), rgba(38,99,255,0.06));
-  box-shadow: inset 0 0 0 1px rgba(13,110,253,0.03);
+  background: linear-gradient(90deg, var(--clr-primary-xlight, rgba(13,110,253,0.08)), rgba(38,99,255,0.06));
+  box-shadow: inset 0 0 0 1px var(--clr-border);
   color: var(--accent);
 }
 
@@ -234,8 +239,8 @@ a:hover{
 .hero{
   padding: 3rem;
   border-radius: 12px;
-  background: linear-gradient(180deg, #ffffff, #fbfdff);
-  box-shadow: 0 8px 30px rgba(13,110,253,0.04);
+  background: linear-gradient(180deg, var(--clr-surface), var(--clr-surface-2));
+  box-shadow: var(--shadow-sm);
   margin-bottom: 2rem;
 }
 
@@ -246,12 +251,12 @@ a:hover{
 .hero-title{
   font-size: 2rem;
   margin-bottom: 0.6rem;
-  color: hsl(217,80%,20%);
+  color: var(--clr-text);
   line-height: 1.15;
 }
 
 .hero-lead{
-  color: hsl(217,18%,30%);
+  color: var(--clr-text-2);
   margin-bottom: 1rem;
   font-size: 1.05rem;
 }
@@ -287,13 +292,13 @@ a:hover{
   width: 48px;
   height: 48px;
   border-radius: 10px;
-  background: linear-gradient(180deg, var(--bg-gradient-start), #eef6ff);
+  background: linear-gradient(180deg, var(--bg-gradient-start), var(--clr-surface-2));
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   color: var(--accent);
-  box-shadow: 0 6px 18px rgba(13,110,253,0.04);
+  box-shadow: var(--shadow-xs);
 }
 
 .feature-body h4{ margin: 0 0 0.25rem 0; }
@@ -313,8 +318,8 @@ a:hover{
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(90deg, var(--accent), #2663ff);
-  color: white;
+  background: linear-gradient(90deg, var(--accent), var(--clr-primary-dark, #2663ff));
+  color: var(--clr-text-inv);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -332,14 +337,14 @@ a:hover{
   padding: 1.5rem; 
   text-align: center; 
   border-radius: 12px;
-  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
-  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.08);
+  background: linear-gradient(135deg, var(--clr-surface) 0%, var(--clr-surface-2) 100%);
+  box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
 }
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(13, 110, 253, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
 .stat-value{ 
@@ -356,7 +361,7 @@ a:hover{
 }
 
 .price-change-section {
-  background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 100%);
+  background: linear-gradient(135deg, var(--clr-surface-2) 0%, var(--clr-surface-3) 100%);
   padding: 3rem 1rem;
   margin: 2rem 0;
 }
@@ -371,7 +376,7 @@ a:hover{
   margin-bottom: 2rem;
   font-size: 1.8rem;
   font-weight: 700;
-  color: #333;
+  color: var(--clr-text);
 }
 
 .price-change-cards {
@@ -382,19 +387,19 @@ a:hover{
 }
 
 .price-card {
-  background: white;
+  background: var(--clr-surface);
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.08);
+  box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
 }
 
 .price-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(13, 110, 253, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
 .price-icon {
@@ -404,7 +409,7 @@ a:hover{
 .price-card h3 {
   font-size: 1.6rem;
   font-weight: 700;
-  color: #333;
+  color: var(--clr-text);
   margin-bottom: 0.25rem;
 }
 
@@ -417,39 +422,39 @@ a:hover{
 .price-card .date-info {
   display: block;
   font-size: 0.8rem;
-  color: #999;
+  color: var(--clr-text-3);
   font-weight: 500;
   text-transform: capitalize;
 }
 
 .price-card.trend-up {
-  border-left: 4px solid #28a745;
+  border-left: 4px solid var(--clr-success);
 }
 
 .price-card.trend-down {
-  border-left: 4px solid #dc3545;
+  border-left: 4px solid var(--clr-danger);
 }
 
 .price-card.inflation-up {
-  border-left: 4px solid #fd7e14;
+  border-left: 4px solid var(--clr-warning);
 }
 
 .price-card.inflation-down {
-  border-left: 4px solid #20c997;
+  border-left: 4px solid var(--clr-success);
 }
 
 .monthly-timeline {
-  background: white;
+  background: var(--clr-surface);
   border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 .monthly-timeline h3 {
   font-size: 1.3rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: #333;
+  color: var(--clr-text);
 }
 
 .timeline-items {
@@ -466,20 +471,20 @@ a:hover{
   gap: 0.5rem;
   min-width: 140px;
   padding: 1rem;
-  background: #f8fbff;
+  background: var(--clr-surface-2);
   border-radius: 8px;
   text-align: center;
   transition: all 0.3s ease;
 }
 
 .timeline-item:hover {
-  background: #e8f0ff;
+  background: var(--clr-primary-xlight);
   transform: translateY(-2px);
 }
 
 .timeline-month {
   font-weight: 600;
-  color: #333;
+  color: var(--clr-text);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
@@ -493,17 +498,17 @@ a:hover{
 
 .timeline-eur {
   font-weight: 700;
-  color: #0d6efd;
+  color: var(--clr-primary);
 }
 
 .timeline-usd {
   font-weight: 700;
-  color: #6f42c1;
+  color: var(--clr-purple);
 }
 
 .timeline-inflation {
   font-weight: 700;
-  color: #fd7e14;
+  color: var(--clr-warning);
 }
 
 .site-footer{ text-align: center; padding: 2rem 0; color: var(--muted); }

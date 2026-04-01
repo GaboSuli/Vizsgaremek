@@ -201,7 +201,7 @@
   width: 20px;
   height: 20px;
   background: var(--clr-primary);
-  color: #fff;
+  color: var(--clr-text-inv);
   border-radius: var(--r-full);
   font-size: 0.7rem;
   font-weight: var(--fw-bold);
