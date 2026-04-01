@@ -17,14 +17,17 @@ class KuponFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            'kezdesi_datum' => fake()->date(),
-            'lejarasi_datum' => fake()->date(),
-            'kod' => fake()->company(),
-            'kedvezmeny' => random_int(20,99),
-            'megjegyzes' => implode(fake()->words(random_int(0,5))),
-            'hasznalasi_hely' => fake()->country(),
-            'feltolto_kuponos_id' => User::inRandomOrder()->value('id')
-        ];
+        $kezdes = fake()->dateTimeBetween('-1 year', 'now');
+    $lejaras = fake()->dateTimeBetween($kezdes, '+1 year');
+
+    return [
+        'kezdesi_datum' => $kezdes->format('Y-m-d'),
+        'lejarasi_datum' => $lejaras->format('Y-m-d'),
+        'kod' => fake()->company(),
+        'kedvezmeny' => random_int(20, 99),
+        'megjegyzes' => implode(' ', fake()->words(random_int(0, 5))),
+        'hasznalasi_hely' => fake()->country(),
+        'feltolto_kuponos_id' => User::inRandomOrder()->value('id')
+    ];
     }
 }
