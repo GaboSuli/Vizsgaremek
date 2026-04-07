@@ -4,7 +4,7 @@
 
 .fp-root {
   min-height: 100vh;
-  background: #ffffff;
+  background: var(--clr-bg);
   font-family: var(--font);
   color: var(--clr-text);
 }
@@ -14,7 +14,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255,255,255,0.92);
+  background: color-mix(in srgb, var(--clr-bg) 92%, transparent);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--clr-border);
 }
@@ -109,7 +109,7 @@
   justify-content: center;
 }
 .fp-hero-card {
-  background: white;
+  background: var(--clr-surface);
   border: 1px solid var(--clr-border);
   border-radius: var(--r-xl);
   box-shadow: var(--shadow-lg);
@@ -126,7 +126,7 @@
   padding: 12px 16px;
   font-size: var(--text-sm);
   border-radius: var(--r-lg);
-  background: white;
+  background: var(--clr-surface);
   white-space: nowrap;
   animation: slideDown 0.7s ease 0.2s both;
 }
@@ -137,7 +137,7 @@
   padding: 12px 16px;
   font-size: var(--text-sm);
   border-radius: var(--r-lg);
-  background: white;
+  background: var(--clr-surface);
   white-space: nowrap;
   animation: slideDown 0.7s ease 0.4s both;
 }
@@ -199,7 +199,7 @@
 /* ── Features ────────────────────────────── */
 .fp-features {
   padding: 80px 24px;
-  background: white;
+  background: var(--clr-surface);
 }
 .fp-features-inner { max-width: 1200px; margin: 0 auto; }
 .fp-section-header {

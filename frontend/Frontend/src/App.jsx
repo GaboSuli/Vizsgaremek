@@ -21,7 +21,7 @@ import AdminRoute from './components/AdminRoute.jsx'
 import AppLayout from './components/AppLayout.jsx'
 
 function AppRoutes() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   return (
     <Routes>
@@ -72,11 +72,10 @@ function AppRoutes() {
             <AdminPage />
           </AdminRoute>
         } />
-        <Route index element={<Navigate to="/dashboard" replace />} />
       </Route>
 
       {/* fallback */}
-      <Route path="*" element={<Navigate to={user ? "/dashboard" : "/"} replace />} />
+      <Route path="*" element={loading ? null : <Navigate to={user ? "/dashboard" : "/"} replace />} />
     </Routes>
   );
 }

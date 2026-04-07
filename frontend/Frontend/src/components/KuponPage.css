@@ -14,12 +14,12 @@
 .kp-card {
   background: var(--clr-surface);
   border: 1px solid var(--clr-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--r-lg);
   padding: 1.4rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  transition: box-shadow var(--transition), transform var(--transition);
+  transition: box-shadow var(--transition-speed), transform var(--transition-speed);
 }
 
 .kp-card:hover {
@@ -29,7 +29,7 @@
 
 .kp-card.expired {
   opacity: 0.65;
-  background: #f8f9fa;
+  background: var(--clr-surface-2);
 }
 
 .kp-card-header {

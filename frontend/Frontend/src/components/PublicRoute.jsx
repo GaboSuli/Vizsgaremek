@@ -2,16 +2,16 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import useAuth from '../context/useAuth.js';
 
-// PublicRoute is used for pages such as login/register/first page that
-// should only be viewed by unauthenticated visitors. If a user is already
-// logged in we send them to the dashboard (or whatever the main app page
-// is). A loading state is handled similarly to ProtectedRoute.
+// PublicRoute wraps pages only for unauthenticated visitors.
+// While the initial token verification is running we still render the public
+// content — if the user turns out to be authenticated the redirect fires
+// immediately after loading completes, with no intermediate blank screen.
 export default function PublicRoute({ children }) {
   const { user, loading } = useAuth();
 
-  if (loading) {
-    return null;
-  }
+  // Still verifying the stored token: optimistically show the public page.
+  // If the user IS authenticated the effect below will redirect them away.
+  if (loading) return children;
 
   if (user) {
     return <Navigate to="/dashboard" replace />;

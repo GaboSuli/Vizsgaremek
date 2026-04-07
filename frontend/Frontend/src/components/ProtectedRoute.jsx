@@ -2,17 +2,25 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import useAuth from '../context/useAuth.js';
 
-// Wrap routes that require a logged in user. If auth state is still
-// loading we render nothing (caller may choose to show a spinner). If
-// the user is not present we redirect to /login and record the origin
-// so the login page can send them back.
+// Wrap routes that require a logged-in user.
+// While the initial token verification is in flight we show the cached user's
+// content optimistically (no blank flash). If they have no cached user we
+// display a minimal spinner. Once loading finishes, any invalid token causes
+// a redirect to /login.
 export default function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
-    // could render a spinner or skeleton layout
-    return null;
+    // If we have a cached user from localStorage, show content immediately.
+    // The verify effect will correct the state if the token is invalid.
+    if (user) return children;
+    // No cached user — show a lightweight spinner until verification finishes.
+    return (
+      <div className="loading-screen">
+        <div className="spinner" />
+      </div>
+    );
   }
 
   if (!user) {

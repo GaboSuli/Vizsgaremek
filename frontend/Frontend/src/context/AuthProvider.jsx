@@ -8,28 +8,43 @@ import {
 } from '../services/api.js';
 import { getCurrentUser as fetchCurrentUser } from '../services/authService.js';
 
+// Read user + token from localStorage synchronously so the first render
+// already knows about a previous session — eliminates the blank-flash.
+function readStoredState() {
+  try {
+    const token = localStorage.getItem('auth_token');
+    const raw   = localStorage.getItem('current_user');
+    const user  = (token && raw) ? JSON.parse(raw) : null;
+    // loading=true only when there's a token to verify
+    return { user, loading: !!token };
+  } catch {
+    return { user: null, loading: false };
+  }
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const init = readStoredState();
+  const [user, setUser]       = useState(init.user);
+  const [loading, setLoading] = useState(init.loading);
 
   useEffect(() => {
-    async function init() {
-      setLoading(true);
+    // Only verify the token when one exists; otherwise we're already done.
+    const token = (() => { try { return localStorage.getItem('auth_token'); } catch { return null; } })();
+    if (!token) { setLoading(false); return; }
+
+    async function verify() {
       try {
-        const storedUser = readStoredUser();
-        if (storedUser) {
-          const resp = await fetchCurrentUser();
-          if (resp.success && resp.data) {
-            setUser(resp.data);
-            try {
-              localStorage.setItem('current_user', JSON.stringify(resp.data));
-            } catch {
-              // szándékosan elnyeljük a hibát EZT NE töröld ki
-            }
-          } else {
-            setUser(null);
-            setAuthToken(null);
+        const resp = await fetchCurrentUser();
+        if (resp.success && resp.data) {
+          setUser(resp.data);
+          try {
+            localStorage.setItem('current_user', JSON.stringify(resp.data));
+          } catch {
+            // szándékosan elnyeljük a hibát EZT NE töröld ki
           }
+        } else {
+          setUser(null);
+          setAuthToken(null);
         }
       } catch {
         setUser(null);
@@ -39,7 +54,7 @@ export function AuthProvider({ children }) {
       }
     }
 
-    init();
+    verify();
 
     const onStorage = (e) => {
       if (e.key === 'auth_token' && !e.newValue) {
@@ -50,8 +65,9 @@ export function AuthProvider({ children }) {
     return () => window.removeEventListener('storage', onStorage);
   }, []);
 
+  // login/register do NOT touch global `loading` — the form has its own
+  // local loading state, and we must not blank the page during submission.
   const login = async ({ email, password }) => {
-    setLoading(true);
     try {
       const res = await apiLoginUser({ email, password });
       if (res && res.success) {
@@ -59,13 +75,12 @@ export function AuthProvider({ children }) {
         setUser(current);
       }
       return res;
-    } finally {
-      setLoading(false);
+    } catch {
+      return { success: false, message: 'Hálózati hiba' };
     }
   };
 
   const register = async (payload) => {
-    setLoading(true);
     try {
       const res = await apiRegisterUser(payload);
       if (res && res.success) {
@@ -73,8 +88,8 @@ export function AuthProvider({ children }) {
         setUser(current);
       }
       return res;
-    } finally {
-      setLoading(false);
+    } catch {
+      return { success: false, message: 'Hálózati hiba' };
     }
   };
 

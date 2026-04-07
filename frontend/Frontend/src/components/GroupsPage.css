@@ -12,13 +12,13 @@
 .gp-card {
   background: var(--clr-surface);
   border: 1px solid var(--clr-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--r-lg);
   padding: 1.25rem 1.5rem;
   display: flex;
   align-items: center;
   gap: 1.1rem;
   cursor: pointer;
-  transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+  transition: box-shadow var(--transition-speed), transform var(--transition-speed), border-color var(--transition-speed);
 }
 
 .gp-card:hover {

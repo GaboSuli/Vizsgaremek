@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuth from '../context/useAuth.js';
 import './FirstPage.css';
 
 const features = [
@@ -34,13 +33,7 @@ const stats = [
 ];
 
 export default function FirstPage() {
-  const { user } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) navigate('/dashboard', { replace: true });
-  }, [user, navigate]);
-
   return (
     <div className="fp-root">
       {/* Header */}
