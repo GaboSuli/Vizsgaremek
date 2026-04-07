@@ -1,12 +1,30 @@
 /* ============================================
-   UserProfile — Uses global theme CSS variables
+   UserProfile — Dark mode ready component
    ============================================ */
+
+:root {
+  --up-bg: #f1f5f9;
+  --up-card-bg: #ffffff;
+  --up-card-border: #e2e8f0;
+  --up-text: #1e293b;
+  --up-text-muted: #64748b;
+  --up-stat-bg: #f8fafc;
+}
+
+[data-theme='dark'] {
+  --up-bg: #0f172a;
+  --up-card-bg: #1e293b;
+  --up-card-border: #334155;
+  --up-text: #e2e8f0;
+  --up-text-muted: #94a3b8;
+  --up-stat-bg: #0f172a;
+}
 
 .up-page {
   min-height: 100vh;
-  background: var(--clr-bg);
+  background: var(--up-bg);
   padding: 2rem 1rem;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 .up-container {
@@ -26,7 +44,7 @@
   justify-content: center;
   gap: 1rem;
   min-height: 60vh;
-  color: var(--clr-text-3);
+  color: var(--up-text-muted);
 }
 
 .spinner {
@@ -45,22 +63,26 @@
 /* ── Cards ────────────────────────────────── */
 
 .up-card {
-  background: var(--clr-surface);
-  border: 1px solid var(--clr-border);
+  background: var(--up-card-bg);
+  border: 1px solid var(--up-card-border);
   border-radius: 12px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
   overflow: hidden;
   transition: all 0.3s ease;
 }
 
 .up-card:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-1px);
+}
+
+[data-theme='dark'] .up-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .up-card__header {
   padding: 1.5rem;
-  border-bottom: 1px solid var(--clr-border);
+  border-bottom: 1px solid var(--up-card-border);
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -69,13 +91,13 @@
 .up-card__title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--clr-text);
+  color: var(--up-text);
   margin: 0;
 }
 
 .up-card__subtitle {
   font-size: 0.85rem;
-  color: var(--clr-text-3);
+  color: var(--up-text-muted);
   margin: 0.25rem 0 0 0;
 }
 
@@ -110,8 +132,8 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.4rem 0.8rem;
-  background: var(--clr-primary-xlight);
-  color: var(--clr-primary);
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 500;
@@ -120,7 +142,7 @@
 
 [data-theme='dark'] .up-badge {
   background: rgba(129, 140, 248, 0.15);
-  color: var(--clr-primary);
+  color: #a5b4fc;
 }
 
 /* ── Stats grid ───────────────────────────── */
@@ -132,8 +154,8 @@
 }
 
 .up-stat-card {
-  background: var(--clr-surface-2);
-  border: 1px solid var(--clr-border);
+  background: var(--up-stat-bg);
+  border: 1px solid var(--up-card-border);
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
@@ -143,13 +165,18 @@
 }
 
 .up-stat-card:hover {
-  border-color: var(--clr-primary);
-  box-shadow: 0 0 0 2px var(--clr-primary-light);
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+[data-theme='dark'] .up-stat-card:hover {
+  border-color: #818cf8;
+  box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.15);
 }
 
 .up-stat-label {
   font-size: 0.85rem;
-  color: var(--clr-text-3);
+  color: var(--up-text-muted);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -158,7 +185,7 @@
 .up-stat-value {
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--clr-text);
+  color: var(--up-text);
   line-height: 1.2;
 }
 
@@ -175,15 +202,19 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  background: var(--clr-surface-2);
+  background: var(--up-stat-bg);
   border-radius: 8px;
-  color: var(--clr-text);
+  color: var(--up-text);
   font-size: 0.95rem;
   transition: all 0.2s ease;
 }
 
 .up-list-item:hover {
-  background: var(--clr-primary-xlight);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+[data-theme='dark'] .up-list-item:hover {
+  background: rgba(129, 140, 248, 0.12);
 }
 
 .up-list-icon {
@@ -209,25 +240,33 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  background: var(--clr-surface-2);
+  background: var(--up-stat-bg);
   border-radius: 8px;
   transition: all 0.2s ease;
 }
 
 .up-category-row:hover {
-  background: var(--clr-primary-xlight);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+[data-theme='dark'] .up-category-row:hover {
+  background: rgba(129, 140, 248, 0.12);
 }
 
 .up-category-name {
-  color: var(--clr-text);
+  color: var(--up-text);
   font-weight: 500;
   font-size: 0.95rem;
 }
 
 .up-category-cost {
-  color: var(--clr-primary);
+  color: #6366f1;
   font-weight: 700;
   font-size: 1rem;
+}
+
+[data-theme='dark'] .up-category-cost {
+  color: #a5b4fc;
 }
 
 /* ── Responsive ───────────────────────────── */

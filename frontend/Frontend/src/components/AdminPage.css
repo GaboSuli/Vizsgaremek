@@ -1,14 +1,14 @@
 .admin-container {
   min-height: 100vh;
-  background-color: var(--clr-bg);
+  background-color: #f5f5f5;
 }
 
 .admin-hero {
-  background: linear-gradient(135deg, var(--clr-primary-dark) 0%, var(--clr-primary) 100%);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   color: white;
   padding: 3rem 2rem;
   text-align: center;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .admin-hero h1 {
@@ -25,8 +25,8 @@
 .admin-tabs {
   display: flex;
   gap: 0;
-  background: var(--clr-surface);
-  border-bottom: 2px solid var(--clr-border);
+  background: white;
+  border-bottom: 2px solid #e0e0e0;
   overflow-x: auto;
   padding: 0 2rem;
 }
@@ -37,7 +37,7 @@
   padding: 1rem 1.5rem;
   font-size: 14px;
   font-weight: 600;
-  color: var(--clr-text-3);
+  color: #666;
   cursor: pointer;
   border-bottom: 3px solid transparent;
   transition: all 0.3s;
@@ -45,13 +45,13 @@
 }
 
 .tab-button:hover {
-  color: var(--clr-text);
-  background-color: var(--clr-surface-2);
+  color: #1a1a2e;
+  background-color: #f9f9f9;
 }
 
 .tab-button.active {
-  color: var(--clr-text);
-  border-bottom-color: var(--clr-primary);
+  color: #1a1a2e;
+  border-bottom-color: #ff6b6b;
 }
 
 .admin-content {
@@ -61,21 +61,21 @@
 }
 
 .tab-content {
-  background: var(--clr-surface);
+  background: white;
   border-radius: 8px;
   padding: 2rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   animation: slideIn 0.3s ease;
 }
 
 .tab-content h2 {
-  color: var(--clr-text);
+  color: #1a1a2e;
   margin-bottom: 1rem;
   font-size: 24px;
 }
 
 .subtitle {
-  color: var(--clr-text-3);
+  color: #999;
   margin-bottom: 1.5rem;
   font-size: 14px;
 }
@@ -89,8 +89,8 @@
 }
 
 .status-card {
-  background: var(--clr-surface);
-  border: 2px solid var(--clr-border);
+  background: white;
+  border: 2px solid #e0e0e0;
   border-radius: 8px;
   padding: 1.5rem;
   display: flex;
@@ -99,18 +99,18 @@
 }
 
 .status-card.online {
-  border-color: var(--clr-success);
-  background-color: var(--clr-success-light);
+  border-color: #51cf66;
+  background-color: #f1fdf5;
 }
 
 .status-card.offline {
-  border-color: var(--clr-danger);
-  background-color: var(--clr-danger-light);
+  border-color: #ff6b6b;
+  background-color: #fff5f5;
 }
 
 .status-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .status-icon {
@@ -124,13 +124,13 @@
 }
 
 .status-info h3 {
-  color: var(--clr-text);
+  color: #1a1a2e;
   margin: 0 0 0.25rem 0;
   font-size: 16px;
 }
 
 .status-info p {
-  color: var(--clr-text-3);
+  color: #666;
   margin: 0 0 0.5rem 0;
   font-size: 13px;
 }
@@ -138,18 +138,18 @@
 .status-message {
   display: inline-block;
   font-size: 12px;
-  color: var(--clr-success);
+  color: #51cf66;
   font-weight: 600;
 }
 
 .status-card.offline .status-message {
-  color: var(--clr-danger);
+  color: #ff6b6b;
 }
 
 .loading {
   text-align: center;
   padding: 2rem;
-  color: var(--clr-text-3);
+  color: #999;
   font-size: 16px;
 }
 
@@ -159,14 +159,14 @@
 }
 
 .quick-links h3 {
-  color: var(--clr-text);
+  color: #1a1a2e;
   margin-bottom: 1rem;
   font-size: 16px;
 }
 
 .quick-link {
   display: inline-block;
-  background: var(--clr-primary);
+  background: #1a1a2e;
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
@@ -180,14 +180,13 @@
 }
 
 .quick-link:hover {
-  background: var(--clr-primary-dark);
+  background: #0f0f1e;
   transform: translateY(-2px);
-  color: white;
 }
 
 /* API Endpoints Table */
 .endpoints-table {
-  border: 1px solid var(--clr-border);
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -196,11 +195,11 @@
   display: grid;
   grid-template-columns: 80px 1fr 1fr;
   gap: 1rem;
-  background: var(--clr-surface-2);
+  background: #f5f5f5;
   padding: 1rem;
   font-weight: 700;
-  color: var(--clr-text);
-  border-bottom: 2px solid var(--clr-border);
+  color: #1a1a2e;
+  border-bottom: 2px solid #e0e0e0;
   font-size: 12px;
   text-transform: uppercase;
 }
@@ -210,13 +209,13 @@
   grid-template-columns: 80px 1fr 1fr;
   gap: 1rem;
   padding: 1rem;
-  border-bottom: 1px solid var(--clr-border);
+  border-bottom: 1px solid #e0e0e0;
   align-items: center;
   transition: background-color 0.2s;
 }
 
 .table-row:hover {
-  background-color: var(--clr-surface-2);
+  background-color: #f9f9f9;
 }
 
 .col-method {
@@ -235,32 +234,32 @@
 }
 
 .method-badge.get {
-  background-color: var(--clr-primary);
+  background-color: #3b82f6;
 }
 
 .method-badge.post {
-  background-color: var(--clr-success);
+  background-color: #10b981;
 }
 
 .method-badge.put {
-  background-color: var(--clr-warning);
+  background-color: #f59e0b;
 }
 
 .method-badge.delete {
-  background-color: var(--clr-danger);
+  background-color: #ef4444;
 }
 
 .col-endpoint code {
-  background: var(--clr-surface-2);
+  background: #f5f5f5;
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
   font-size: 13px;
-  color: var(--clr-text);
+  color: #1a1a2e;
 }
 
 .col-description {
-  color: var(--clr-text-3);
+  color: #666;
   font-size: 14px;
 }
 
@@ -270,15 +269,15 @@
 }
 
 .test-data-section h3 {
-  color: var(--clr-text);
+  color: #1a1a2e;
   margin-bottom: 1rem;
   font-size: 16px;
   font-weight: 600;
 }
 
 .data-box {
-  background: var(--clr-surface-2);
-  border-left: 4px solid var(--clr-primary);
+  background: #f9f9f9;
+  border-left: 4px solid #1a1a2e;
   padding: 1rem;
   margin-bottom: 1rem;
   border-radius: 4px;
@@ -286,16 +285,16 @@
 
 .data-box p {
   margin: 0.5rem 0;
-  color: var(--clr-text);
+  color: #333;
   font-size: 14px;
 }
 
 .data-box code {
-  background: var(--clr-surface);
+  background: white;
   padding: 0.25rem 0.5rem;
   border-radius: 3px;
   font-family: 'Courier New', monospace;
-  color: var(--clr-danger);
+  color: #e74c3c;
   font-weight: 600;
 }
 
@@ -305,27 +304,26 @@
 }
 
 .doc-section h3 {
-  color: var(--clr-text);
+  color: #1a1a2e;
   margin-bottom: 1rem;
   font-size: 16px;
   font-weight: 600;
 }
 
 .doc-section p {
-  color: var(--clr-text-2);
+  color: #666;
   margin-bottom: 1rem;
   font-size: 14px;
   line-height: 1.6;
 }
 
 .code-block {
-  background: var(--clr-surface);
-  color: var(--clr-success);
+  background: #1a1a2e;
+  color: #00ff00;
   padding: 1.5rem;
   border-radius: 6px;
   overflow-x: auto;
   margin-bottom: 1rem;
-  border: 1px solid var(--clr-border);
 }
 
 .code-block pre {

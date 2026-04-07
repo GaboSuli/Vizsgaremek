@@ -471,7 +471,11 @@ img { max-width: 100%; display: block; }
 
 /* Bootstrap overrides for compatibility */
 .btn-outline { border-radius: 8px; }
+<<<<<<< HEAD
 }
+=======
+
+>>>>>>> parent of b461a16 (dark mode és kontakt page)
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;

@@ -1,12 +1,12 @@
 .navbar {
-  background-color: var(--clr-primary);
+  background-color: #5074d6;
   overflow: hidden;
 }
 
 .navbar a {
   float: left;
   display: block;
-  color: var(--clr-text-inv);
+  color: #f2f2f2;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
@@ -14,6 +14,6 @@
 }
 
 .navbar a:hover {
-  background-color: var(--clr-surface-2);
-  color: var(--clr-primary-dark);
+  background-color: #ddd;
+  color: rgb(0, 81, 128);
 }

@@ -1,1 +1,1 @@
-.shopping-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;border:1px solid var(--clr-border);background:var(--clr-surface);color:var(--clr-text)}.shopping-item .name{font-weight:600}.shopping-item .meta{color:var(--clr-text-3);font-size:0.9rem}
+.shopping-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;border:1px solid rgba(15,23,42,0.04);background:white}.shopping-item .name{font-weight:600}.shopping-item .meta{color:var(--muted);font-size:0.9rem}

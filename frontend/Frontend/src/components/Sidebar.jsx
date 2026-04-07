@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import useAuth from '../context/useAuth.js';
-import ToggleSwitch from './ui/ToggleSwitch.jsx';
 import './Sidebar.css';
 
 const navItems = [
@@ -207,7 +206,6 @@ export default function Sidebar({ collapsed, onToggle }) {
             </div>
           )}
         </nav>
-
 
         {/* User + Logout */}
         <div className="sidebar-footer">

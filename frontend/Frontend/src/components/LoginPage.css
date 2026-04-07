@@ -2,6 +2,29 @@
    AUTH — Login & Register
    ============================================ */
 
+<<<<<<< HEAD
+=======
+:root {
+  --auth-bg-gradient: linear-gradient(145deg, #1e1b4b 0%, #312e81 40%, #4f46e5 100%);
+  --auth-brand-bg: white;
+  --auth-form-bg: white;
+  --auth-form-text: #333;
+  --auth-form-border: #e2e8f0;
+  --auth-form-focus: #667eea;
+  --auth-input-bg: white;
+}
+
+[data-auth-theme='dark'] {
+  --auth-bg-gradient: linear-gradient(145deg, #0f172a 0%, #1e1b4b 40%, #6366f1 100%);
+  --auth-brand-bg: #1e293b;
+  --auth-form-bg: #1e293b;
+  --auth-form-text: #e2e8f0;
+  --auth-form-border: #475569;
+  --auth-form-focus: #818cf8;
+  --auth-input-bg: #0f172a;
+}
+
+>>>>>>> parent of b461a16 (dark mode és kontakt page)
 .auth-root {
   min-height: 100vh;
   display: flex;
@@ -221,7 +244,7 @@
 .form-control::placeholder {
   color: rgba(0, 0, 0, 0.35);
 }
-[data-theme='dark'] .form-control::placeholder {
+[data-auth-theme='dark'] .form-control::placeholder {
   color: rgba(255, 255, 255, 0.35);
 }
 
@@ -230,7 +253,7 @@
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
 }
 
-[data-theme='dark'] .form-control:focus {
+[data-auth-theme='dark'] .form-control:focus {
   box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
 }
 
@@ -247,26 +270,26 @@
 }
 
 .alert-danger {
-  background-color: var(--clr-danger-light);
-  color: var(--clr-danger-dark);
-  border: 1px solid var(--clr-danger-light);
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
 }
 
-[data-theme='dark'] .alert-danger {
+[data-auth-theme='dark'] .alert-danger {
   background-color: rgba(239, 68, 68, 0.15);
-  color: var(--clr-danger);
+  color: #fca5a5;
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .alert-success {
-  background-color: var(--clr-success-light);
-  color: var(--clr-success-dark);
-  border: 1px solid var(--clr-success-light);
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
 }
 
-[data-theme='dark'] .alert-success {
+[data-auth-theme='dark'] .alert-success {
   background-color: rgba(16, 185, 129, 0.15);
-  color: var(--clr-success);
+  color: #86efac;
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 

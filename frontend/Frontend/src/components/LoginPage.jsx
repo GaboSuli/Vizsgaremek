@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../context/useAuth.js';
-import useTheme from '../context/useTheme.js';
 import './LoginPage.css';
 
 export default function LoginPage({ initialMode } = {}) {
   const { login, register } = useAuth();
-  const { isDarkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [isLogin, setIsLogin] = useState(initialMode !== 'register');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', password: '', passwordConfirm: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
@@ -23,6 +22,15 @@ export default function LoginPage({ initialMode } = {}) {
     const params = new URLSearchParams(location.search);
     if ((params.get('page') || '').toLowerCase() === 'register') setIsLogin(false);
   }, [location.search]);
+
+  useEffect(() => {
+    // Apply theme to document
+    if (isDarkMode) {
+      document.documentElement.setAttribute('data-auth-theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-auth-theme');
+    }
+  }, [isDarkMode]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,7 +67,7 @@ export default function LoginPage({ initialMode } = {}) {
         {/* Theme toggle button */}
         <button
           className="auth-theme-toggle"
-          onClick={toggleTheme}
+          onClick={() => setIsDarkMode(!isDarkMode)}
           title={isDarkMode ? 'Világos mód' : 'Sötét mód'}
           type="button"
         >

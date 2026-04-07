@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import useAuth from '../context/useAuth.js';
 import './UserProfile.css';
 
 const endpoints = {
@@ -12,6 +13,7 @@ const endpoints = {
 };
 
 export default function UserProfile() {
+  const auth = useAuth();
   const [profile, setProfile] = useState(null);
   const [lists, setLists] = useState([]);
   const [groups, setGroups] = useState([]);
@@ -20,6 +22,15 @@ export default function UserProfile() {
   const [yearlyCosts, setYearlyCosts] = useState(null);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('auth_token');
+
+  // Sync theme from user data to DOM
+  useEffect(() => {
+    if (auth.user?.tema_id === 2) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }, [auth.user?.tema_id]);
 
   useEffect(() => {
     const fetchData = async () => {

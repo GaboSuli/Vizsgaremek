@@ -1,8 +1,8 @@
 .labjegyzet {
-  border-top: 1px solid var(--clr-border);
+  border-top: 1px solid #e9ecef;
   margin-top: 1.5rem;
   padding-top: 1rem;
-  color: var(--clr-text-3);
+  color: #6c757d;
   font-size: 0.9rem;
   text-align: center;
 }

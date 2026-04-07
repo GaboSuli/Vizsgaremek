@@ -1,12 +1,12 @@
 .vevesi-lista-page {
   min-height: 100vh;
-  background-color: var(--clr-bg);
+  background-color: #f5f5f5;
 }
 
 /* Hero Section */
 .lista-hero {
-  background: linear-gradient(135deg, var(--clr-info) 0%, var(--clr-info-dark) 100%);
-  color: var(--clr-text-inv);
+  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+  color: white;
   padding: 4rem 1rem;
   text-align: center;
   box-shadow: 0 8px 16px rgba(23, 162, 184, 0.2);
@@ -41,20 +41,20 @@
 .lista-card {
   border: none;
   border-radius: 12px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
-  background: var(--clr-surface);
+  background: white;
   height: 100%;
 }
 
 .lista-card:hover {
   transform: translateY(-6px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 8px 24px rgba(23, 162, 184, 0.15);
 }
 
 .lista-card .card-title {
   font-weight: 600;
-  color: var(--clr-text);
+  color: #333;
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
 }
@@ -68,7 +68,7 @@
 .lista-footer {
   margin-top: auto;
   padding-top: 1rem;
-  border-top: 1px solid var(--clr-border);
+  border-top: 1px solid #e9ecef;
 }
 
 .lista-total {
@@ -80,33 +80,33 @@
 
 .total-label {
   font-weight: 600;
-  color: var(--clr-text-3);
+  color: #6c757d;
   font-size: 0.9rem;
 }
 
 .total-amount {
   font-weight: 700;
   font-size: 1.3rem;
-  color: var(--clr-info);
+  color: #17a2b8;
 }
 
 /* Detail Card */
 .lista-detail-card {
   border: none;
   border-radius: 12px;
-  box-shadow: var(--shadow-md);
-  background: var(--clr-surface);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: white;
 }
 
 .lista-detail-card .card-header {
-  background-color: var(--clr-surface-2);
-  border-bottom: 1px solid var(--clr-border);
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
   padding: 1.5rem;
   border-radius: 12px 12px 0 0;
 }
 
 .lista-detail-card h3 {
-  color: var(--clr-text);
+  color: #333;
   font-weight: 700;
   font-size: 1.5rem;
 }
@@ -121,31 +121,31 @@
 }
 
 .table thead {
-  background-color: var(--clr-surface-2);
-  border-bottom: 2px solid var(--clr-border);
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
 }
 
 .table th {
   font-weight: 600;
-  color: var(--clr-text);
+  color: #333;
   padding: 1rem;
   border: none;
 }
 
 .table td {
   padding: 1rem;
-  border-bottom: 1px solid var(--clr-border);
+  border-bottom: 1px solid #e9ecef;
   vertical-align: middle;
 }
 
 .table tbody tr:hover {
-  background-color: var(--clr-surface-2);
+  background-color: #f8f9fa;
 }
 
 .table-summary {
-  background-color: var(--clr-primary-xlight);
-  border-top: 2px solid var(--clr-info);
-  border-bottom: 2px solid var(--clr-info);
+  background-color: #f0f6ff;
+  border-top: 2px solid #17a2b8;
+  border-bottom: 2px solid #17a2b8;
 }
 
 .table-summary td {
@@ -155,14 +155,14 @@
 
 /* Buttons */
 .btn-primary {
-  background-color: var(--clr-info);
-  border-color: var(--clr-info);
+  background-color: #17a2b8;
+  border-color: #17a2b8;
   font-weight: 500;
 }
 
 .btn-primary:hover {
-  background-color: var(--clr-info-dark);
-  border-color: var(--clr-info-dark);
+  background-color: #138496;
+  border-color: #117a8b;
 }
 
 .btn-outline-secondary {
