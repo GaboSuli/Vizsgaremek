@@ -1,11 +1,11 @@
 .user-statistics {
   padding: 2rem 0;
   min-height: 100vh;
-  background-color: var(--clr-bg);
+  background-color: #f5f5f5;
 }
 
 .page-title {
-  color: var(--clr-text);
+  color: #333;
   font-weight: 700;
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
@@ -15,20 +15,20 @@
 .user-info-card {
   border: none;
   border-radius: 12px;
-  box-shadow: var(--shadow-sm);
-  background: var(--clr-surface);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: white;
   padding: 1.5rem;
 }
 
 .user-name {
   font-weight: 700;
-  color: var(--clr-text);
+  color: #333;
   font-size: 1.8rem;
   margin-bottom: 0.25rem;
 }
 
 .user-email {
-  color: var(--clr-primary);
+  color: #0d6efd;
   font-size: 1rem;
   margin-bottom: 0.5rem;
 }
@@ -48,12 +48,12 @@
 .quick-value {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--clr-primary);
+  color: #0d6efd;
 }
 
 .quick-label {
   font-size: 0.85rem;
-  color: var(--clr-text-3);
+  color: #6c757d;
   margin-top: 0.25rem;
 }
 
@@ -61,8 +61,8 @@
 .stat-card {
   border: none;
   border-radius: 12px;
-  box-shadow: var(--shadow-sm);
-  background: var(--clr-surface);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: white;
 }
 
 .stat-card .card-body {
@@ -71,7 +71,7 @@
 
 .card-subtitle {
   font-weight: 600;
-  color: var(--clr-text);
+  color: #333;
   font-size: 1.1rem;
 }
 
@@ -87,14 +87,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: var(--clr-surface-2);
+  background: #f8f9fa;
   border-radius: 8px;
-  border-left: 4px solid var(--clr-primary);
+  border-left: 4px solid #0d6efd;
 }
 
 .budget-label {
   font-weight: 500;
-  color: var(--clr-text-3);
+  color: #6c757d;
 }
 
 .budget-amount {
@@ -103,15 +103,15 @@
 }
 
 .budget-amount.text-primary {
-  color: var(--clr-primary) !important;
+  color: #0d6efd !important;
 }
 
 .budget-amount.text-danger {
-  color: var(--clr-danger) !important;
+  color: #dc3545 !important;
 }
 
 .budget-amount.text-success {
-  color: var(--clr-success) !important;
+  color: #28a745 !important;
 }
 
 /* Savings Overview */
@@ -126,31 +126,31 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: var(--clr-surface-2);
+  background: #f8f9fa;
   border-radius: 8px;
-  border-left: 4px solid var(--clr-success);
+  border-left: 4px solid #28a745;
 }
 
 .savings-label {
   font-weight: 500;
-  color: var(--clr-text-3);
+  color: #6c757d;
 }
 
 .savings-amount {
   font-weight: 700;
   font-size: 1.1rem;
-  color: var(--clr-success);
+  color: #28a745;
 }
 
 .savings-percentage {
   font-weight: 700;
   font-size: 1.5rem;
-  color: var(--clr-success);
+  color: #28a745;
 }
 
 .savings-coupons {
   font-weight: 600;
-  color: var(--clr-primary);
+  color: #0d6efd;
   font-size: 1rem;
 }
 
@@ -158,21 +158,21 @@
 .chart-card {
   border: none;
   border-radius: 12px;
-  box-shadow: var(--shadow-sm);
-  background: var(--clr-surface);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: white;
   margin-bottom: 1.5rem;
 }
 
 .chart-card .card-header {
-  background-color: var(--clr-surface-2);
+  background-color: #f8f9fa;
   border: none;
   border-radius: 12px 12px 0 0;
   padding: 1.5rem;
-  border-bottom: 1px solid var(--clr-border);
+  border-bottom: 1px solid #dee2e6;
 }
 
 .chart-card .card-header h5 {
-  color: var(--clr-text);
+  color: #333;
   font-weight: 600;
 }
 
@@ -188,15 +188,15 @@
 .stat-box {
   border: none;
   border-radius: 12px;
-  box-shadow: var(--shadow-sm);
-  background: var(--clr-surface);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: white;
   transition: all 0.3s ease;
   height: 100%;
 }
 
 .stat-box:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 .stat-box .card-body {
@@ -209,7 +209,7 @@
 }
 
 .stat-title {
-  color: var(--clr-text-3);
+  color: #6c757d;
   font-weight: 500;
   font-size: 0.95rem;
   margin-bottom: 0.5rem;
@@ -218,7 +218,7 @@
 }
 
 .stat-value {
-  color: var(--clr-primary);
+  color: #0d6efd;
   font-weight: 700;
   font-size: 2rem;
   margin-bottom: 0.5rem;
@@ -228,7 +228,12 @@
 .progress {
   height: 8px;
   border-radius: 10px;
-  background-color: var(--clr-border);
+  background-color: #e9ecef;
+}
+
+.progress-bar {
+  border-radius: 10px;
+  transition: width 0.6s ease;
 }
 
 /* Responsive */
