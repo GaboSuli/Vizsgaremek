@@ -1,0 +1,149 @@
+/* ── Button Component ─────────────────────────
+   Unified button system for Szaldon
+   Uses design tokens from index.css
+   ─────────────────────────────────────────── */
+
+.btn-comp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.btn-comp:focus-visible {
+  outline: 2px solid var(--clr-primary);
+  outline-offset: 2px;
+}
+
+.btn-comp:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ── Sizes ─────────────────────────────────── */
+
+.btn-comp--sm {
+  padding: 7px 14px;
+  font-size: var(--text-xs);
+  border-radius: var(--r-sm);
+}
+
+.btn-comp--md {
+  padding: 10px 20px;
+  font-size: var(--text-sm);
+  border-radius: var(--r-md);
+}
+
+.btn-comp--lg {
+  padding: 13px 28px;
+  font-size: var(--text-base);
+  border-radius: var(--r-lg);
+}
+
+/* ── Variants ──────────────────────────────── */
+
+/* Primary */
+.btn-comp--primary {
+  background: var(--clr-primary);
+  color: #fff;
+  box-shadow: var(--shadow-primary);
+}
+.btn-comp--primary:hover:not(:disabled) {
+  background: var(--clr-primary-dark);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+.btn-comp--primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-primary);
+}
+
+/* Secondary */
+.btn-comp--secondary {
+  background: var(--clr-surface);
+  color: var(--clr-text);
+  border: 1.5px solid var(--clr-border);
+  box-shadow: var(--shadow-xs);
+}
+.btn-comp--secondary:hover:not(:disabled) {
+  background: var(--clr-surface-2);
+  border-color: var(--clr-border-2);
+  color: var(--clr-text);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Danger */
+.btn-comp--danger {
+  background: var(--clr-danger);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+.btn-comp--danger:hover:not(:disabled) {
+  background: var(--clr-danger-dark);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35);
+}
+.btn-comp--danger:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Ghost */
+.btn-comp--ghost {
+  background: transparent;
+  color: var(--clr-text-2);
+  border: 1.5px solid transparent;
+}
+.btn-comp--ghost:hover:not(:disabled) {
+  background: var(--clr-surface-2);
+  color: var(--clr-text);
+  border-color: var(--clr-border);
+}
+
+/* Success */
+.btn-comp--success {
+  background: var(--clr-success);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+.btn-comp--success:hover:not(:disabled) {
+  background: var(--clr-success-dark);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* ── Loading spinner inside button ─────────── */
+
+.btn-comp__spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: btn-spin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+
+.btn-comp--secondary .btn-comp__spinner,
+.btn-comp--ghost .btn-comp__spinner {
+  border-color: rgba(0, 0, 0, 0.15);
+  border-top-color: var(--clr-text-2);
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}

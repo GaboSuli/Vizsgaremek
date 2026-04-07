@@ -101,13 +101,13 @@ export default function KuponPage() {
 
         {/* Filter tabs */}
         <div className="tabs" style={{marginBottom:'1.5rem'}}>
-          <button className={`tab-item${filter === 'all' ? ' active' : ''}`} onClick={() => setFilter('all')}>
+          <button className={`tab-btn${filter === 'all' ? ' active' : ''}`} onClick={() => setFilter('all')}>
             Összes <span className="badge badge-primary" style={{marginLeft:6}}>{allKupons.length}</span>
           </button>
-          <button className={`tab-item${filter === 'active' ? ' active' : ''}`} onClick={() => setFilter('active')}>
+          <button className={`tab-btn${filter === 'active' ? ' active' : ''}`} onClick={() => setFilter('active')}>
             Aktív <span className="badge badge-success" style={{marginLeft:6}}>{activeCount}</span>
           </button>
-          <button className={`tab-item${filter === 'expired' ? ' active' : ''}`} onClick={() => setFilter('expired')}>
+          <button className={`tab-btn${filter === 'expired' ? ' active' : ''}`} onClick={() => setFilter('expired')}>
             Lejárt <span className="badge badge-danger" style={{marginLeft:6}}>{expiredCount}</span>
           </button>
         </div>
@@ -119,7 +119,7 @@ export default function KuponPage() {
           </div>
         ) : filteredKupons.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-icon">🎟️</div>
+            <div className="empty-icon" >🎟️</div>
             <h3>Nincsenek {filter === 'active' ? 'aktív' : filter === 'expired' ? 'lejárt' : ''} kuponok</h3>
           </div>
         ) : (

@@ -1,12 +1,12 @@
 .vevesi-lista-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: var(--clr-bg);
 }
 
 /* Hero Section */
 .lista-hero {
-  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--clr-info) 0%, var(--clr-info-dark) 100%);
+  color: var(--clr-text-inv);
   padding: 4rem 1rem;
   text-align: center;
   box-shadow: 0 8px 16px rgba(23, 162, 184, 0.2);
@@ -41,20 +41,20 @@
 .lista-card {
   border: none;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
-  background: white;
+  background: var(--clr-surface);
   height: 100%;
 }
 
 .lista-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 8px 24px rgba(23, 162, 184, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
 .lista-card .card-title {
   font-weight: 600;
-  color: #333;
+  color: var(--clr-text);
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
 }
@@ -68,7 +68,7 @@
 .lista-footer {
   margin-top: auto;
   padding-top: 1rem;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--clr-border);
 }
 
 .lista-total {
@@ -80,33 +80,33 @@
 
 .total-label {
   font-weight: 600;
-  color: #6c757d;
+  color: var(--clr-text-3);
   font-size: 0.9rem;
 }
 
 .total-amount {
   font-weight: 700;
   font-size: 1.3rem;
-  color: #17a2b8;
+  color: var(--clr-info);
 }
 
 /* Detail Card */
 .lista-detail-card {
   border: none;
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  background: white;
+  box-shadow: var(--shadow-md);
+  background: var(--clr-surface);
 }
 
 .lista-detail-card .card-header {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
+  background-color: var(--clr-surface-2);
+  border-bottom: 1px solid var(--clr-border);
   padding: 1.5rem;
   border-radius: 12px 12px 0 0;
 }
 
 .lista-detail-card h3 {
-  color: #333;
+  color: var(--clr-text);
   font-weight: 700;
   font-size: 1.5rem;
 }
@@ -121,31 +121,31 @@
 }
 
 .table thead {
-  background-color: #f8f9fa;
-  border-bottom: 2px solid #dee2e6;
+  background-color: var(--clr-surface-2);
+  border-bottom: 2px solid var(--clr-border);
 }
 
 .table th {
   font-weight: 600;
-  color: #333;
+  color: var(--clr-text);
   padding: 1rem;
   border: none;
 }
 
 .table td {
   padding: 1rem;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--clr-border);
   vertical-align: middle;
 }
 
 .table tbody tr:hover {
-  background-color: #f8f9fa;
+  background-color: var(--clr-surface-2);
 }
 
 .table-summary {
-  background-color: #f0f6ff;
-  border-top: 2px solid #17a2b8;
-  border-bottom: 2px solid #17a2b8;
+  background-color: var(--clr-primary-xlight);
+  border-top: 2px solid var(--clr-info);
+  border-bottom: 2px solid var(--clr-info);
 }
 
 .table-summary td {
@@ -155,14 +155,14 @@
 
 /* Buttons */
 .btn-primary {
-  background-color: #17a2b8;
-  border-color: #17a2b8;
+  background-color: var(--clr-info);
+  border-color: var(--clr-info);
   font-weight: 500;
 }
 
 .btn-primary:hover {
-  background-color: #138496;
-  border-color: #117a8b;
+  background-color: var(--clr-info-dark);
+  border-color: var(--clr-info-dark);
 }
 
 .btn-outline-secondary {

@@ -2,6 +2,7 @@ import './App.css'
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import useAuth from './context/useAuth.js'
+import { ThemeProvider } from './context/ThemeContext.jsx'
 import FirstPage from './components/FirstPage.jsx'
 import LoginPage from './components/LoginPage.jsx'
 import RegisterPage from './components/RegisterPage.jsx'
@@ -19,7 +20,7 @@ import PublicRoute from './components/PublicRoute.jsx'
 import AdminRoute from './components/AdminRoute.jsx'
 import AppLayout from './components/AppLayout.jsx'
 
-function App() {
+function AppRoutes() {
   const { user } = useAuth();
 
   return (
@@ -77,8 +78,13 @@ function App() {
       {/* fallback */}
       <Route path="*" element={<Navigate to={user ? "/dashboard" : "/"} replace />} />
     </Routes>
-    
-  )
+  );
 }
 
-export default App
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppRoutes />
+    </ThemeProvider>
+  );
+}

@@ -95,7 +95,7 @@ export function AuthProvider({ children }) {
         setUser(resp.data);
       }
     } catch {
-              // szándékosan elnyeljük a hibát EZT NE töröld ki
+      // szándékosan elnyeljük a hibát EZT NE töröld ki
     }
   };
 

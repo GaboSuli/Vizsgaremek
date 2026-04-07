@@ -1,29 +1,29 @@
 .navbar-custom {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-bottom: 1px solid #e9ecef;
+  box-shadow: var(--shadow-xs);
+  border-bottom: 1px solid var(--clr-border);
 }
 
 .navbar-brand {
   font-weight: 700;
   font-size: 1.3rem;
-  color: #17a2b8 !important;
+  color: var(--clr-info) !important;
   transition: color 0.3s ease;
 }
 
 .navbar-brand:hover {
-  color: #138496 !important;
+  color: var(--clr-info-dark) !important;
 }
 
 .nav-link-custom {
   margin-left: 1.5rem;
-  color: #333 !important;
+  color: var(--clr-text) !important;
   font-weight: 500;
   transition: color 0.3s ease;
   position: relative;
 }
 
 .nav-link-custom:hover {
-  color: #17a2b8 !important;
+  color: var(--clr-info) !important;
 }
 
 .nav-link-custom::after {
@@ -33,12 +33,8 @@
   left: 0;
   width: 0;
   height: 2px;
-  background-color: #17a2b8;
+  background-color: var(--clr-info);
   transition: width 0.3s ease;
-}
-
-.nav-link-custom:hover::after {
-  width: 100%;
 }
 
 /* Responsive */

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../context/useAuth.js';
+import useTheme from '../context/useTheme.js';
 import './LoginPage.css';
 
 export default function LoginPage({ initialMode } = {}) {
   const { login, register } = useAuth();
+  const { isDarkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -35,39 +37,57 @@ export default function LoginPage({ initialMode } = {}) {
       if (isLogin) {
         const res = await login({ email: formData.email, password: formData.password });
         if (res.success) { navigate(from, { replace: true }); return; }
-        setError(res.errors ? Object.values(res.errors).flat().join(' ') : res.message || 'Sikertelen bejelentkezés');
+        setError(res.errors ? Object.values(res.errors).flat().join(' ') : res.message || 'Sikertelen bejelentkezï¿½s');
       } else {
-        if (!formData.name.trim()) { setError('A név megadása kötelezõ'); return; }
+        if (!formData.name.trim()) { setError('A nï¿½v megadï¿½sa kï¿½telezï¿½'); return; }
         if (formData.password !== formData.passwordConfirm) { setError('A jelszavak nem egyeznek'); return; }
         const res = await register({
           nev: formData.name, email: formData.email,
           password: formData.password, password_confirmation: formData.passwordConfirm
         });
         if (res.success) { navigate(from, { replace: true }); return; }
-        setError(res.errors ? Object.values(res.errors).flat().join(' ') : res.message || 'Sikertelen regisztráció');
+        setError(res.errors ? Object.values(res.errors).flat().join(' ') : res.message || 'Sikertelen regisztrï¿½ciï¿½');
       }
-    } catch { setError('Hálózati hiba történt'); }
+    } catch { setError('Hï¿½lï¿½zati hiba tï¿½rtï¿½nt'); }
     finally { setLoading(false); }
   };
 
   return (
-    <div className=\ auth-root\>
-      {/* Left panel — Branding */}
-      <div className=\auth-brand\>
-        <div className=\auth-brand-content\>
-          <div className=\auth-brand-logo\>
-            <div className=\fp-logo-icon\>
-              <svg viewBox=\0 0 24 24\ fill=\none\ width=\20\ height=\20\>
-                <circle cx=\12\ cy=\12\ r=\10\ fill=\white\ fillOpacity=\0.25\/>
-                <path d=\M8 12l3 3 5-5\ stroke=\white\ strokeWidth=\2.5\ strokeLinecap=\round\ strokeLinejoin=\round\/>
+    <div className="auth-root">
+      {/* Left panel â€” Branding */}
+      <div className="auth-brand">
+        {/* Theme toggle button */}
+        <button
+          className="auth-theme-toggle"
+          onClick={toggleTheme}
+          title={isDarkMode ? 'VilÃ¡gos mÃ³d' : 'SÃ¶tÃ©t mÃ³d'}
+          type="button"
+        >
+          {isDarkMode ? (
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          )}
+        </button>
+
+        <div className="auth-brand-content">
+          <div className="auth-brand-logo">
+            <div className="fp-logo-icon">
+              <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                <circle cx="12" cy="12" r="10" fill="white" fillOpacity="0.25"/>
+                <path d="M8 12l3 3 5-5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
             <span className=\auth-brand-name\>Szaldon</span>
           </div>
-          <h2 className=\auth-brand-headline\>Bevásárlás örömmel,<br/>tervezés könnyedén</h2>
-          <p className=\auth-brand-sub\>Csatlakozz a közösséghez és tedd hatékonyabbá a mindennapi bevásárlást.</p>
+          <h2 className=\auth-brand-headline\>Bevï¿½sï¿½rlï¿½s ï¿½rï¿½mmel,<br/>tervezï¿½s kï¿½nnyedï¿½n</h2>
+          <p className=\auth-brand-sub\>Csatlakozz a kï¿½zï¿½ssï¿½ghez ï¿½s tedd hatï¿½konyabbï¿½ a mindennapi bevï¿½sï¿½rlï¿½st.</p>
           <div className=\auth-brand-features\>
-            {['Közös bevásárlólisták csoportokkal', 'Kuponok és kedvezmények egy helyen', 'Kiadási statisztikák és trendek', 'Ingyenes és könnyen kezelhetõ'].map((f, i) => (
+            {['Kï¿½zï¿½s bevï¿½sï¿½rlï¿½listï¿½k csoportokkal', 'Kuponok ï¿½s kedvezmï¿½nyek egy helyen', 'Kiadï¿½si statisztikï¿½k ï¿½s trendek', 'Ingyenes ï¿½s kï¿½nnyen kezelhetï¿½'].map((f, i) => (
               <div key={i} className=\auth-brand-feature\>
                 <div className=\auth-brand-check\>
                   <svg viewBox=\0 0 24 24\ fill=\none\ stroke=\currentColor\ strokeWidth=\2.5\ width=\12\ height=\12\>
@@ -81,15 +101,15 @@ export default function LoginPage({ initialMode } = {}) {
         </div>
       </div>
 
-      {/* Right panel — Form */}
-      <div className=\auth-form-panel\>
-        <div className=\auth-form-wrapper\>
-          <div className=\auth-form-header\>
-            <h1 className=\auth-form-title\>
-              {isLogin ? 'Üdv vissza ??' : 'Fiók létrehozása'}
+      {/* Right panel â€” Form */}
+      <div className="auth-form-panel">
+        <div className="auth-form-wrapper">
+          <div className="auth-form-header">
+            <h1 className="auth-form-title">
+              {isLogin ? 'Ãœdv vissza ðŸ‘‹' : 'FiÃ³k lÃ©trehozÃ¡sa'}
             </h1>
             <p className=\auth-form-sub\>
-              {isLogin ? 'Jelentkezz be a fiókodba' : 'Regisztrálj ingyen, pár másodperc alatt'}
+              {isLogin ? 'Jelentkezz be a fiï¿½kodba' : 'Regisztrï¿½lj ingyen, pï¿½r mï¿½sodperc alatt'}
             </p>
           </div>
 
@@ -105,23 +125,23 @@ export default function LoginPage({ initialMode } = {}) {
           <form onSubmit={handleSubmit} className=\auth-form\>
             {!isLogin && (
               <div className=\form-group\>
-                <label className=\form-label\>Teljes név</label>
+                <label className=\form-label\>Teljes nï¿½v</label>
                 <input type=\text\ className=\form-control\ name=\name\ value={formData.name}
-                  onChange={handleChange} required disabled={loading} autoComplete=\name\ placeholder=\Pl. Kiss Béla\ />
+                  onChange={handleChange} required disabled={loading} autoComplete=\name\ placeholder=\Pl. Kiss Bï¿½la\ />
               </div>
             )}
             <div className=\form-group\>
-              <label className=\form-label\>Email cím</label>
+              <label className=\form-label\>Email cï¿½m</label>
               <input type=\email\ className=\form-control\ name=\email\ value={formData.email}
                 onChange={handleChange} required disabled={loading} autoComplete=\email\ placeholder=\pelda@email.hu\ />
             </div>
             <div className=\form-group\>
-              <label className=\form-label\>Jelszó</label>
+              <label className=\form-label\>Jelszï¿½</label>
               <div className=\pw-input-wrap\>
                 <input type={showPassword ? 'text' : 'password'} className=\form-control\ name=\password\ value={formData.password}
                   onChange={handleChange} required minLength=\8\ disabled={loading}
                   autoComplete={isLogin ? 'current-password' : 'new-password'} placeholder=\Minimum 8 karakter\ />
-                <button type=\button\ className=\pw-toggle\ onClick={() => setShowPassword(p => !p)} tabIndex={-1} aria-label={showPassword ? 'Jelszó elrejtése' : 'Jelszó megjelenítése'}>
+                <button type=\button\ className=\pw-toggle\ onClick={() => setShowPassword(p => !p)} tabIndex={-1} aria-label={showPassword ? 'Jelszï¿½ elrejtï¿½se' : 'Jelszï¿½ megjelenï¿½tï¿½se'}>
                   {showPassword ? (
                     <svg viewBox=\0 0 24 24\ fill=\none\ stroke=\currentColor\ strokeWidth=\2\ width=\18\ height=\18\>
                       <path d=\M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94\/>
@@ -139,12 +159,12 @@ export default function LoginPage({ initialMode } = {}) {
             </div>
             {!isLogin && (
               <div className=\form-group\>
-                <label className=\form-label\>Jelszó megerõsítése</label>
+                <label className=\form-label\>Jelszï¿½ megerï¿½sï¿½tï¿½se</label>
                 <div className=\pw-input-wrap\>
                   <input type={showPasswordConfirm ? 'text' : 'password'} className=\form-control\ name=\passwordConfirm\ value={formData.passwordConfirm}
                     onChange={handleChange} required minLength=\8\ disabled={loading}
-                    autoComplete=\new-password\ placeholder=\Jelszó ismétlése\ />
-                  <button type=\button\ className=\pw-toggle\ onClick={() => setShowPasswordConfirm(p => !p)} tabIndex={-1} aria-label={showPasswordConfirm ? 'Jelszó elrejtése' : 'Jelszó megjelenítése'}>
+                    autoComplete=\new-password\ placeholder=\Jelszï¿½ ismï¿½tlï¿½se\ />
+                  <button type=\button\ className=\pw-toggle\ onClick={() => setShowPasswordConfirm(p => !p)} tabIndex={-1} aria-label={showPasswordConfirm ? 'Jelszï¿½ elrejtï¿½se' : 'Jelszï¿½ megjelenï¿½tï¿½se'}>
                     {showPasswordConfirm ? (
                       <svg viewBox=\0 0 24 24\ fill=\none\ stroke=\currentColor\ strokeWidth=\2\ width=\18\ height=\18\>
                         <path d=\M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94\/>
@@ -161,20 +181,20 @@ export default function LoginPage({ initialMode } = {}) {
                 </div>
               </div>
             )}
-            <button type=\submit\ className=\btn btn-primary\ style={{width:'100%', justifyContent:'center', padding:'13px', marginTop:'8px'}} disabled={loading}>
+            <button type="submit" className="btn btn-primary" style={{width:'100%', justifyContent:'center', padding:'13px', marginTop:'8px'}} disabled={loading}>
               {loading ? (
                 <>
                   <span className=\spinner spinner-sm\/>
-                  {isLogin ? 'Bejelentkezés...' : 'Regisztráció...'}
+                  {isLogin ? 'Bejelentkezï¿½s...' : 'Regisztrï¿½ciï¿½...'}
                 </>
-              ) : (isLogin ? 'Bejelentkezés' : 'Regisztráció')}
+              ) : (isLogin ? 'Bejelentkezï¿½s' : 'Regisztrï¿½ciï¿½')}
             </button>
           </form>
 
           <div className=\auth-toggle\>
-            <span>{isLogin ? 'Még nincs fiókod?' : 'Már van fiókod?'}</span>
+            <span>{isLogin ? 'Mï¿½g nincs fiï¿½kod?' : 'Mï¿½r van fiï¿½kod?'}</span>
             <button className=\auth-toggle-btn\ onClick={() => { setIsLogin(!isLogin); setError(''); }} disabled={loading}>
-              {isLogin ? 'Regisztrálj ingyen' : 'Bejelentkezés'}
+              {isLogin ? 'Regisztrï¿½lj ingyen' : 'Bejelentkezï¿½s'}
             </button>
           </div>
         </div>

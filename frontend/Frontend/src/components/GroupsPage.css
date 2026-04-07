@@ -32,7 +32,7 @@
   height: 48px;
   border-radius: 12px;
   background: linear-gradient(135deg, var(--clr-primary), #818cf8);
-  color: #fff;
+  color: var(--clr-text-inv);
   font-size: 1.25rem;
   font-weight: 700;
   display: flex;

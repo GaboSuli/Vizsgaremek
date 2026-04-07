@@ -5,7 +5,7 @@
 }
 
 .alkategoria-monthly-stats h2 {
-  color: #333;
+  color: var(--clr-text);
   font-weight: 600;
   margin-bottom: 2rem;
   margin-top: 0;
@@ -15,15 +15,15 @@
 .stat-card {
   border: none;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
-  background: white;
+  background: var(--clr-surface);
   height: 100%;
 }
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
 .stat-card .card-body {
@@ -36,7 +36,7 @@
 .stat-card h5 {
   margin-top: 0.75rem;
   font-weight: 600;
-  color: #333;
+  color: var(--clr-text);
   font-size: 1.75rem;
   margin-bottom: 0;
   word-break: break-word;
@@ -45,23 +45,23 @@
 .stat-card small {
   font-size: 0.85rem;
   font-weight: 500;
-  color: #6c757d;
+  color: var(--clr-text-3);
   margin-bottom: 0.25rem;
 }
 
 .stat-card .text-success {
-  color: #28a745 !important;
+  color: var(--clr-success) !important;
 }
 
 .stat-card .text-danger {
-  color: #dc3545 !important;
+  color: var(--clr-danger) !important;
 }
 
 .chart-card {
   border: none;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  background: white;
+  box-shadow: var(--shadow-sm);
+  background: var(--clr-surface);
   margin-top: 2rem;
 }
 
