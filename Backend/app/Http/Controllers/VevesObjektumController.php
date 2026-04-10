@@ -28,19 +28,27 @@ class VevesObjektumController extends Controller
                 $mertekegyseg = mennyisegTipusok::find($temp->alKategoria->mennyiseg_tipus_id)->mertekegyseg;
                 if (!array_key_exists($arrayKey,$statisztika))
                 {
-                    $statisztika[$arrayKey] = [$temp->ar,$temp->mennyiseg,$mertekegyseg];
+                    $statisztika[$arrayKey] = [$temp->ar,$temp->mennyiseg,$mertekegyseg,$temp->ar/$temp->mennyiseg,$temp->ar/$temp->mennyiseg]; 
                 }
                 else
                 {
                     $statisztika[$arrayKey][0] += $temp->ar;
-                    $statisztika[$arrayKey][1] += $temp->mennyiseg; 
+                    $statisztika[$arrayKey][1] += $temp->mennyiseg;
+                    if ($statisztika[$arrayKey][3] > $temp->ar/$temp->mennyiseg)
+                    {
+                        $statisztika[$arrayKey][3] = $temp->ar/$temp->mennyiseg;
+                    }
+                    if ($statisztika[$arrayKey][4] < $temp->ar/$temp->mennyiseg)
+                    {
+                        $statisztika[$arrayKey][4] = $temp->ar/$temp->mennyiseg;
+                    }
                 }
             }
         }
         foreach ($statisztika as $key => $item)
         {
             $tempAdatok = explode(";",$key);
-            array_push($endResult, array("Alkategoria"=>$tempAdatok[0],"Datum"=>$tempAdatok[1],"KiszamoltAtlag"=>($item[0]/$item[1]),"Mertekegyseg"=>$item[2]));
+            array_push($endResult, array("Alkategoria"=>$tempAdatok[0],"Datum"=>$tempAdatok[1],"KiszamoltAtlag"=>($item[0]/$item[1]),"Mertekegyseg"=>$item[2],"LegolcsobbEgyMennyiseg"=>$item[3],"LegdragabbEgyMennyiseg"=>$item[4],"Ingadozas"=>($item[4]-$item[3])));
         }
         return response()->json($endResult,200);
     }
@@ -107,7 +115,7 @@ class VevesObjektumController extends Controller
      */
     public function show(string $id)
     {
-        $stats = VevesObjektum::where("alKategoria_id","=",$id)->where("csoport_id","=",null)->with("alKategoria")->with("vevesLista")->get();
+        $stats = VevesObjektum::where("alKategoria_id","=",$id)->with("alKategoria")->with("vevesLista")->get();
         $statisztika = array();
         $endResult = array();
         foreach ($stats as $key => $temp) {
@@ -117,19 +125,27 @@ class VevesObjektumController extends Controller
                 $mertekegyseg = mennyisegTipusok::find($temp->alKategoria->mennyiseg_tipus_id)->mertekegyseg;
                 if (!array_key_exists($arrayKey,$statisztika))
                 {
-                    $statisztika[$arrayKey] = [$temp->ar,$temp->mennyiseg,$mertekegyseg];
+                    $statisztika[$arrayKey] = [$temp->ar,$temp->mennyiseg,$mertekegyseg,$temp->ar/$temp->mennyiseg,$temp->ar/$temp->mennyiseg]; 
                 }
                 else
                 {
                     $statisztika[$arrayKey][0] += $temp->ar;
-                    $statisztika[$arrayKey][1] += $temp->mennyiseg; 
+                    $statisztika[$arrayKey][1] += $temp->mennyiseg;
+                    if ($statisztika[$arrayKey][3] > $temp->ar/$temp->mennyiseg)
+                    {
+                        $statisztika[$arrayKey][3] = $temp->ar/$temp->mennyiseg;
+                    }
+                    if ($statisztika[$arrayKey][4] < $temp->ar/$temp->mennyiseg)
+                    {
+                        $statisztika[$arrayKey][4] = $temp->ar/$temp->mennyiseg;
+                    }
                 }
             }
         }
         foreach ($statisztika as $key => $item)
         {
             $tempAdatok = explode(";",$key);
-            array_push($endResult, array("Alkategoria"=>$tempAdatok[0],"Datum"=>$tempAdatok[1],"KiszamoltAtlag"=>($item[0]/$item[1]),"Mertekegyseg"=>$item[2]));
+            array_push($endResult, array("Alkategoria"=>$tempAdatok[0],"Datum"=>$tempAdatok[1],"KiszamoltAtlag"=>($item[0]/$item[1]),"Mertekegyseg"=>$item[2],"LegolcsobbEgyMennyiseg"=>$item[3],"LegdragabbEgyMennyiseg"=>$item[4],"Ingadozas"=>($item[4]-$item[3])));
         }
         return response()->json($endResult,200);
     }
@@ -158,19 +174,27 @@ public function show2(int $ev)
                 $mertekegyseg = mennyisegTipusok::find($temp->alKategoria->mennyiseg_tipus_id)->mertekegyseg;
                 if (!array_key_exists($arrayKey,$statisztika))
                 {
-                    $statisztika[$arrayKey] = [$temp->ar,$temp->mennyiseg,$mertekegyseg];
+                    $statisztika[$arrayKey] = [$temp->ar,$temp->mennyiseg,$mertekegyseg,$temp->ar/$temp->mennyiseg,$temp->ar/$temp->mennyiseg]; 
                 }
                 else
                 {
                     $statisztika[$arrayKey][0] += $temp->ar;
-                    $statisztika[$arrayKey][1] += $temp->mennyiseg; 
+                    $statisztika[$arrayKey][1] += $temp->mennyiseg;
+                    if ($statisztika[$arrayKey][3] > $temp->ar/$temp->mennyiseg)
+                    {
+                        $statisztika[$arrayKey][3] = $temp->ar/$temp->mennyiseg;
+                    }
+                    if ($statisztika[$arrayKey][4] < $temp->ar/$temp->mennyiseg)
+                    {
+                        $statisztika[$arrayKey][4] = $temp->ar/$temp->mennyiseg;
+                    }
                 }
             }
         }
         foreach ($statisztika as $key => $item)
         {
             $tempAdatok = explode(";",$key);
-            array_push($endResult, array("Alkategoria"=>$tempAdatok[0],"Datum"=>$tempAdatok[1],"KiszamoltAtlag"=>($item[0]/$item[1]),"Mertekegyseg"=>$item[2]));
+            array_push($endResult, array("Alkategoria"=>$tempAdatok[0],"Datum"=>$tempAdatok[1],"KiszamoltAtlag"=>($item[0]/$item[1]),"Mertekegyseg"=>$item[2],"LegolcsobbEgyMennyiseg"=>$item[3],"LegdragabbEgyMennyiseg"=>$item[4],"Ingadozas"=>($item[4]-$item[3])));
         }
         return response()->json($endResult,200);
     }
