@@ -1,10 +1,4 @@
-/**
- * Statistics Service - Statisztikai adatok feldolgozása
- */
-
 import { apiCall } from './api.js';
-
-// Adatok közvetlenül az objektumokba ágyazva
 const alkategoriaHaviData = {
   "2025-05": {
     "Mikor": "2025-05",
@@ -287,4 +281,51 @@ export const searchAlkategorias = async (searchTerm, userId = null) => {
     console.error('Hiba a keresés során:', error);
     return [];
   }
+};
+
+// ── New functions for the redesigned Statistics dashboard ─────────────────────
+
+/**
+ * GET /felhasznalo/osszKoltesei — user's total expenses by subcategory (all time)
+ * Returns: [{ megnevezes: string, Osszegzett: number }]
+ */
+export const getUserTotalExpenses = async () => {
+  const res = await apiCall('/felhasznalo/osszKoltesei', { includeAuth: true });
+  return { success: res.success, data: Array.isArray(res.data) ? res.data : [] };
+};
+
+/**
+ * GET /felhasznalo/eHaviKoltesei — user's expenses in the current month
+ * Returns: [{ megnevezes: string, Osszegzett: number }]
+ */
+export const getUserMonthlyExpenses = async () => {
+  const res = await apiCall('/felhasznalo/eHaviKoltesei', { includeAuth: true });
+  return { success: res.success, data: Array.isArray(res.data) ? res.data : [] };
+};
+
+/**
+ * GET /felhasznalo/eEviKoltesei — user's expenses in the current year
+ * Returns: [{ megnevezes: string, Osszegzett: number }]
+ */
+export const getUserYearlyExpenses = async () => {
+  const res = await apiCall('/felhasznalo/eEviKoltesei', { includeAuth: true });
+  return { success: res.success, data: Array.isArray(res.data) ? res.data : [] };
+};
+
+/**
+ * GET /statisztika/all — all subcategories' monthly avg price changes
+ * Returns: [{ Alkategoria, Datum, KiszamoltAtlag, Mertekegyseg, LegolcsobbEgyMennyiseg, LegdragabbEgyMennyiseg, Ingadozas }]
+ */
+export const getMarketStats = async () => {
+  const res = await apiCall('/statisztika/all');
+  return { success: res.success, data: Array.isArray(res.data) ? res.data : [] };
+};
+
+/**
+ * GET /statisztika/ev/{year} — all subcategories' avg price for a given year
+ * Returns: same shape as getMarketStats
+ */
+export const getYearMarketStats = async (year) => {
+  const res = await apiCall(`/statisztika/ev/${year}`);
+  return { success: res.success, data: Array.isArray(res.data) ? res.data : [] };
 };

@@ -50,12 +50,6 @@ api.interceptors.request.use((cfg) => {
 
 api.interceptors.response.use((res) => res, (error) => {
   const resp = error.response;
-  console.error('API error', {
-    url: error.config && error.config.url,
-    status: resp && resp.status,
-    data: resp && resp.data,
-    message: error.message
-  });
 
   if (resp && resp.status === 401) {
     try { localStorage.removeItem('auth_token'); } catch (e) { void e; }
@@ -91,7 +85,6 @@ async function handleError(err) {
     result.message = err.message || 'Hálózati hiba';
   }
 
-  console.error('handleError result', result);
   return result;
 }
 
@@ -189,6 +182,34 @@ export async function deleteCsoportTag(tagsagId) {
 
 export async function getFelhasznaloCsoportjai() {
   return await apiCall('/felhasznalo/csoportjai');
+}
+
+export async function getFelhasznaloVevesiListak() {
+  return await apiCall('/felhasznalo/vevesiListak');
+}
+
+export async function getCsoportFelhasznalok(csoportId) {
+  return await apiCall(`/csoport/${csoportId}/felhasznalok`);
+}
+
+export async function createCsoport(data) {
+  return await apiCall('/csoport/create', { method: 'POST', body: data });
+}
+
+export async function updateCsoport(csoportId, data) {
+  return await apiCall(`/csoport/modositas/${csoportId}`, { method: 'PUT', body: data });
+}
+
+export async function deleteCsoport(csoportId) {
+  return await apiCall(`/csoport/torles/${csoportId}`, { method: 'DELETE' });
+}
+
+export async function createVevesiLista(data) {
+  return await apiCall('/vevesiLista/create', { method: 'POST', body: data });
+}
+
+export async function deleteVevesiLista(listaId) {
+  return await apiCall(`/vevesiLista/torles/${listaId}`, { method: 'DELETE' });
 }
 
 export default api;

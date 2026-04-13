@@ -8,5 +8,3 @@ export default function useTheme() {
   }
   return context;
 }
-
-export { ThemeContext };

@@ -74,7 +74,6 @@ export default function AdminPage() {
       endpoint: '/contact',
       description: 'Összes kitöltött ürlap (bearer: session token, csak nagyobb mint 1 jogosultságú szintű tud)'
     },
-    // ...existing code...
   ];
 
   const checkServerStatus = async () => {
