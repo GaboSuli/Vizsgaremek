@@ -13,7 +13,8 @@ class AlkategoriakController extends Controller
      */
     public function index()
     {
-        
+        $resp = Alkategoriak::all();
+        return response($resp);
     }
 
     /**

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlkategoriakController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CsoportokController;
 use App\Http\Controllers\CsoportTagsagController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\VevesListaController;
 use App\Http\Controllers\VevesObjektumController;
 use Illuminate\Support\Facades\Route;
 
+Route::get( '/alkategoriak',[AlkategoriakController::class, 'index']);
 Route::get( '/statisztika/all',[VevesObjektumController::class, 'index']);
 Route::get( '/statisztika/id/{id}',[VevesObjektumController::class, 'show']);
 Route::get( '/statisztika/ev/{ev}',[VevesObjektumController::class, 'show2']);
