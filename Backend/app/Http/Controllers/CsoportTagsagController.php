@@ -72,7 +72,7 @@ class CsoportTagsagController extends Controller
         }
         else
         {
-            $users = DB::select("SELECT users.nev, csoport_tagsag.becenev, users.profilkep_url,csoport_tagsag.created_at FROM csoport_tagsag INNER JOIN users ON csoport_tagsag.felhasznalo_id = users.id WHERE users.id = ? AND csoport_tagsag.csoport_id = ?",[auth()->id(),$id]);
+            $users = DB::select("SELECT users.nev, csoport_tagsag.becenev, users.profilkep_url,csoport_tagsag.created_at FROM csoport_tagsag INNER JOIN users ON csoport_tagsag.felhasznalo_id = users.id AND csoport_tagsag.csoport_id = ?",[$id]);
             if (empty($users))
             {
                 return response(["Message"=>"Nem talált."],404);

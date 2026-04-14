@@ -342,6 +342,13 @@ foreach ($categories as $key => $value) {
         $users = User::factory()->count(100)->create();
         $kupons = Kupon::factory()->count(10)->create();
         $csoportok = Csoportok::factory()->count(100)->create();
+        foreach ($csoportok as $key => $value) {
+            $newrec = new CsoportTagsag();
+            $newrec->felhasznalo_id = $value->keszito_felhasznalo_id;
+            $newrec->csoport_id = $value->id;
+            $newrec->jogosultsag_szint = 3;
+            $newrec->save();
+        }
         $csoportTagsagok = CsoportTagsag::factory()->count(300)->create();
         $vevesListak = VevesLista::factory()->count(1000)->create();
         $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
