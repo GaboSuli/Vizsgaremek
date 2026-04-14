@@ -1,5 +1,4 @@
 import './App.css'
-import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import useAuth from './context/useAuth.js'
 import { ThemeProvider } from './context/ThemeContext.jsx'
@@ -12,12 +11,14 @@ import KuponPage from './components/KuponPage.jsx'
 import ShoppingListPage from './components/ShoppingListPage.jsx'
 import GroupDetailPage from './components/GroupDetailPage.jsx'
 import GroupsPage from './components/GroupsPage.jsx'
-import AdminPage from './components/AdminPage.jsx'
+import AdminDashboard from './components/Admin/AdminDashboard.jsx'
 import ContactPage from './components/ContactPage.jsx'
 import UserManagementPage from './components/UserManagementPage.jsx'
+import CouponModeratorPage from './components/Kupon/CouponModeratorPage.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import PublicRoute from './components/PublicRoute.jsx'
 import AdminRoute from './components/AdminRoute.jsx'
+import ModeratorRoute from './components/ModeratorRoute.jsx'
 import AppLayout from './components/AppLayout.jsx'
 
 function AppRoutes() {
@@ -69,8 +70,13 @@ function AppRoutes() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/admin" element={
           <AdminRoute>
-            <AdminPage />
+            <AdminDashboard />
           </AdminRoute>
+        } />
+        <Route path="/kupon-moderator" element={
+          <ModeratorRoute>
+            <CouponModeratorPage />
+          </ModeratorRoute>
         } />
       </Route>
 

@@ -1,103 +1,39 @@
-/* ── StatisticsPage ──────────────────────── */
+/* ══════════════════════════════════════════════════════
+   StatisticsPage — page-level layout styles
+   All component-level styles live in Statistics/Statistics.css
+══════════════════════════════════════════════════════ */
+
 .stats-page {
   min-height: 100vh;
+  background: var(--clr-bg);
 }
 
-.stats-section {
-  margin-bottom: 2rem;
-}
-
-/* Sub-component resets – remove old gradient heroes from child components */
-.user-statistics {
-  background: transparent !important;
-  padding: 0 !important;
-}
-
-.user-statistics .stats-hero,
-.alkategoria-monthly-stats .stats-hero,
-.all-alkategorias-stats .stats-hero {
-  display: none !important;
-}
-
-}
-
-.alkategoria-monthly-stats,
-.all-alkategorias-stats {
-  padding: 2rem 0;
-}
-
-/* Responsive */
-@media (max-width: 991.98px) {
-  .hero-title {
-    font-size: 2rem;
-  }
-
-  .hero-subtitle {
-    font-size: 1rem;
-  }
-
-  .statistics-section {
-    padding: 2rem 0;
-  }
-
-  .statistics-hero {
-    padding: 2rem 1rem;
-    margin-bottom: 2rem;
-  }
-}
-
-@media (max-width: 767.98px) {
-  .statistics-page {
-    min-height: auto;
-  }
-
-  .hero-title {
-    font-size: 1.5rem;
-  }
-
-  .hero-subtitle {
-    font-size: 0.95rem;
-  }
-
-  .statistics-hero {
-    padding: 1.5rem 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .statistics-content {
-    padding: 1rem 0;
-  }
-
-  .statistics-section {
-    padding: 1.5rem 0;
-  }
-}
-
-/* Scroll smooth */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Loading state */
-.statistics-loading {
+/* Sticky header row with title + year filter */
+.sp-header {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-8);
 }
 
-/* Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Section spacing with staggered entrance animation */
+.sp-section {
+  margin-bottom: var(--sp-10);
+  animation: sp-fade-up 0.4s ease both;
+}
+.sp-section:nth-child(2)  { animation-delay: 0.05s; }
+.sp-section:nth-child(3)  { animation-delay: 0.10s; }
+.sp-section:nth-child(4)  { animation-delay: 0.15s; }
+.sp-section:nth-child(5)  { animation-delay: 0.20s; }
+.sp-section:nth-child(6)  { animation-delay: 0.25s; }
+
+@keyframes sp-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.statistics-section {
-  animation: fadeInUp 0.5s ease;
+@media (max-width: 768px) {
+  .sp-header { flex-direction: column; align-items: flex-start; }
 }

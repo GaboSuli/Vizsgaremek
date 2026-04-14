@@ -1,6 +1,31 @@
-/* ── KuponPage ───────────────────────────── */
+/* ── KuponPage (user view) ────────────────── */
 .kp-page {
   min-height: 100vh;
+}
+
+.kp-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.kp-header-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, var(--clr-primary-light), var(--clr-primary-xlight));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--clr-primary);
+  flex-shrink: 0;
+}
+
+.kp-subtitle {
+  color: var(--clr-text-3);
+  font-size: var(--text-sm);
+  margin-top: 2px;
 }
 
 /* Cards grid */

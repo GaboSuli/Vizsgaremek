@@ -241,8 +241,8 @@ export default function ShoppingListPage() {
       if (refreshed && refreshed.success) setSelectedList(refreshed.data);
       const estimateResult = await estimateTotalCost(list.id);
       setTotalEstimate(estimateResult.data);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      // silent
     }
   };
 

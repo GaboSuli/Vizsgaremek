@@ -19,14 +19,14 @@ const setToken = (token) => {
   try {
     if (token) localStorage.setItem(TOKEN_KEY, token);
     else localStorage.removeItem(TOKEN_KEY);
-  } catch (err) { console.warn("localStorage error:", err); }
+  } catch { /* silent */ }
 };
 
 const setUser = (user) => {
   try {
     if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
     else localStorage.removeItem(USER_KEY);
-  } catch {console.log() }
+  } catch { /* silent */ }
 };
 
 export const getStoredUserInfo = () => {

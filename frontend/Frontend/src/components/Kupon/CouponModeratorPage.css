@@ -1,0 +1,115 @@
+/* ── CouponModeratorPage ──────────────────── */
+.cmp-page {
+  min-height: 100vh;
+}
+
+/* Header */
+.cmp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.cmp-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cmp-header-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, var(--clr-warning-light), var(--clr-warning));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--clr-warning-dark);
+  flex-shrink: 0;
+}
+
+.cmp-subtitle {
+  color: var(--clr-text-3);
+  font-size: var(--text-sm);
+  margin-top: 2px;
+}
+
+.cmp-btn-create {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+/* Stats row */
+.cmp-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.cmp-stat-card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--r-lg);
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  transition: box-shadow var(--transition-speed, 0.2s);
+}
+
+.cmp-stat-card:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.cmp-stat-card--success { border-left: 3px solid var(--clr-success); }
+.cmp-stat-card--warning { border-left: 3px solid var(--clr-warning); }
+.cmp-stat-card--danger  { border-left: 3px solid var(--clr-danger); }
+
+.cmp-stat-value {
+  font-size: var(--text-2xl);
+  font-weight: var(--fw-bold);
+  color: var(--clr-text);
+  line-height: 1;
+}
+
+.cmp-stat-label {
+  font-size: var(--text-xs);
+  color: var(--clr-text-3);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cmp-alert {
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cmp-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .cmp-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cmp-btn-create {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .cmp-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}

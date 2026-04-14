@@ -80,22 +80,11 @@ const profileItems = [
 
 const adminItems = [
   {
-    to: '/admin', label: 'Admin Panel',
+    to: '/admin', label: 'Admin Dashboard',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="3"/>
-        <path d="M19.07 4.93A10 10 0 0 0 5.07 19.07l1.42-1.42a8 8 0 1 1 11.31 0l1.42 1.42"/>
-      </svg>
-    )
-  },
-  {
-    to: '/kupon', label: 'Kupon moderátor',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M2 4.5C2 3.12 3.12 2 4.5 2h15C20.88 2 22 3.12 22 4.5v6c-1 0-2 1-2 2s1 2 2 2v6c0 1.38-1.12 2.5-2.5 2.5h-15C3.12 22 2 20.88 2 19.5v-6c1 0 2-1 2-2s-1-2-2-2v-6z"/>
-        <line x1="9" y1="9" x2="9.01" y2="9"/>
-        <line x1="15" y1="15" x2="15.01" y2="15"/>
-        <line x1="9.5" y1="14.5" x2="14.5" y2="9.5"/>
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <path d="M9 12l2 2 4-4"/>
       </svg>
     )
   },
@@ -103,7 +92,7 @@ const adminItems = [
 
 export default function Sidebar({ collapsed, onToggle }) {
   const navigate = useNavigate();
-  const { logout, user, isAdmin } = useAuth();
+  const { logout, user, isAdmin, isModerator } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -145,7 +134,7 @@ export default function Sidebar({ collapsed, onToggle }) {
                 <path d="M8 12l3 3 5-5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            {!collapsed && <span className="sidebar-logo-text">Szaldon</span>}
+            <span className="sidebar-logo-text">Szaldon</span>
           </NavLink>
 
           <button className="sidebar-collapse-btn" onClick={handleToggle} aria-label="Sidebar összecsukása">
@@ -166,6 +155,7 @@ export default function Sidebar({ collapsed, onToggle }) {
                 key={item.to}
                 to={item.to}
                 onClick={closeMobile}
+                data-tooltip={item.label}
                 className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
               >
                 <span className="sidebar-nav-icon">{item.icon}</span>
@@ -181,6 +171,7 @@ export default function Sidebar({ collapsed, onToggle }) {
                 key={item.to}
                 to={item.to}
                 onClick={closeMobile}
+                data-tooltip={item.label}
                 className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
               >
                 <span className="sidebar-nav-icon">{item.icon}</span>
@@ -188,6 +179,26 @@ export default function Sidebar({ collapsed, onToggle }) {
               </NavLink>
             ))}
           </div>
+
+          {isModerator && (
+            <div className="sidebar-nav-group">
+              {!collapsed && <span className="sidebar-nav-label" style={{color:'var(--clr-info, #06b6d4)'}}>Moderátor</span>}
+              <NavLink
+                to="/kupon-moderator"
+                onClick={closeMobile}
+                data-tooltip="Kupon Moderátor"
+                className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
+              >
+                <span className="sidebar-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M2 4.5C2 3.12 3.12 2 4.5 2h15C20.88 2 22 3.12 22 4.5v6c-1 0-2 1-2 2s1 2 2 2v6c0 1.38-1.12 2.5-2.5 2.5h-15C3.12 22 2 20.88 2 19.5v-6c1 0 2-1 2-2s-1-2-2-2v-6z"/>
+                  </svg>
+                </span>
+                {!collapsed && <span className="sidebar-nav-text">Kupon Moderátor</span>}
+              </NavLink>
+            </div>
+          )}
 
           {isAdmin && (
             <div className="sidebar-nav-group">
@@ -197,6 +208,7 @@ export default function Sidebar({ collapsed, onToggle }) {
                   key={item.to}
                   to={item.to}
                   onClick={closeMobile}
+                  data-tooltip={item.label}
                   className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
                 >
                   <span className="sidebar-nav-icon">{item.icon}</span>

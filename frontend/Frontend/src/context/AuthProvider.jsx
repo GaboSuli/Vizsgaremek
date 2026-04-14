@@ -97,9 +97,7 @@ export function AuthProvider({ children }) {
     setAuthToken(null);
     try {
       localStorage.removeItem('current_user');
-    } catch {
-              // szándékosan elnyeljük a hibát EZT NE töröld ki
-    }
+    } catch { /* silent */ }
     setUser(null);
   };
 
@@ -109,13 +107,20 @@ export function AuthProvider({ children }) {
       if (resp.success && resp.data) {
         setUser(resp.data);
       }
-    } catch {
-              // szándékosan elnyeljük a hibát EZT NE töröld ki
-    }
+    } catch { /* silent */ }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser, isAdmin: !!(user && (user.jogosultsag_szint === 255 || user.Jogosultsag_szint === 255)) }}>
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      login,
+      register,
+      logout,
+      refreshUser,
+      isAdmin: !!(user && (user.jogosultsag_szint === 255 || user.Jogosultsag_szint === 255)),
+      isModerator: !!(user && ((user.jogosultsag_szint ?? user.Jogosultsag_szint ?? 0) > 0)),
+    }}>
       {children}
     </AuthContext.Provider>
   );
