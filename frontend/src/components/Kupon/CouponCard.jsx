@@ -86,7 +86,7 @@ export default function CouponCard({ kupon, isModerator = false, onEdit, onDelet
       {kupon.kedvezmeny && (
         <div className="coup-discount-banner">
           <span className="coup-discount-value">{kupon.kedvezmeny}</span>
-          <span className="coup-discount-label">kedvezmény</span>
+          <span className="coup-discount-label">% kedvezmény</span>
         </div>
       )}
 
