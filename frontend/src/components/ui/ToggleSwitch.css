@@ -1,0 +1,140 @@
+
+.toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font);
+  color: var(--sidebar-text);
+  transition: var(--transition);
+}
+
+.toggle-switch:focus-visible {
+  outline: 2px solid var(--clr-primary);
+  outline-offset: 3px;
+  border-radius: var(--r-md);
+}
+
+/* ── Track ──────────────────────────────── */
+.toggle-switch__track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+}
+
+/* md */
+.toggle-switch--md .toggle-switch__track {
+  width: 46px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+
+/* sm */
+.toggle-switch--sm .toggle-switch__track {
+  width: 36px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ON state */
+.toggle-switch--on .toggle-switch__track {
+  background: var(--clr-primary);
+  border-color: var(--clr-primary-dark);
+}
+
+/* ── Thumb ──────────────────────────────── */
+.toggle-switch__thumb {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.1s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.toggle-switch--md .toggle-switch__thumb {
+  width: 20px;
+  height: 20px;
+  left: 2px;
+}
+
+.toggle-switch--sm .toggle-switch__thumb {
+  width: 14px;
+  height: 14px;
+  left: 2px;
+}
+
+/* Slide thumb on ON state */
+.toggle-switch--md.toggle-switch--on .toggle-switch__thumb {
+  transform: translateX(20px);
+}
+
+.toggle-switch--sm.toggle-switch--on .toggle-switch__thumb {
+  transform: translateX(16px);
+}
+
+/* ── Icon inside thumb ──────────────────── */
+.toggle-switch__icon {
+  font-size: 11px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.toggle-switch--sm .toggle-switch__icon {
+  font-size: 8px;
+}
+
+/* ── Label ──────────────────────────────── */
+.toggle-switch__label {
+  font-size: var(--text-xs);
+  font-weight: var(--fw-medium);
+  color: var(--sidebar-text);
+  white-space: nowrap;
+  user-select: none;
+  letter-spacing: 0.01em;
+}
+
+/* ── Light theme adjustments ────────────── */
+[data-theme='dark'] .toggle-switch__label {
+  color: var(--clr-text-2);
+}
+
+/* ── Standalone (non-sidebar) usage ─────── */
+.toggle-switch--standalone {
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+  background: var(--clr-surface-2);
+  border: 1px solid var(--clr-border) !important;
+  color: var(--clr-text-2);
+}
+
+.toggle-switch--standalone .toggle-switch__track {
+  border-color: var(--clr-border-2);
+  background: var(--clr-surface-3);
+}
+
+.toggle-switch--standalone.toggle-switch--on .toggle-switch__track {
+  background: var(--clr-primary);
+  border-color: var(--clr-primary-dark);
+}
+
+.toggle-switch--standalone .toggle-switch__label {
+  color: var(--clr-text-2);
+}
+
+.toggle-switch--standalone:hover {
+  background: var(--clr-surface-3);
+}

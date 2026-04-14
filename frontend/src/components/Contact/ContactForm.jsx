@@ -107,7 +107,7 @@ export default function ContactForm({ user, onSuccess }) {
 
       // Send email via Express server
       const typeLabel = messageTypes.find(t => t.value === formData.messageType)?.label || formData.messageType;
-      await fetch('http://localhost:5000/contact', {
+      await fetch('http://127.0.0.1:8000/api/contact/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
