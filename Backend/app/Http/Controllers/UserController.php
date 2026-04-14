@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Csoportok;
+use App\Models\CsoportTagsag;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -97,7 +99,7 @@ class UserController extends Controller
      */
     public function show(Request $request)
     {
-        $resp = User::where("id",'=',auth()->id())->with("csoportok")->get();
+        $resp = Csoportok::join("csoport_tagsag","csoportok.id","=","csoport_tagsag.csoport_id")->where("csoport_tagsag.felhasznalo_id",'=',auth()->id())->select('csoportok.*','csoport_tagsag.jogosultsag_szint')->get();
         if (empty($resp))
         {
             return response()->json(['message'=>"Nincs ilyen felhasználó."]);
