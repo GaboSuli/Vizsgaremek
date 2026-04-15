@@ -73,6 +73,12 @@ export default function ContactInfoCard() {
                   <MailIcon />
                   {member.email}
                 </a>
+                {member.github && (
+                  <a href={member.github} className="contact-team-email" target="_blank" rel="noopener noreferrer">
+                    <GithubIcon />
+                    GitHub profil
+                  </a>
+                )}
               </div>
             </div>
           );

@@ -5,6 +5,7 @@ import {
   editCsoportTag,
   deleteCsoportTag,
 } from '../../services/api';
+import Avatar from '../Profile/Avatar.jsx';
 import './groups.css';
 
 function roleLabel(lvl) {
@@ -179,13 +180,7 @@ export default function MemberManager({ csoportId, isAdmin, currentUserId }) {
             return (
               <li key={memberId} className="mm-member-item">
                 {/* Avatar */}
-                <div className="mm-member-avatar">
-                  {m.profilkep_url ? (
-                    <img src={m.profilkep_url} alt={m.nev} />
-                  ) : (
-                    (m.nev || '?').charAt(0).toUpperCase()
-                  )}
-                </div>
+                <Avatar src={m.profilkep_url} name={m.nev} size="sm" className="mm-member-avatar" />
 
                 {isEditing ? (
                   <form className="mm-edit-row" onSubmit={handleSave}>

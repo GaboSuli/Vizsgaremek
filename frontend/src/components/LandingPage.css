@@ -157,10 +157,14 @@
 }
 @media (max-width: 640px) {
   .dashboard-stats { grid-template-columns: 1fr 1fr; }
-  .dashboard-header { flex-direction: column; }
+  .dashboard-header { flex-direction: column; gap: 12px; }
+  .dashboard-header-actions { width: 100%; }
+  .dashboard-header-actions .btn { flex: 1; justify-content: center; }
   .dashboard-quick-grid { grid-template-columns: 1fr 1fr; }
+  .dashboard { padding: 16px 12px 40px; }
 }
 @media (max-width: 400px) {
   .dashboard-stats { grid-template-columns: 1fr; }
   .dashboard-quick-grid { grid-template-columns: 1fr; }
+  .quick-card { padding: 14px 12px; }
 }

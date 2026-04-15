@@ -1,0 +1,61 @@
+/* ── PreferencesPanel ─────────────────────── */
+
+.pref-panel {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.pref-panel__header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--clr-border);
+  background: var(--clr-surface-2);
+}
+
+.pref-panel__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: var(--fw-semibold);
+  color: var(--clr-text);
+  margin: 0;
+}
+
+.pref-panel__body {
+  padding: 1rem 1.5rem;
+}
+
+.pref-panel__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+}
+
+.pref-panel__item-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pref-panel__item-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.pref-panel__item-title {
+  font-size: var(--text-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--clr-text);
+  margin: 0;
+}
+
+.pref-panel__item-desc {
+  font-size: var(--text-xs);
+  color: var(--clr-text-3);
+  margin: 0.15rem 0 0;
+}

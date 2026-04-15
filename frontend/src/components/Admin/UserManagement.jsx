@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import ConfirmDialog from '../ui/ConfirmDialog.jsx';
 import { deleteUser } from '../../services/adminService.js';
+import Avatar from '../Profile/Avatar.jsx';
 
 const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -122,18 +123,18 @@ export default function UserManagement({ users, loading, onRefresh, onToast }) {
 
                   return (
                     <tr key={user.id}>
-                      <td>
+                      <td data-label="Felhasználó">
                         <div className="admin-user-cell">
-                          <div className="admin-user-avatar">{getInitials(name)}</div>
+                          <Avatar src={user.profilkep_url} name={name} size="sm" className="admin-user-avatar" />
                           <div className="admin-user-details">
                             <div className="admin-user-name">{name}</div>
                             <div className="admin-user-email">{email}</div>
                           </div>
                         </div>
                       </td>
-                      <td>{getRoleBadge(level)}</td>
-                      <td style={{ fontSize: 'var(--text-xs)', color: 'var(--clr-text-3)' }}>{date}</td>
-                      <td>
+                      <td data-label="Szerepkör">{getRoleBadge(level)}</td>
+                      <td data-label="Regisztráció" style={{ fontSize: 'var(--text-xs)', color: 'var(--clr-text-3)' }}>{date}</td>
+                      <td data-label="Művelet">
                         <div className="admin-action-group">
                           <button
                             className="admin-action-btn admin-action-btn--danger"

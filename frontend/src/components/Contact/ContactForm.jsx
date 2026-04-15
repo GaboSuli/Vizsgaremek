@@ -1,4 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
+import { apiCall } from '../../services/api.js';
+
+const COOLDOWN_SECONDS = 30;
+const NAME_MIN = 2;
+const NAME_MAX = 100;
+const MESSAGE_MIN = 10;
+const MESSAGE_MAX = 2000;
+const EMAIL_MAX = 254;
 
 const SendIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
@@ -22,6 +30,37 @@ const messageTypes = [
   { value: '4', label: 'Együttműködés', icon: '🤝' },
 ];
 
+function validateField(name, value, formData) {
+  switch (name) {
+    case 'name': {
+      const trimmed = value.trim();
+      if (!trimmed) return 'A név megadása kötelező.';
+      if (trimmed.length < NAME_MIN) return `A név legalább ${NAME_MIN} karakter legyen.`;
+      if (trimmed.length > NAME_MAX) return `A név legfeljebb ${NAME_MAX} karakter lehet.`;
+      return '';
+    }
+    case 'email': {
+      const trimmed = value.trim();
+      if (!trimmed) return 'Az email cím megadása kötelező.';
+      if (trimmed.length > EMAIL_MAX) return `Az email legfeljebb ${EMAIL_MAX} karakter lehet.`;
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return 'Érvénytelen email cím formátum.';
+      return '';
+    }
+    case 'messageType':
+      if (!value) return 'Válassz egy üzenet típust.';
+      return '';
+    case 'message': {
+      const trimmed = value.trim();
+      if (!trimmed) return 'Az üzenet megadása kötelező.';
+      if (trimmed.length < MESSAGE_MIN) return `Az üzenet legalább ${MESSAGE_MIN} karakter legyen.`;
+      if (trimmed.length > MESSAGE_MAX) return `Az üzenet legfeljebb ${MESSAGE_MAX} karakter lehet.`;
+      return '';
+    }
+    default:
+      return '';
+  }
+}
+
 export default function ContactForm({ user, onSuccess }) {
   const [formData, setFormData] = useState({
     name: user?.name || user?.Nev || '',
@@ -34,32 +73,53 @@ export default function ContactForm({ user, onSuccess }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
+  const [cooldown, setCooldown] = useState(0);
+  const cooldownRef = useRef(null);
+
+  const startCooldown = useCallback(() => {
+    setCooldown(COOLDOWN_SECONDS);
+    cooldownRef.current = setInterval(() => {
+      setCooldown(prev => {
+        if (prev <= 1) {
+          clearInterval(cooldownRef.current);
+          cooldownRef.current = null;
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'A név megadása kötelező.';
-    if (!formData.email.trim()) {
-      newErrors.email = 'Az email cím megadása kötelező.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Érvénytelen email cím formátum.';
-    }
-    if (!formData.messageType) newErrors.messageType = 'Válassz egy üzenet típust.';
-    if (!formData.message.trim()) {
-      newErrors.message = 'Az üzenet megadása kötelező.';
-    } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Az üzenet legalább 10 karakter legyen.';
+    for (const field of ['name', 'email', 'messageType', 'message']) {
+      const err = validateField(field, formData[field], formData);
+      if (err) newErrors[field] = err;
     }
     return newErrors;
   };
 
   const handleChange = ({ target: { name, value } }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+    if (errors[name]) {
+      const err = validateField(name, value, formData);
+      setErrors(prev => ({ ...prev, [name]: err || undefined }));
+    }
+  };
+
+  const handleBlur = ({ target: { name, value } }) => {
+    if (name === 'company') return;
+    const err = validateField(name, value, formData);
+    if (err) {
+      setErrors(prev => ({ ...prev, [name]: err }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setApiError('');
+
+    if (cooldown > 0) return;
 
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
@@ -67,64 +127,48 @@ export default function ContactForm({ user, onSuccess }) {
       return;
     }
 
+    // Honeypot check
     if (formData.company) {
-      setApiError('Spam gyanús üzenet.');
-      setLoading(false);
+      // Silently pretend success for bots
+      onSuccess();
       return;
     }
 
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('auth_token');
-
-      const backendPayload = {
-        nev: formData.name,
-        email: formData.email,
-        contactTipusId: formData.messageType,
-        text: formData.message,
-      };
-
-      const res = await fetch('http://127.0.0.1:8000/api/contact/create', {
+      const res = await apiCall('/contact/create', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        body: {
+          nev: formData.name.trim(),
+          email: formData.email.trim(),
+          contactTipusId: formData.messageType,
+          text: formData.message.trim(),
         },
-        body: JSON.stringify(backendPayload),
       });
 
-      let data;
-      const contentType = res.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        data = await res.json();
-      } else {
-        throw new Error('A szerver hibás választ adott (nem JSON). Ellenőrizd az API-t.');
+      if (!res.success) {
+        const serverMsg = res.errors?.validacios_hibak
+          ? Object.values(res.errors.validacios_hibak).flat().join(' ')
+          : res.message;
+        throw new Error(serverMsg || 'Hiba történt a küldés során.');
       }
 
-      if (!res.ok) throw new Error(data.message || JSON.stringify(data.validacios_hibak) || 'Hiba történt');
-
-      // Send email via Express server
-      const typeLabel = messageTypes.find(t => t.value === formData.messageType)?.label || formData.messageType;
-      await fetch('http://127.0.0.1:8000/api/contact/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          messageType: typeLabel,
-          message: formData.message,
-        }),
-      }).catch(() => { /* email küldés nem blokkol */ });
-
+      startCooldown();
       onSuccess();
     } catch (err) {
-      setApiError(err.message);
+      console.error('[ContactForm] Submission error:', err);
+      setApiError(
+        err.message && err.message !== 'Hálózati hiba'
+          ? err.message
+          : 'Nem sikerült elküldeni az üzenetet. Kérjük, próbáld újra később.'
+      );
     } finally {
       setLoading(false);
     }
   };
+
+  const isSubmitDisabled = loading || cooldown > 0;
 
   return (
     <div className="contact-form-section">
@@ -152,6 +196,8 @@ export default function ContactForm({ user, onSuccess }) {
               placeholder="Teljes neved"
               value={formData.name}
               onChange={handleChange}
+              onBlur={handleBlur}
+              maxLength={NAME_MAX}
             />
             {errors.name && <span className="invalid-feedback">{errors.name}</span>}
           </div>
@@ -165,6 +211,8 @@ export default function ContactForm({ user, onSuccess }) {
               placeholder="pelda@email.com"
               value={formData.email}
               onChange={handleChange}
+              onBlur={handleBlur}
+              maxLength={EMAIL_MAX}
             />
             {errors.email && <span className="invalid-feedback">{errors.email}</span>}
           </div>
@@ -202,21 +250,27 @@ export default function ContactForm({ user, onSuccess }) {
             placeholder="Írd le részletesen, miben segíthetünk..."
             value={formData.message}
             onChange={handleChange}
+            onBlur={handleBlur}
             rows={5}
+            maxLength={MESSAGE_MAX}
           />
           <div className="contact-char-count">
-            <span>{formData.message.length} karakter</span>
+            <span>{formData.message.length} / {MESSAGE_MAX} karakter</span>
           </div>
           {errors.message && <span className="invalid-feedback">{errors.message}</span>}
         </div>
 
         {/* honeypot */}
         <input type="text" name="company" value={formData.company} onChange={handleChange}
-          style={{ position: 'absolute', left: '-9999px', opacity: 0 }} autoComplete="off" tabIndex={-1} />
+          style={{ position: 'absolute', left: '-9999px', opacity: 0 }} autoComplete="off" tabIndex={-1} aria-hidden="true" />
 
-        <button type="submit" className="btn btn-primary btn-lg contact-submit-btn" disabled={loading}>
+        <button type="submit" className="btn btn-primary btn-lg contact-submit-btn" disabled={isSubmitDisabled}>
           {loading ? <SpinnerIcon /> : <SendIcon />}
-          {loading ? 'Küldés folyamatban...' : 'Üzenet küldése'}
+          {loading
+            ? 'Küldés folyamatban...'
+            : cooldown > 0
+              ? `Várakozás (${cooldown}s)`
+              : 'Üzenet küldése'}
         </button>
       </form>
     </div>

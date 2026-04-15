@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 import './components/styles.css'
+import './mobile.css'
 import App from './App.jsx'
 
 import { AuthProvider } from './context/AuthProvider.jsx'

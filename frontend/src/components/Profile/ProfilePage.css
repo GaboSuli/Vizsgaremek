@@ -1,0 +1,227 @@
+/* ── ProfilePage ──────────────────────────── */
+
+.pp-page {
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+.pp-container {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Tabs ─────────────────────────────────── */
+
+.pp-tabs {
+  display: flex;
+  gap: 0.25rem;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--r-lg);
+  padding: 0.35rem;
+  box-shadow: var(--shadow-xs);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pp-tabs::-webkit-scrollbar { display: none; }
+
+.pp-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  border: none;
+  background: transparent;
+  border-radius: var(--r-md);
+  font-size: var(--text-sm);
+  font-weight: var(--fw-medium);
+  color: var(--clr-text-3);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.pp-tab:hover {
+  color: var(--clr-text);
+  background: var(--clr-surface-2);
+}
+.pp-tab--active {
+  color: var(--clr-primary);
+  background: var(--clr-primary-xlight);
+  font-weight: var(--fw-semibold);
+}
+.pp-tab--active:hover {
+  color: var(--clr-primary);
+  background: var(--clr-primary-xlight);
+}
+.pp-tab--danger.pp-tab--active {
+  color: var(--clr-danger);
+  background: var(--clr-danger-light);
+}
+
+.pp-tab__icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.pp-tab__label {
+  line-height: 1;
+}
+
+/* ── Body ─────────────────────────────────── */
+
+.pp-body {
+  min-height: 200px;
+}
+
+/* ── Section card (generic) ──────────────── */
+
+.pp-section-card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.pp-section-card__header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--clr-border);
+  background: var(--clr-surface-2);
+}
+
+.pp-section-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: var(--fw-semibold);
+  color: var(--clr-text);
+  margin: 0;
+}
+
+.pp-section-card__body {
+  padding: 1.75rem;
+}
+
+/* ── Avatar section ──────────────────────── */
+
+.pp-avatar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Edit card ───────────────────────────── */
+
+.pp-edit-card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.pp-edit-card__header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--clr-border);
+  background: var(--clr-surface-2);
+}
+
+.pp-edit-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: var(--fw-semibold);
+  color: var(--clr-text);
+  margin: 0;
+}
+
+.pp-edit-card__body {
+  padding: 1.75rem;
+}
+
+.pp-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.pp-edit-form__actions {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: 0.5rem;
+}
+
+/* ── Danger card ─────────────────────────── */
+
+.pp-danger-card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-danger);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.pp-danger-card__header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+  background: var(--clr-danger-light);
+}
+
+.pp-danger-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: var(--fw-semibold);
+  color: var(--clr-danger-dark);
+  margin: 0;
+}
+
+.pp-danger-card__body {
+  padding: 1.75rem;
+}
+
+.pp-danger-card__text {
+  font-size: var(--text-sm);
+  color: var(--clr-text-2);
+  margin: 0 0 1.25rem;
+  line-height: 1.6;
+}
+
+/* ── Responsive ──────────────────────────── */
+
+@media (max-width: 600px) {
+  .pp-page {
+    padding: 1rem;
+  }
+
+  .pp-tabs {
+    gap: 0.15rem;
+    padding: 0.25rem;
+  }
+
+  .pp-tab {
+    padding: 0.5rem 0.65rem;
+    font-size: var(--text-xs);
+  }
+
+  .pp-tab__label {
+    display: none;
+  }
+
+  .pp-tab__icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .pp-section-card__body,
+  .pp-edit-card__body,
+  .pp-danger-card__body {
+    padding: 1.25rem;
+  }
+}

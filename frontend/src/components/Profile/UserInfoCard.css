@@ -1,0 +1,110 @@
+/* ── UserInfoCard ─────────────────────────── */
+
+.uinfo-card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.uinfo-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--clr-border);
+  background: var(--clr-surface-2);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.uinfo-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: var(--fw-semibold);
+  color: var(--clr-text);
+  margin: 0;
+}
+
+.uinfo-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 12px;
+  border-radius: var(--r-full);
+  font-size: 0.7rem;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.uinfo-badge--user {
+  background: var(--clr-primary-light);
+  color: var(--clr-primary-dark);
+}
+.uinfo-badge--mod {
+  background: var(--clr-info-light);
+  color: var(--clr-info-dark);
+}
+.uinfo-badge--admin {
+  background: var(--clr-warning-light);
+  color: var(--clr-warning-dark);
+}
+
+.uinfo-card__body {
+  padding: 0.5rem 0;
+}
+
+/* ── Info Row ────────────────────────────── */
+
+.uinfo-row {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1.5rem;
+  transition: background 0.15s ease;
+}
+.uinfo-row:hover {
+  background: var(--clr-surface-2);
+}
+
+.uinfo-row__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
+  background: var(--clr-primary-xlight);
+  color: var(--clr-primary);
+  flex-shrink: 0;
+}
+
+.uinfo-row__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.uinfo-row__label {
+  font-size: var(--text-xs);
+  color: var(--clr-text-3);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.uinfo-row__value {
+  font-size: var(--text-sm);
+  color: var(--clr-text);
+  font-weight: var(--fw-medium);
+  word-break: break-word;
+}
+
+.uinfo-row__empty {
+  color: var(--clr-text-3);
+  font-style: italic;
+}

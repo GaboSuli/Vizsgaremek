@@ -1,0 +1,304 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../../context/useAuth.js';
+import * as authService from '../../services/authService.js';
+import ProfileHeader from './ProfileHeader.jsx';
+import UserInfoCard from './UserInfoCard.jsx';
+import AvatarUploader from './AvatarUploader.jsx';
+import PreferencesPanel from './PreferencesPanel.jsx';
+import Button from '../ui/Button.jsx';
+import './ProfilePage.css';
+
+function EditProfileForm({ user, onSaved }) {
+  const auth = useAuth();
+  const [form, setForm] = useState({
+    nev: user?.nev || '',
+    becenev: user?.becenev || '',
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  useEffect(() => {
+    setForm({ nev: user?.nev || '', becenev: user?.becenev || '' });
+  }, [user]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((p) => ({ ...p, [name]: value }));
+    setError('');
+    setSuccess('');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.nev.trim()) {
+      setError('A név megadása kötelező.');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    setSuccess('');
+    try {
+      const payload = {};
+      if (form.nev !== user?.nev) payload.nev = form.nev;
+      if (form.becenev !== user?.becenev) payload.becenev = form.becenev;
+
+      if (Object.keys(payload).length === 0) {
+        setSuccess('Nincs változás.');
+        setLoading(false);
+        return;
+      }
+
+      const resp = await authService.updateUser(payload);
+      if (resp.success) {
+        setSuccess('Profil sikeresen módosítva!');
+        await auth.refreshUser();
+        onSaved?.();
+      } else {
+        setError(resp.message || 'Hiba történt a mentés során.');
+      }
+    } catch {
+      setError('Hiba történt.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="pp-edit-card">
+      <div className="pp-edit-card__header">
+        <h3 className="pp-edit-card__title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+          </svg>
+          Adatok szerkesztése
+        </h3>
+      </div>
+      <div className="pp-edit-card__body">
+        {error && <div className="alert alert-danger">{error}</div>}
+        {success && <div className="alert alert-success">{success}</div>}
+        <form onSubmit={handleSubmit} className="pp-edit-form">
+          <div className="form-group">
+            <label className="form-label">Teljes név *</label>
+            <input
+              className="form-control"
+              type="text"
+              name="nev"
+              value={form.nev}
+              onChange={handleChange}
+              disabled={loading}
+              required
+              placeholder="pl. Kovács János"
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Becenév</label>
+            <input
+              className="form-control"
+              type="text"
+              name="becenev"
+              value={form.becenev}
+              onChange={handleChange}
+              disabled={loading}
+              placeholder="pl. KJ"
+            />
+          </div>
+          <div className="pp-edit-form__actions">
+            <Button type="submit" variant="primary" loading={loading}>
+              Mentés
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function DangerZone({ user }) {
+  const navigate = useNavigate();
+  const auth = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleDelete = async () => {
+    if (!window.confirm('Biztosan törölni szeretnéd a fiókodat? Ez a művelet nem vonható vissza.'))
+      return;
+
+    setLoading(true);
+    setError('');
+    try {
+      const userId = user?.id;
+      if (!userId) {
+        setError('Felhasználó azonosító nem található.');
+        return;
+      }
+      const resp = await authService.deleteUser(userId);
+      if (resp.success) {
+        auth.logout();
+        navigate('/', { replace: true });
+      } else {
+        setError(resp.message || 'Hiba történt.');
+      }
+    } catch {
+      setError('Hiba történt.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="pp-danger-card">
+      <div className="pp-danger-card__header">
+        <h3 className="pp-danger-card__title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+          Veszélyzóna
+        </h3>
+      </div>
+      <div className="pp-danger-card__body">
+        {error && <div className="alert alert-danger" style={{ marginBottom: '1rem' }}>{error}</div>}
+        <p className="pp-danger-card__text">
+          A fiók törlésével minden adatod véglegesen törlődik — vásárlási listák, csoporttagságok, statisztikák. A művelet nem vonható vissza.
+        </p>
+        <Button variant="danger" loading={loading} onClick={handleDelete}>
+          Fiók végleges törlése
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export default function ProfilePage() {
+  const auth = useAuth();
+  const user = auth.user;
+  const [activeTab, setActiveTab] = useState('overview');
+  const [avatarSaving, setAvatarSaving] = useState(false);
+  const [avatarMsg, setAvatarMsg] = useState('');
+
+  const handleAvatarSave = async (imageUrl) => {
+    setAvatarSaving(true);
+    setAvatarMsg('');
+    try {
+      const resp = await authService.updateUser({ profilkep_url: imageUrl || '' });
+      if (resp.success) {
+        setAvatarMsg('Profilkép sikeresen frissítve!');
+        await auth.refreshUser();
+      } else {
+        setAvatarMsg(resp.message || 'Hiba történt.');
+      }
+    } catch {
+      setAvatarMsg('Hiba történt a mentés során.');
+    } finally {
+      setAvatarSaving(false);
+      setTimeout(() => setAvatarMsg(''), 3000);
+    }
+  };
+
+  const tabs = [
+    { id: 'overview', label: 'Áttekintés', icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="16" height="16">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    )},
+    { id: 'avatar', label: 'Profilkép', icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="16" height="16">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+        <circle cx="8.5" cy="8.5" r="1.5" />
+        <polyline points="21 15 16 10 5 21" />
+      </svg>
+    )},
+    { id: 'edit', label: 'Szerkesztés', icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="16" height="16">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+      </svg>
+    )},
+    { id: 'settings', label: 'Beállítások', icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="16" height="16">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4" />
+      </svg>
+    )},
+    { id: 'danger', label: 'Fiók törlése', icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="16" height="16">
+        <polyline points="3 6 5 6 21 6" />
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+      </svg>
+    )},
+  ];
+
+  return (
+    <div className="pp-page">
+      <div className="pp-container">
+        {/* Profile Header */}
+        <ProfileHeader user={user} />
+
+        {/* Tab Navigation */}
+        <div className="pp-tabs">
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              className={`pp-tab ${activeTab === t.id ? 'pp-tab--active' : ''} ${t.id === 'danger' ? 'pp-tab--danger' : ''}`}
+              onClick={() => setActiveTab(t.id)}
+            >
+              <span className="pp-tab__icon">{t.icon}</span>
+              <span className="pp-tab__label">{t.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Tab body */}
+        <div className="pp-body">
+          {activeTab === 'overview' && <UserInfoCard user={user} />}
+
+          {activeTab === 'avatar' && (
+            <div className="pp-avatar-section">
+              <div className="pp-section-card">
+                <div className="pp-section-card__header">
+                  <h3 className="pp-section-card__title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <polyline points="21 15 16 10 5 21" />
+                    </svg>
+                    Profilkép kezelése
+                  </h3>
+                </div>
+                <div className="pp-section-card__body">
+                  {avatarMsg && (
+                    <div className={`alert ${avatarMsg.includes('sikeresen') ? 'alert-success' : 'alert-danger'}`} style={{ marginBottom: '1rem' }}>
+                      {avatarMsg}
+                    </div>
+                  )}
+                  <AvatarUploader
+                    currentUrl={user?.profilkep_url}
+                    userName={user?.nev}
+                    onSave={handleAvatarSave}
+                    saving={avatarSaving}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'edit' && (
+            <EditProfileForm
+              user={user}
+              onSaved={() => setActiveTab('overview')}
+            />
+          )}
+
+          {activeTab === 'settings' && <PreferencesPanel />}
+
+          {activeTab === 'danger' && <DangerZone user={user} />}
+        </div>
+      </div>
+    </div>
+  );
+}

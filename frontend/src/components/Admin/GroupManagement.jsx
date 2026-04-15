@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import ConfirmDialog from '../ui/ConfirmDialog.jsx';
 import { deleteGroup } from '../../services/adminService.js';
+import Avatar from '../Profile/Avatar.jsx';
 
 const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -111,24 +112,22 @@ export default function GroupManagement({ groups, loading, onRefresh, onToast })
 
                   return (
                     <tr key={group.id}>
-                      <td>
+                      <td data-label="Csoport">
                         <div className="admin-user-cell">
-                          <div className="admin-user-avatar" style={{ background: 'linear-gradient(135deg, var(--clr-success) 0%, var(--clr-info) 100%)' }}>
-                            {(name[0] || 'C').toUpperCase()}
-                          </div>
+                          <Avatar name={name} size="sm" className="admin-user-avatar" style={{ background: 'linear-gradient(135deg, var(--clr-success) 0%, var(--clr-info) 100%)' }} />
                           <div className="admin-user-details">
                             <div className="admin-user-name">{name}</div>
                           </div>
                         </div>
                       </td>
-                      <td>
+                      <td data-label="Típus">
                         <span className="admin-status-badge admin-status-badge--active">
                           <span className="admin-status-dot" />
                           Típus: {type}
                         </span>
                       </td>
-                      <td style={{ fontSize: 'var(--text-xs)', color: 'var(--clr-text-3)' }}>{date}</td>
-                      <td>
+                      <td data-label="Létrehozva" style={{ fontSize: 'var(--text-xs)', color: 'var(--clr-text-3)' }}>{date}</td>
+                      <td data-label="Művelet">
                         <div className="admin-action-group">
                           <button
                             className="admin-action-btn admin-action-btn--danger"

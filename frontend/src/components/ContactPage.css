@@ -402,20 +402,25 @@
 
 @media (max-width: 640px) {
   .contact-hero {
-    padding: var(--sp-8) var(--sp-5);
+    padding: var(--sp-6) var(--sp-4);
     border-radius: var(--r-lg);
   }
 
   .contact-hero-title {
-    font-size: var(--text-2xl);
+    font-size: var(--text-xl);
   }
 
   .contact-hero-subtitle {
     font-size: var(--text-sm);
   }
 
+  .contact-hero-icon {
+    width: 48px;
+    height: 48px;
+  }
+
   .contact-form-section {
-    padding: var(--sp-5);
+    padding: var(--sp-4);
     border-radius: var(--r-lg);
   }
 
@@ -442,6 +447,11 @@
   }
 
   .contact-success {
-    padding: var(--sp-8) var(--sp-5);
+    padding: var(--sp-6) var(--sp-4);
+  }
+
+  .contact-success-icon {
+    width: 60px;
+    height: 60px;
   }
 }

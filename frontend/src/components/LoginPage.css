@@ -282,5 +282,14 @@
   .auth-form-panel { width: 100%; }
 }
 @media (max-width: 480px) {
-  .auth-form-panel { padding: 32px 24px; }
+  .auth-form-panel { padding: 24px 20px; }
+  .auth-title { font-size: 1.4rem; }
+  .auth-form-group input {
+    min-height: 44px;
+    font-size: 16px;
+  }
+  .auth-submit-btn {
+    min-height: 48px;
+    font-size: 1rem;
+  }
 }

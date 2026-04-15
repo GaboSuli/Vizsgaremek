@@ -74,4 +74,13 @@
   .gp-grid {
     grid-template-columns: 1fr;
   }
+  .gp-card {
+    padding: 1rem 1.1rem;
+  }
+  .gp-card-avatar {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+  }
 }

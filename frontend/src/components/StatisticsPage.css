@@ -35,5 +35,17 @@
 }
 
 @media (max-width: 768px) {
-  .sp-header { flex-direction: column; align-items: flex-start; }
+  .sp-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .sp-section {
+    margin-bottom: var(--sp-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .sp-header {
+    gap: var(--sp-2);
+  }
 }

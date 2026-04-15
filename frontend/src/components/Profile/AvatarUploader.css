@@ -1,0 +1,151 @@
+/* ── AvatarUploader ──────────────────────── */
+
+.avatar-uploader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.avatar-uploader__current {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.avatar-uploader__badge {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--clr-primary);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: var(--fw-bold);
+  padding: 2px 10px;
+  border-radius: var(--r-full);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── Drop zone ───────────────────────────── */
+
+.avatar-uploader__dropzone {
+  width: 100%;
+  max-width: 360px;
+  border: 2px dashed var(--clr-border-2);
+  border-radius: var(--r-lg);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  background: var(--clr-surface-2);
+}
+
+.avatar-uploader__dropzone:hover,
+.avatar-uploader__dropzone--active {
+  border-color: var(--clr-primary);
+  background: var(--clr-primary-xlight);
+}
+
+.avatar-uploader__dropzone-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--clr-text-3);
+  transition: color 0.2s ease;
+}
+.avatar-uploader__dropzone:hover .avatar-uploader__dropzone-icon,
+.avatar-uploader__dropzone--active .avatar-uploader__dropzone-icon {
+  color: var(--clr-primary);
+}
+
+.avatar-uploader__dropzone-text {
+  font-size: var(--text-sm);
+  color: var(--clr-text-2);
+  margin: 0;
+}
+.avatar-uploader__dropzone-text strong {
+  color: var(--clr-primary);
+}
+
+.avatar-uploader__dropzone-hint {
+  font-size: var(--text-xs);
+  color: var(--clr-text-3);
+}
+
+.avatar-uploader__file-input {
+  display: none;
+}
+
+/* ── URL row ─────────────────────────────── */
+
+.avatar-uploader__url-row {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.avatar-uploader__url-divider {
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--clr-text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: var(--fw-semibold);
+  position: relative;
+}
+.avatar-uploader__url-divider::before,
+.avatar-uploader__url-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 28%;
+  height: 1px;
+  background: var(--clr-border);
+}
+.avatar-uploader__url-divider::before { left: 0; }
+.avatar-uploader__url-divider::after { right: 0; }
+
+.avatar-uploader__url-input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.avatar-uploader__url-input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Actions ─────────────────────────────── */
+
+.avatar-uploader__actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* ── Remove button ───────────────────────── */
+
+.avatar-uploader__remove-btn {
+  background: none;
+  border: none;
+  color: var(--clr-danger);
+  font-size: var(--text-sm);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--r-sm);
+  transition: background 0.15s ease;
+}
+.avatar-uploader__remove-btn:hover {
+  background: var(--clr-danger-light);
+}

@@ -163,16 +163,16 @@ export default function PriceTable({ year }) {
                 const ingClass = ing > 1000 ? 'badge-danger' : ing > 200 ? 'badge-warning' : 'badge-success';
                 return (
                   <tr key={i}>
-                    <td>
+                    <td data-label="Alkategória">
                       <span className="pt-row-name">{row.Alkategoria}</span>
                     </td>
-                    <td><strong className="pt-avg">{fmt(row.KiszamoltAtlag)}</strong></td>
-                    <td><span className="pt-min">{fmt(row.LegolcsobbEgyMennyiseg)}</span></td>
-                    <td><span className="pt-max">{fmt(row.LegdragabbEgyMennyiseg)}</span></td>
-                    <td>
+                    <td data-label="Átlagár"><strong className="pt-avg">{fmt(row.KiszamoltAtlag)}</strong></td>
+                    <td data-label="Min. ár"><span className="pt-min">{fmt(row.LegolcsobbEgyMennyiseg)}</span></td>
+                    <td data-label="Max. ár"><span className="pt-max">{fmt(row.LegdragabbEgyMennyiseg)}</span></td>
+                    <td data-label="Ingadozás">
                       <span className={`badge ${ingClass}`}>{fmt(row.Ingadozas)}</span>
                     </td>
-                    <td><span className="pt-unit">{row.Mertekegyseg || '–'}</span></td>
+                    <td data-label="Mértékegység"><span className="pt-unit">{row.Mertekegyseg || '–'}</span></td>
                   </tr>
                 );
               })}

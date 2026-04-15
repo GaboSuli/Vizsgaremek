@@ -43,6 +43,35 @@ export async function deleteContact(contactId) {
   return await apiCall(`/contact/torles/${contactId}`, { method: 'DELETE' });
 }
 
+// ── Spending & Statistics ────────────────────────────
+export async function getAdminSpending() {
+  return await apiCall('/felhasznalo/osszKoltesei');
+}
+
+export async function getMonthlySpending() {
+  return await apiCall('/felhasznalo/eHaviKoltesei');
+}
+
+export async function getYearlySpending() {
+  return await apiCall('/felhasznalo/eEviKoltesei');
+}
+
+export async function getAllStatistics() {
+  return await apiCall('/statisztika/all', { includeAuth: false });
+}
+
+export async function getYearStatistics(year) {
+  return await apiCall(`/statisztika/ev/${year}`, { includeAuth: false });
+}
+
+export async function getAdminShoppingLists() {
+  return await apiCall('/felhasznalo/vevesiListak');
+}
+
+export async function getAdminGroups() {
+  return await apiCall('/felhasznalo/csoportjai');
+}
+
 // ── Stats (aggregate from existing endpoints) ────────
 export async function getSystemStats() {
   const [users, groups, coupons, contacts] = await Promise.allSettled([
@@ -65,5 +94,45 @@ export async function getSystemStats() {
     groups: extract(groups),
     coupons: extract(coupons),
     contacts: extract(contacts),
+  };
+}
+
+// ── Extended dashboard data ──────────────────────────
+export async function getDashboardData() {
+  const [users, groups, coupons, contacts, spending, monthlySpend, yearlySpend, stats] = await Promise.allSettled([
+    getAllUsers(),
+    getAllGroups(),
+    getAllCoupons(),
+    getAllContacts(),
+    getAdminSpending(),
+    getMonthlySpending(),
+    getYearlySpending(),
+    getAllStatistics(),
+  ]);
+
+  const extract = (r) => {
+    if (r.status === 'fulfilled' && r.value.success) {
+      const d = r.value.data;
+      return Array.isArray(d) ? d : (d && Array.isArray(d.data) ? d.data : d || []);
+    }
+    return [];
+  };
+
+  const extractSingle = (r) => {
+    if (r.status === 'fulfilled' && r.value.success) {
+      return r.value.data;
+    }
+    return null;
+  };
+
+  return {
+    users: extract(users),
+    groups: extract(groups),
+    coupons: extract(coupons),
+    contacts: extract(contacts),
+    spending: extractSingle(spending),
+    monthlySpending: extractSingle(monthlySpend),
+    yearlySpending: extractSingle(yearlySpend),
+    statistics: extractSingle(stats),
   };
 }
