@@ -123,13 +123,8 @@ export const getCurrentUser = async () => {
   try {
     const resp = await api.get("/felhasznalo");
     return { success: true, data: resp.data };
-  } catch {
-    try {
-      const resp = await api.get("/user");
-      return { success: true, data: resp.data };
-    } catch (error) {
-      return handleError(error);
-    }
+  } catch (error) {
+    return handleError(error);
   }
 };
 

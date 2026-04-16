@@ -40,6 +40,19 @@ export default function ShoppingListPage() {
 
   const auth = useAuth();
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '-';
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('hu-HU', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    } catch { return dateStr; }
+  };
+
+  const formatMoney = (amount) => {
+    const num = Number(amount) || 0;
+    return num.toLocaleString('hu-HU') + ' Ft';
+  };
+
   const loadLists = useCallback(async () => {
     try {
       setLoading(true);
@@ -133,9 +146,7 @@ export default function ShoppingListPage() {
       } else {
         // Backend requires felhasznalo_id and csoport_id. Include current user id and the list name as 'nev'.
         const payload = {
-          felhasznalo_id: auth.user?.id || null,
-          csoport_id: null,
-          nev: listFormData.Nev
+          megnevezes: listFormData.Nev
         };
         const result = await createShoppingList(payload);
         if (result && result.success) {
@@ -292,12 +303,12 @@ export default function ShoppingListPage() {
 
         {/* Stats row */}
         {stats && (
-          <div className="dashboard-stats" style={{marginBottom:'28px'}}>
+          <div className="dashboard-stats" style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:'16px', marginBottom:'28px'}}>
             {[
               { label: 'Összes lista', value: stats.totalLists },
               { label: 'Összes tétel', value: stats.totalItems },
-              { label: 'Összköltség', value: `${(stats.totalCost / 1000).toFixed(0)}k Ft` },
-              { label: 'Átlag/lista', value: `${(stats.averageCostPerList / 1000) | 0}k Ft` },
+              { label: 'Összköltség', value: formatMoney(stats.totalCost) },
+              { label: 'Átlag/lista', value: formatMoney(stats.averageCostPerList) },
             ].map((s, i) => (
               <div key={i} className="stat-card">
                 <div>
@@ -325,7 +336,7 @@ export default function ShoppingListPage() {
                       <h5 className="list-title">{list?.Nev || 'Név nélkül'}</h5>
                       <div className="list-meta">
                         <small className="text-muted">
-                          Létrehozva: {list?.Letrehozas || '-'}
+                          Létrehozva: {formatDate(list?.Letrehozas)}
                         </small>
                       </div>
                       <div className="list-info mb-3">
@@ -333,7 +344,7 @@ export default function ShoppingListPage() {
                           <strong>{list?.TeteiekSzama ?? (Array.isArray(list?.VevesiLista) ? list.VevesiLista.length : 0)}</strong> tétel
                         </span>
                         <span className="info-badge total">
-                          <strong>{((list?.Osszesen || 0) / 1000).toFixed(1)}k Ft</strong>
+                          <strong>{formatMoney(list?.Osszesen)}</strong>
                         </span>
                       </div>
                       <div className="list-actions">
@@ -431,7 +442,7 @@ export default function ShoppingListPage() {
                     ))}
                     <tr className="summary-row">
                       <td colSpan="4"><strong>Összesen:</strong></td>
-                      <td><strong>{((selectedList?.Osszesen || 0) / 1000).toFixed(1)}k Ft</strong></td>
+                      <td><strong>{formatMoney(selectedList?.Osszesen)}</strong></td>
                       <td></td>
                     </tr>
                   </tbody>

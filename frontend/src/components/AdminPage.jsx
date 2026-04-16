@@ -78,7 +78,7 @@ export default function AdminPage() {
 
   const checkServerStatus = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/user`, {
+      const response = await fetch(`${API_URL}/api/felhasznalo`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`,
           'Accept': 'application/json'
