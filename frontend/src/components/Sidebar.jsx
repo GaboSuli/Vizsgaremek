@@ -161,7 +161,7 @@ export default function Sidebar({ collapsed, onToggle }) {
     return () => window.removeEventListener('resize', resize);
   }, []);
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = () => { logout(); navigate(''); };
   const closeMobile = () => setMobileOpen(false);
   const handleToggle = () => {
     if (window.innerWidth < 768) setMobileOpen(o => !o);

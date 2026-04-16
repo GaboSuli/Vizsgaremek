@@ -724,53 +724,99 @@
 @keyframes grp-spin     { to { transform: rotate(360deg); } }
 
 /* ── Responsive ─────────────────────────────────────────────── */
+
+/* Tablet – stack two-column grid */
 @media (max-width: 900px) {
-  .grd-grid { grid-template-columns: 1fr; }
+  .grd-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
+/* Tablet / small laptop */
 @media (max-width: 768px) {
-  .grp-page, .grd-page { padding: 1rem; }
+  .grp-page,
+  .grd-page {
+    padding: 1rem 0.75rem;
+  }
+
   .grp-header {
     flex-direction: column;
     align-items: flex-start;
   }
   .grp-header-left h1 {
-    font-size: 1.35rem;
+    font-size: 1.3rem;
   }
+
+  /* Hero */
   .grd-hero {
-    padding: 1rem 1.25rem;
-    gap: 1rem;
+    padding: 1rem 1.1rem;
+    gap: 0.85rem;
+    border-radius: var(--r-lg);
+    margin-bottom: 1.25rem;
   }
   .grd-hero-avatar {
     width: 48px;
     height: 48px;
     font-size: 1.3rem;
+    border-radius: 12px;
   }
   .grd-hero-info h1 {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
   }
   .grd-hero-actions {
     width: 100%;
     justify-content: flex-start;
   }
+  .grd-hero-actions .grp-btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* Panels */
+  .grd-panel {
+    border-radius: var(--r-lg);
+  }
   .grd-panel-body {
-    padding: 1rem;
+    padding: 0.85rem;
   }
   .grd-panel-header {
-    padding: 0.85rem 1rem;
+    padding: 0.75rem 0.85rem;
   }
-  .mm-member-actions {
-    flex-direction: column;
-    gap: 0.25rem;
-  }
+
+  /* Members */
   .mm-add-form {
     flex-direction: column;
+    gap: 0.6rem;
   }
   .mm-add-form .grp-input {
     min-width: unset;
+    width: 100%;
   }
+  .mm-member-item {
+    gap: 0.5rem;
+    padding: 0.6rem 0;
+  }
+  .mm-member-actions {
+    flex-direction: row;
+    gap: 0.25rem;
+  }
+  .mm-edit-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.4rem;
+  }
+  .mm-edit-row .grp-input {
+    max-width: unset !important;
+    width: 100%;
+  }
+
+  /* Shopping list */
   .sl-add-form {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+  }
+  .sl-add-form > :first-child {
+    grid-column: 1 / -1;
   }
   .sl-add-form-row2 {
     flex-wrap: wrap;
@@ -778,34 +824,176 @@
   .sl-toolbar {
     flex-direction: column;
     align-items: stretch;
+    gap: 0.5rem;
+  }
+  .sl-newlist-form {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .sl-newlist-form .grp-input {
+    min-width: unset;
   }
   .sl-list-header {
-    padding: 0.75rem;
+    padding: 0.7rem 0.75rem;
   }
   .sl-items {
-    padding: 0.5rem 0.75rem 0.75rem;
+    padding: 0.5rem 0.65rem 0.65rem;
+  }
+
+  /* Group card grid */
+  .grp-grid {
+    grid-template-columns: 1fr;
+  }
+  .grp-personal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Modal */
+  .grp-modal {
+    max-width: 100%;
+    margin: 0.5rem;
+    border-radius: var(--r-lg);
+  }
+  .grp-modal-body {
+    padding: 1.25rem;
   }
 }
 
+/* Phone */
 @media (max-width: 480px) {
-  .grp-grid { grid-template-columns: 1fr; }
-  .grp-personal-grid { grid-template-columns: 1fr; }
+  .grp-page,
+  .grd-page {
+    padding: 0.75rem 0.5rem;
+  }
+
+  /* Hero – stack vertically */
   .grd-hero {
     flex-direction: column;
     text-align: center;
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+  .grd-hero-info {
+    width: 100%;
   }
   .grd-hero-badges {
     justify-content: center;
   }
   .grd-hero-actions {
+    width: 100%;
     justify-content: center;
+    gap: 0.5rem;
   }
+  .grd-hero-actions .grp-btn {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.6rem;
+  }
+
+  /* Panels */
+  .grd-panel-body {
+    padding: 0.75rem;
+  }
+  .grd-panel-header {
+    padding: 0.65rem 0.75rem;
+  }
+  .grd-panel-title {
+    font-size: 0.88rem;
+  }
+
+  /* Members */
+  .mm-member-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+  .mm-member-name {
+    font-size: 0.82rem;
+  }
+  .mm-member-nick {
+    font-size: 0.72rem;
+  }
+  .mm-member-actions .grp-btn-icon {
+    padding: 0.3rem 0.4rem;
+  }
+
+  /* Shopping list */
+  .sl-add-form {
+    grid-template-columns: 1fr 1fr;
+  }
+  .sl-list-name {
+    font-size: 0.82rem;
+  }
+  .sl-list-count {
+    font-size: 0.7rem;
+  }
+  .sl-item {
+    gap: 0.5rem;
+    padding: 0.45rem 0;
+  }
+  .sl-item-name {
+    font-size: 0.82rem;
+  }
+  .sl-item-meta {
+    font-size: 0.7rem;
+  }
+
+  /* Group cards */
   .grp-card {
-    padding: 0.9rem 1rem;
+    padding: 0.85rem 0.9rem;
+    gap: 0.75rem;
   }
   .grp-card-avatar {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
+    font-size: 0.95rem;
+    border-radius: 10px;
+  }
+  .grp-card-name {
+    font-size: 0.85rem;
+  }
+
+  /* Confirm dialog */
+  .grp-confirm {
+    padding: 1.25rem;
+    max-width: 320px;
+  }
+  .grp-confirm h3 {
+    font-size: 0.92rem;
+  }
+  .grp-confirm p {
+    font-size: 0.82rem;
+  }
+}
+
+/* Very small phone */
+@media (max-width: 360px) {
+  .grd-hero-avatar {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+  }
+  .grd-hero-info h1 {
     font-size: 1rem;
+  }
+  .grd-hero-actions {
+    flex-direction: column;
+  }
+  .grd-hero-actions .grp-btn {
+    width: 100%;
+  }
+
+  .sl-add-form {
+    grid-template-columns: 1fr;
+  }
+
+  .grp-btn {
+    font-size: 0.78rem;
+    padding: 0.4rem 0.7rem;
+  }
+  .grp-btn-xs {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.5rem;
   }
 }

@@ -16,6 +16,21 @@ export default defineConfig({
       '@': path.resolve(fileURLToPath(new URL('./src', import.meta.url))),
     },
   },
+  build: {
+    target: 'es2020',
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-charts': ['chart.js', 'react-chartjs-2'],
+          'vendor-http': ['axios'],
+          'vendor-ui': ['bootstrap', 'react-bootstrap'],
+        },
+      },
+    },
+  },
   server: {
     watch: { usePolling: true },
     proxy: {

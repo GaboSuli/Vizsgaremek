@@ -43,13 +43,13 @@ class CsoportTagsagController extends Controller
         {
             return response(["success"=>false,"errors"=>$validator->errors()->toArray()],400);
         }
-        $authUser = Csoportok::where("csoport_id", "=",$request->csoport_id)->first();
+        $authUser = Csoportok::where("id", "=",$request->csoport_id)->first();
         if ($authUser->keszito_felhasznalo_id != auth()->id())
         {
             return response(["message"=>"Nincs jogosultságod ehhez."],403);
         }
         $authCheck = CsoportTagsag::where("csoport_id","=",$request->csoport_id)->where("felhasznalo_id","=",$request->felhasznalo_id)->first();
-        if (!$authCheck)
+        if ($authCheck)
         {
             return response(["Message" => "Már van ilyen csoport tagság."],409);
         }

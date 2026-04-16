@@ -4,7 +4,6 @@ import useAuth from '../../context/useAuth.js';
 import * as authService from '../../services/authService.js';
 import ProfileHeader from './ProfileHeader.jsx';
 import UserInfoCard from './UserInfoCard.jsx';
-import AvatarUploader from './AvatarUploader.jsx';
 import PreferencesPanel from './PreferencesPanel.jsx';
 import Button from '../ui/Button.jsx';
 import './ProfilePage.css';
@@ -177,40 +176,12 @@ export default function ProfilePage() {
   const auth = useAuth();
   const user = auth.user;
   const [activeTab, setActiveTab] = useState('overview');
-  const [avatarSaving, setAvatarSaving] = useState(false);
-  const [avatarMsg, setAvatarMsg] = useState('');
-
-  const handleAvatarSave = async (imageUrl) => {
-    setAvatarSaving(true);
-    setAvatarMsg('');
-    try {
-      const resp = await authService.updateUser({ profilkep_url: imageUrl || '' });
-      if (resp.success) {
-        setAvatarMsg('Profilkép sikeresen frissítve!');
-        await auth.refreshUser();
-      } else {
-        setAvatarMsg(resp.message || 'Hiba történt.');
-      }
-    } catch {
-      setAvatarMsg('Hiba történt a mentés során.');
-    } finally {
-      setAvatarSaving(false);
-      setTimeout(() => setAvatarMsg(''), 3000);
-    }
-  };
 
   const tabs = [
     { id: 'overview', label: 'Áttekintés', icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="16" height="16">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
         <circle cx="12" cy="7" r="4" />
-      </svg>
-    )},
-    { id: 'avatar', label: 'Profilkép', icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="16" height="16">
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-        <circle cx="8.5" cy="8.5" r="1.5" />
-        <polyline points="21 15 16 10 5 21" />
       </svg>
     )},
     { id: 'edit', label: 'Szerkesztés', icon: (
@@ -256,36 +227,6 @@ export default function ProfilePage() {
         {/* Tab body */}
         <div className="pp-body">
           {activeTab === 'overview' && <UserInfoCard user={user} />}
-
-          {activeTab === 'avatar' && (
-            <div className="pp-avatar-section">
-              <div className="pp-section-card">
-                <div className="pp-section-card__header">
-                  <h3 className="pp-section-card__title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                      <circle cx="8.5" cy="8.5" r="1.5" />
-                      <polyline points="21 15 16 10 5 21" />
-                    </svg>
-                    Profilkép kezelése
-                  </h3>
-                </div>
-                <div className="pp-section-card__body">
-                  {avatarMsg && (
-                    <div className={`alert ${avatarMsg.includes('sikeresen') ? 'alert-success' : 'alert-danger'}`} style={{ marginBottom: '1rem' }}>
-                      {avatarMsg}
-                    </div>
-                  )}
-                  <AvatarUploader
-                    currentUrl={user?.profilkep_url}
-                    userName={user?.nev}
-                    onSave={handleAvatarSave}
-                    saving={avatarSaving}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
 
           {activeTab === 'edit' && (
             <EditProfileForm

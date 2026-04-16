@@ -22,10 +22,12 @@ class VevesObjektumController extends Controller
         $statisztika = array();
         $endResult = array();
         foreach ($stats as $key => $temp) {
-            if ($temp->elfogadott_statisztikara === 1)
+            if ($temp->elfogadott_statisztikara == 1 && $temp->alKategoria && $temp->vevesLista)
             {
+                $mertekegysegObj = mennyisegTipusok::find($temp->alKategoria->mennyiseg_tipus_id);
+                if (!$mertekegysegObj) continue;
+                $mertekegyseg = $mertekegysegObj->mertekegyseg;
                 $arrayKey = $temp->alKategoria->megnevezes.";".$temp->vevesLista->created_at->format('y-m');
-                $mertekegyseg = mennyisegTipusok::find($temp->alKategoria->mennyiseg_tipus_id)->mertekegyseg;
                 if (!array_key_exists($arrayKey,$statisztika))
                 {
                     $statisztika[$arrayKey] = [$temp->ar,$temp->mennyiseg,$mertekegyseg,$temp->ar/$temp->mennyiseg,$temp->ar/$temp->mennyiseg]; 
@@ -119,10 +121,12 @@ class VevesObjektumController extends Controller
         $statisztika = array();
         $endResult = array();
         foreach ($stats as $key => $temp) {
-            if ($temp->elfogadott_statisztikara === 1)
+            if ($temp->elfogadott_statisztikara == 1 && $temp->alKategoria && $temp->vevesLista)
             {
+                $mertekegysegObj = mennyisegTipusok::find($temp->alKategoria->mennyiseg_tipus_id);
+                if (!$mertekegysegObj) continue;
+                $mertekegyseg = $mertekegysegObj->mertekegyseg;
                 $arrayKey = $temp->alKategoria->megnevezes.";".$temp->vevesLista->created_at->format('y-m');
-                $mertekegyseg = mennyisegTipusok::find($temp->alKategoria->mennyiseg_tipus_id)->mertekegyseg;
                 if (!array_key_exists($arrayKey,$statisztika))
                 {
                     $statisztika[$arrayKey] = [$temp->ar,$temp->mennyiseg,$mertekegyseg,$temp->ar/$temp->mennyiseg,$temp->ar/$temp->mennyiseg]; 
@@ -168,10 +172,12 @@ public function show2(int $ev)
             return response()->json(["Hiba"=>"Hibás év megadás. Vagy 1-100-ig, vagy 2000 fölötti számot adj meg."],400);
         }
         foreach ($stats as $key => $temp) {
-            if ($temp->elfogadott_statisztikara === 1 and intval($temp->vevesLista->created_at->format('Y')) === $keresettEv)
+            if ($temp->elfogadott_statisztikara == 1 && $temp->alKategoria && $temp->vevesLista && intval($temp->vevesLista->created_at->format('Y')) === $keresettEv)
             {
+                $mertekegysegObj = mennyisegTipusok::find($temp->alKategoria->mennyiseg_tipus_id);
+                if (!$mertekegysegObj) continue;
+                $mertekegyseg = $mertekegysegObj->mertekegyseg;
                 $arrayKey = $temp->alKategoria->megnevezes.";".$temp->vevesLista->created_at->format('Y');
-                $mertekegyseg = mennyisegTipusok::find($temp->alKategoria->mennyiseg_tipus_id)->mertekegyseg;
                 if (!array_key_exists($arrayKey,$statisztika))
                 {
                     $statisztika[$arrayKey] = [$temp->ar,$temp->mennyiseg,$mertekegyseg,$temp->ar/$temp->mennyiseg,$temp->ar/$temp->mennyiseg]; 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import AuthContext from './AuthContext.js';
 import {
   loginUser as apiLoginUser,
@@ -67,7 +67,7 @@ export function AuthProvider({ children }) {
 
   // login/register do NOT touch global `loading` — the form has its own
   // local loading state, and we must not blank the page during submission.
-  const login = async ({ email, password }) => {
+  const login = useCallback(async ({ email, password }) => {
     try {
       const res = await apiLoginUser({ email, password });
       if (res && res.success) {
@@ -78,9 +78,9 @@ export function AuthProvider({ children }) {
     } catch {
       return { success: false, message: 'Hálózati hiba' };
     }
-  };
+  }, []);
 
-  const register = async (payload) => {
+  const register = useCallback(async (payload) => {
     try {
       const res = await apiRegisterUser(payload);
       if (res && res.success) {
@@ -91,36 +91,38 @@ export function AuthProvider({ children }) {
     } catch {
       return { success: false, message: 'Hálózati hiba' };
     }
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setAuthToken(null);
     try {
       localStorage.removeItem('current_user');
     } catch { /* silent */ }
     setUser(null);
-  };
+  }, []);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     try {
       const resp = await fetchCurrentUser();
       if (resp.success && resp.data) {
         setUser(resp.data);
       }
     } catch { /* silent */ }
-  };
+  }, []);
+
+  const contextValue = useMemo(() => ({
+    user,
+    loading,
+    login,
+    register,
+    logout,
+    refreshUser,
+    isAdmin: !!(user && (user.jogosultsag_szint === 255 || user.Jogosultsag_szint === 255)),
+    isModerator: !!(user && ((user.jogosultsag_szint ?? user.Jogosultsag_szint ?? 0) > 0)),
+  }), [user, loading, login, register, logout, refreshUser]);
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      loading,
-      login,
-      register,
-      logout,
-      refreshUser,
-      isAdmin: !!(user && (user.jogosultsag_szint === 255 || user.Jogosultsag_szint === 255)),
-      isModerator: !!(user && ((user.jogosultsag_szint ?? user.Jogosultsag_szint ?? 0) > 0)),
-    }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

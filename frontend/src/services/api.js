@@ -120,12 +120,52 @@ export async function registerUser(payload) {
   }
 }
 
+// ── GET request cache — 30 s TTL, in-flight deduplication ──────────────────
+const _getCache  = new Map(); // path → { data, expiry }
+const _inflight  = new Map(); // path → Promise
+const GET_TTL    = 30_000;    // ms
+
+function _cacheGet(path) {
+  const hit = _getCache.get(path);
+  if (hit && hit.expiry > Date.now()) return hit.data;
+  _getCache.delete(path);
+  return null;
+}
+
+function _cacheSet(path, data) {
+  _getCache.set(path, { data, expiry: Date.now() + GET_TTL });
+}
+
+/** Invalidate all cached paths that start with a given prefix. */
+export function invalidateCache(pathPrefix) {
+  for (const key of _getCache.keys()) {
+    if (key.startsWith(pathPrefix)) _getCache.delete(key);
+  }
+}
+
 export async function apiCall(path, options = {}) {
   const { method = 'GET', body = null, includeAuth = true, headers = {} } = options;
+  const verb = method.toUpperCase();
+
+  // Invalidate cache for mutation methods
+  if (verb !== 'GET') {
+    // Invalidate by the base path segment (e.g. /csoportok from /csoportok/1)
+    const base = '/' + path.replace(/^\//, '').split('/')[0];
+    invalidateCache(base);
+  }
+
+  // Return cached GET immediately
+  if (verb === 'GET') {
+    const cached = _cacheGet(path);
+    if (cached) return cached;
+
+    // Deduplicate simultaneous identical GET requests
+    if (_inflight.has(path)) return _inflight.get(path);
+  }
 
   const cfg = {
     url: path,
-    method: method.toLowerCase(),
+    method: verb.toLowerCase(),
     headers: { ...headers }
   };
 
@@ -139,16 +179,24 @@ export async function apiCall(path, options = {}) {
     delete api.defaults.headers.common['Authorization'];
   }
 
-  try {
-    const resp = await api.request(cfg);
-    return { success: true, status: resp.status, data: resp.data, raw: resp.data };
-  } catch (err) {
-    return await handleError(err);
-  } finally {
-    if (!includeAuth) {
-      if (prevAuth) api.defaults.headers.common['Authorization'] = prevAuth;
+  const request = (async () => {
+    try {
+      const resp = await api.request(cfg);
+      const result = { success: true, status: resp.status, data: resp.data, raw: resp.data };
+      if (verb === 'GET') _cacheSet(path, result);
+      return result;
+    } catch (err) {
+      return await handleError(err);
+    } finally {
+      if (!includeAuth) {
+        if (prevAuth) api.defaults.headers.common['Authorization'] = prevAuth;
+      }
+      _inflight.delete(path);
     }
-  }
+  })();
+
+  if (verb === 'GET') _inflight.set(path, request);
+  return request;
 }
 
 // Helpers used across the app (use apiCall to get normalized responses)

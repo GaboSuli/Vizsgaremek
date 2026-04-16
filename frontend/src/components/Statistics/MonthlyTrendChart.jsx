@@ -45,9 +45,12 @@ export default function MonthlyTrendChart() {
   const [error, setError] = useState('');
   const [visibleCats, setVisibleCats] = useState(new Set());
   const [search, setSearch] = useState('');
+  const [retry, setRetry] = useState(0);
 
   useEffect(() => {
     let active = true;
+    setLoading(true);
+    setError('');
     apiCall('/statisztika/all').then(res => {
       if (!active) return;
       if (res.success && Array.isArray(res.data) && res.data.length) {
@@ -62,7 +65,7 @@ export default function MonthlyTrendChart() {
       setLoading(false);
     });
     return () => { active = false; };
-  }, []);
+  }, [retry]);
 
   const allCats = useMemo(
     () => [...new Set(rawData.map(d => d.Alkategoria))].sort(),
@@ -143,7 +146,12 @@ export default function MonthlyTrendChart() {
   const clearAll = () => setVisibleCats(new Set());
 
   if (loading) return <div className="loading-state"><div className="spinner" /></div>;
-  if (error) return <div className="alert alert-warning">⚠️ {error}</div>;
+  if (error) return (
+    <div className="alert alert-warning" style={{display:'flex',alignItems:'center',gap:'12px'}}>
+      <span>⚠️ {error}</span>
+      <button className="btn btn-sm btn-ghost" onClick={() => setRetry(r => r + 1)}>Újratöltés</button>
+    </div>
+  );
   if (!rawData.length) {
     return (
       <div className="card">

@@ -27,6 +27,8 @@ export default function Dashboard() {
   const [listak, setListak] = useState([]);
   const [haviKolts, setHaviKolts] = useState(null);
   const [eviKolts, setEviKolts] = useState(null);
+  const [osszKolts, setOsszKolts] = useState([]);
+  const [loadingKolts, setLoadingKolts] = useState(true);
   const [loadingGroups, setLoadingGroups] = useState(true);
   const [loadingLists, setLoadingLists] = useState(true);
   const [showNewGroupModal, setShowNewGroupModal] = useState(false);
@@ -42,13 +44,16 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    setLoadingKolts(true);
     Promise.all([
       apiCall('/felhasznalo/eHaviKoltesei'),
-      apiCall('/felhasznalo/eEviKoltesei')
-    ]).then(([havi, evi]) => {
-      if (havi.success) setHaviKolts(havi.data);
-      if (evi.success) setEviKolts(evi.data);
-    }).catch(() => {});
+      apiCall('/felhasznalo/eEviKoltesei'),
+      apiCall('/felhasznalo/osszKoltesei'),
+    ]).then(([havi, evi, ossz]) => {
+      if (havi.success) setHaviKolts(Array.isArray(havi.data) ? havi.data : []);
+      if (evi.success) setEviKolts(Array.isArray(evi.data) ? evi.data : []);
+      if (ossz.success) setOsszKolts(Array.isArray(ossz.data) ? ossz.data : []);
+    }).catch(() => {}).finally(() => setLoadingKolts(false));
   }, []);
 
   useEffect(() => {
@@ -83,9 +88,16 @@ export default function Dashboard() {
     finally { setCreating(false); }
   };
 
+  const sumKolts = (arr) => {
+    if (!Array.isArray(arr)) return null;
+    return arr.reduce((s, row) => s + Number(row.Osszegzett ?? 0), 0);
+  };
+
   const formatFt = (val) => {
     if (val == null) return '—';
-    const num = typeof val === 'object' ? (val.osszeg ?? val.total ?? val.sum ?? Object.values(val)[0] ?? 0) : val;
+    const arr = Array.isArray(val) ? val : null;
+    const num = arr ? sumKolts(arr) : (typeof val === 'object' ? (val.Osszegzett ?? val.osszeg ?? val.total ?? val.sum ?? Object.values(val)[0] ?? 0) : val);
+    if (num == null) return '—';
     return Number(num).toLocaleString('hu-HU') + ' Ft';
   };
 
@@ -118,14 +130,14 @@ export default function Dashboard() {
         <StatCard
           icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="22" height="22"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="currentColor" stroke="none"/></svg>}
           label="Havi kiadás"
-          value={formatFt(haviKolts)}
+          value={loadingKolts ? '...' : formatFt(haviKolts)}
           sub="Ebben a hónapban"
           color="var(--clr-primary)"
         />
         <StatCard
           icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="22" height="22"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>}
           label="Éves kiadás"
-          value={formatFt(eviKolts)}
+          value={loadingKolts ? '...' : formatFt(eviKolts)}
           sub="Ebben az évben"
           color="var(--clr-success)"
         />
@@ -247,6 +259,39 @@ export default function Dashboard() {
           )}
         </section>
       </div>
+
+      {/* Category spending breakdown */}
+      {osszKolts.length > 0 && (
+        <section className="section">
+          <div className="section-header">
+            <div>
+              <h2 className="section-title">Kategóriák szerinti kiadások</h2>
+              <p className="section-subtitle">Összes kiadásod alkategória bontásban</p>
+            </div>
+            <button className="btn btn-ghost btn-sm" onClick={() => navigate('/stats')}>Statisztikák →</button>
+          </div>
+          <div className="card db-cats">
+            {(() => {
+              const total = osszKolts.reduce((s, r) => s + Number(r.Osszegzett ?? 0), 0);
+              const sorted = [...osszKolts].sort((a, b) => Number(b.Osszegzett) - Number(a.Osszegzett)).slice(0, 8);
+              return sorted.map((row, i) => {
+                const pct = total > 0 ? Math.round((Number(row.Osszegzett) / total) * 100) : 0;
+                const colors = ['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#f97316','#14b8a6'];
+                return (
+                  <div key={i} className="db-cat-row">
+                    <div className="db-cat-name">{row.megnevezes}</div>
+                    <div className="db-cat-bar-wrap">
+                      <div className="db-cat-bar" style={{ width: pct + '%', background: colors[i % colors.length] }} />
+                    </div>
+                    <div className="db-cat-amount">{Number(row.Osszegzett).toLocaleString('hu-HU')} Ft</div>
+                    <div className="db-cat-pct">{pct}%</div>
+                  </div>
+                );
+              });
+            })()}
+          </div>
+        </section>
+      )}
 
       {/* Quick actions */}
       <section className="section">
