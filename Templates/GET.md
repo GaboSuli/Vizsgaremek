@@ -71,6 +71,10 @@ GET
 (http://127.0.0.1:8000/api/kuponok/get)
 
 
+\- összes kategoria alkategoriákkal
+
+(http://127.0.0.1:8000/api/alkategoriak)
+
 
 \- felhasználó nyilvános adatai
 
