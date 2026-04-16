@@ -41,7 +41,7 @@ class DatabaseSeeder extends Seeder
 ];
 
 $categories = [
-    "Innivaló" => [
+    "Ital" => [
         "Ásványvíz" => ["mertekegyseg_id" => 3],
         "Szénsavas üdítő" => ["mertekegyseg_id" => 3],
         "Szénsavmentes üdítő" => ["mertekegyseg_id" => 3],
