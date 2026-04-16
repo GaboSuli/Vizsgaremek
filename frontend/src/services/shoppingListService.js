@@ -134,22 +134,25 @@ export const getShoppingListsByUser = async (felhasznaloId) => {
  };
 
  // Get specific shopping list by ID
+ // Note: There is no dedicated backend route for fetching a single list.
+ // We fetch all user lists and find the matching one.
  export const getShoppingListById = async (id) => {
-   const response = await apiCall(`/vevesiLista/${id}`);
+   const response = await apiCall('/felhasznalo/vevesiListak');
    
-   if (!response.success) {
-     const list = mockShoppingLists.find(l => l.id === id);
+   if (response.success && Array.isArray(response.data)) {
+     const list = response.data.find(l => l.id === id || l.id === Number(id));
      if (list) {
-       return {
-         success: true,
-         data: list,
-         struktura: "VevesiLista"
-       };
+       return { success: true, data: list };
      }
-     return response;
    }
 
-   return response;
+   // Fallback to mock
+   const mock = mockShoppingLists.find(l => l.id === id);
+   if (mock) {
+     return { success: true, data: mock, struktura: "VevesiLista" };
+   }
+
+   return { success: false, message: 'Lista nem található' };
  };
 
  // Create shopping list

@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import useAuth from '../context/useAuth.js';
+import { apiCall } from '../services/api.js';
 import { Container, Row, Col, Card, Button, Table, Badge, Spinner, Alert, Modal, Form, InputGroup } from 'react-bootstrap';
 import {
   getAllShoppingLists,
@@ -9,9 +10,7 @@ import {
   addItemToList,
   removeItemFromList,
   deleteShoppingList,
-  estimateTotalCost,
-  getShoppingListStats,
-  getShoppingListById
+  getShoppingListStats
 } from '../services/shoppingListService';
 import './ShoppingListPage.css';
 
@@ -25,6 +24,7 @@ export default function ShoppingListPage() {
   const [editingListId, setEditingListId] = useState(null);
   const [stats, setStats] = useState(null);
   const [totalEstimate, setTotalEstimate] = useState(null);
+  const [kategoriak, setKategoriak] = useState([]);
 
   const [listFormData, setListFormData] = useState({
     Nev: ''
@@ -32,6 +32,7 @@ export default function ShoppingListPage() {
 
   const [itemFormData, setItemFormData] = useState({
     Megnevezes: '',
+    Kategoria: '',
     Alkategoria: '',
     Ar: 0,
     MennyisegTipusMertekegyseg: 'Darab',
@@ -71,18 +72,32 @@ export default function ShoppingListPage() {
 
       // Normalize field names from backend (lowercase keys) to UI expected keys
       listsData = listsData.map(l => {
-        const items = l.VevesiLista || l.vevesi_lista || l.vevesiLista || l.items || [];
-        const nev = l.Nev || l.nev || l.megnevezes || '';
-        const letrehoz = l.Letrehozas || l.letrehozas || l.created_at || '';
+        const items = l.vevesobjektum || l.VevesiLista || l.vevesi_lista || l.vevesiLista || l.items || [];
+        const nev = l.megnevezes || l.Nev || l.nev || '';
+        const letrehoz = l.created_at || l.Letrehozas || l.letrehozas || '';
         const osszesen = l.Osszesen || l.osszesen || l.total || 0;
         const tetelek = l.TeteiekSzama || l.teteiek_szama || (Array.isArray(items) ? items.length : 0);
+
+        // Normalize item fields from backend snake_case to UI keys
+        const normalizedItems = (Array.isArray(items) ? items : []).map(item => ({
+          ...item,
+          Megnevezes: item.megnevezes || item.Megnevezes || '',
+          Alkategoria: item.al_kategoria?.megnevezes || item.alKategoria?.megnevezes || item.alkategoria || item.Alkategoria || '-',
+          Ar: Number(item.ar ?? item.Ar ?? 0),
+          Mennyiseg: Number(item.mennyiseg ?? item.Mennyiseg ?? 0),
+          MennyisegTipusMertekegyseg: item.mennyiseg_tipus || item.MennyisegTipusMertekegyseg || '',
+        }));
+
+        // Calculate total from items if not provided
+        const calculatedTotal = normalizedItems.reduce((sum, item) => sum + (item.Ar * item.Mennyiseg), 0);
+
         return {
           ...l,
           Nev: nev,
           Letrehozas: letrehoz,
-          Osszesen: osszesen,
-          TeteiekSzama: tetelek,
-          VevesiLista: items
+          Osszesen: osszesen || calculatedTotal,
+          TeteiekSzama: tetelek || normalizedItems.length,
+          VevesiLista: normalizedItems
         };
       });
 
@@ -104,6 +119,27 @@ export default function ShoppingListPage() {
     if (auth.user) loadLists();
   }, [auth.user, loadLists]);
 
+  // Keep selectedList in sync with lists after reload
+  useEffect(() => {
+    if (selectedList) {
+      const updated = lists.find(l => l.id === selectedList.id);
+      if (updated) setSelectedList(updated);
+    }
+  }, [lists]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Load categories from API
+  useEffect(() => {
+    const loadKategoriak = async () => {
+      try {
+        const result = await apiCall('/alkategoriak');
+        if (result && result.success && Array.isArray(result.data)) {
+          setKategoriak(result.data);
+        }
+      } catch { /* silent */ }
+    };
+    loadKategoriak();
+  }, []);
+
   const handleOpenListModal = (list = null) => {
     if (list) {
       setEditingListId(list.id);
@@ -118,6 +154,7 @@ export default function ShoppingListPage() {
   const handleOpenItemModal = () => {
     setItemFormData({
       Megnevezes: '',
+      Kategoria: '',
       Alkategoria: '',
       Ar: 0,
       MennyisegTipusMertekegyseg: 'Darab',
@@ -184,15 +221,8 @@ export default function ShoppingListPage() {
 
       const result = await addItemToList(selectedList.id, itemPayload);
       if (result && result.success) {
-        // refresh the selected list from server
-        const refreshed = await getShoppingListById(selectedList.id);
-        if (refreshed && refreshed.success) {
-          setSelectedList(refreshed.data);
-          await loadLists();
-        }
+        await loadLists();
         setShowItemModal(false);
-        const estimateResult = await estimateTotalCost(selectedList.id);
-        setTotalEstimate(estimateResult.data);
         setError(null);
       } else {
         setError(result.message || 'Hiba az elemhozzáadáskor');
@@ -209,13 +239,7 @@ export default function ShoppingListPage() {
       try {
         const result = await removeItemFromList(selectedList.id, itemId);
         if (result && result.success) {
-          const refreshed = await getShoppingListById(selectedList.id);
-          if (refreshed && refreshed.success) {
-            setSelectedList(refreshed.data);
-            await loadLists();
-          }
-          const estimateResult = await estimateTotalCost(selectedList.id);
-          setTotalEstimate(estimateResult.data);
+          await loadLists();
         } else {
           setError(result.message || 'Hiba a törléskor');
         }
@@ -246,15 +270,6 @@ export default function ShoppingListPage() {
 
   const handleSelectList = async (list) => {
     setSelectedList(list);
-    try {
-      // refresh selected list from server
-      const refreshed = await getShoppingListById(list.id);
-      if (refreshed && refreshed.success) setSelectedList(refreshed.data);
-      const estimateResult = await estimateTotalCost(list.id);
-      setTotalEstimate(estimateResult.data);
-    } catch {
-      // silent
-    }
   };
 
   const handleFormChange = (e) => {
@@ -265,13 +280,53 @@ export default function ShoppingListPage() {
     }));
   };
 
+  // Flat list of all alkategoria items for the product dropdown
+  const allAlkategoriak = useMemo(() => {
+    const items = [];
+    kategoriak.forEach(kat => {
+      (kat.alkategoriak || []).forEach(alkat => {
+        items.push({ ...alkat, kategoriaNev: kat.megnevezes });
+      });
+    });
+    return items;
+  }, [kategoriak]);
+
   const handleItemFormChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === 'Kategoria') {
+      // Reset alkategoria when category changes
+      setItemFormData(prev => ({
+        ...prev,
+        Kategoria: value,
+        Alkategoria: '',
+        Megnevezes: ''
+      }));
+      return;
+    }
+
+    if (name === 'Alkategoria') {
+      // When selecting a product from the dropdown, auto-fill name + id
+      const selected = allAlkategoriak.find(a => String(a.id) === String(value));
+      setItemFormData(prev => ({
+        ...prev,
+        Alkategoria: value,
+        Megnevezes: selected ? selected.megnevezes : prev.Megnevezes
+      }));
+      return;
+    }
+
     setItemFormData(prev => ({
       ...prev,
       [name]: name === 'Ar' || name === 'Mennyiseg' ? parseFloat(value) || 0 : value
     }));
   };
+
+  // Filtered alkategoria based on selected category
+  const filteredAlkategoriak = useMemo(() => {
+    if (!itemFormData.Kategoria) return allAlkategoriak;
+    return allAlkategoriak.filter(a => String(a.kategoria_id || a.kategoriak_id) === String(itemFormData.Kategoria));
+  }, [allAlkategoriak, itemFormData.Kategoria]);
 
   if (loading && !selectedList) {
     return (
@@ -408,28 +463,59 @@ export default function ShoppingListPage() {
                 </Alert>
               )}
 
-              {/* Tételek táblázata */}
-              <div className="table-responsive mb-4">
-                <Table hover className="items-table">
-                  <thead>
-                    <tr>
-                      <th>Termék</th>
-                      <th>Kategória</th>
-                      <th>Egységár</th>
-                      <th>Mennyiség</th>
-                      <th>Összesen</th>
-                      <th>Műveletek</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+              {/* Tételek táblázata - desktop */}
+              <div className="sl-detail-table d-none d-lg-block mb-4">
+                <div className="table-responsive">
+                  <Table hover className="items-table">
+                    <thead>
+                      <tr>
+                        <th>Termék</th>
+                        <th>Kategória</th>
+                        <th>Egységár</th>
+                        <th>Mennyiség</th>
+                        <th>Összesen</th>
+                        <th>Műveletek</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(selectedList?.VevesiLista || []).map(item => (
+                        <tr key={item.id}>
+                          <td><strong>{item.Megnevezes || item.megnevezes}</strong></td>
+                          <td>{item.Alkategoria || item.alkategoria || '-'}</td>
+                          <td>{formatMoney(item.Ar || item.ar)}</td>
+                          <td>{item.Mennyiseg || item.mennyiseg} {item.MennyisegTipusMertekegyseg || item.mennyiseg_tipus || ''}</td>
+                          <td><strong>{formatMoney((item.Ar || item.ar || 0) * (item.Mennyiseg || item.mennyiseg || 0))}</strong></td>
+                          <td>
+                            <Button
+                              variant="outline-danger"
+                              size="sm"
+                              onClick={() => handleDeleteItem(item.id)}
+                            >
+                              ✕
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                      <tr className="summary-row">
+                        <td colSpan="4"><strong>Összesen:</strong></td>
+                        <td><strong>{formatMoney(selectedList?.Osszesen)}</strong></td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </div>
+              </div>
+
+              {/* Tételek kártyák - mobil/tablet */}
+              <div className="sl-detail-cards d-lg-none mb-4">
+                {(selectedList?.VevesiLista || []).length === 0 ? (
+                  <p className="text-muted text-center">Még nincsenek tételek.</p>
+                ) : (
+                  <>
                     {(selectedList?.VevesiLista || []).map(item => (
-                      <tr key={item.id}>
-                        <td><strong>{item.Megnevezes}</strong></td>
-                        <td>{item.Alkategoria}</td>
-                        <td>{item.Ar} Ft</td>
-                        <td>{item.Mennyiseg} {item.MennyisegTipusMertekegyseg}</td>
-                        <td><strong>{(item.Ar * item.Mennyiseg).toLocaleString()} Ft</strong></td>
-                        <td>
+                      <div key={item.id} className="sl-item-card">
+                        <div className="sl-item-card-header">
+                          <strong>{item.Megnevezes || item.megnevezes}</strong>
                           <Button
                             variant="outline-danger"
                             size="sm"
@@ -437,16 +523,33 @@ export default function ShoppingListPage() {
                           >
                             ✕
                           </Button>
-                        </td>
-                      </tr>
+                        </div>
+                        <div className="sl-item-card-body">
+                          <div className="sl-item-row">
+                            <span className="sl-item-label">Kategória</span>
+                            <span>{item.Alkategoria || item.alkategoria || '-'}</span>
+                          </div>
+                          <div className="sl-item-row">
+                            <span className="sl-item-label">Egységár</span>
+                            <span>{formatMoney(item.Ar || item.ar)}</span>
+                          </div>
+                          <div className="sl-item-row">
+                            <span className="sl-item-label">Mennyiség</span>
+                            <span>{item.Mennyiseg || item.mennyiseg} {item.MennyisegTipusMertekegyseg || item.mennyiseg_tipus || ''}</span>
+                          </div>
+                          <div className="sl-item-row sl-item-row-total">
+                            <span className="sl-item-label">Összesen</span>
+                            <strong>{formatMoney((item.Ar || item.ar || 0) * (item.Mennyiseg || item.mennyiseg || 0))}</strong>
+                          </div>
+                        </div>
+                      </div>
                     ))}
-                    <tr className="summary-row">
-                      <td colSpan="4"><strong>Összesen:</strong></td>
-                      <td><strong>{formatMoney(selectedList?.Osszesen)}</strong></td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </Table>
+                    <div className="sl-total-card">
+                      <strong>Összesen:</strong>
+                      <strong>{formatMoney(selectedList?.Osszesen)}</strong>
+                    </div>
+                  </>
+                )}
               </div>
 
               <Button
@@ -501,25 +604,47 @@ export default function ShoppingListPage() {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Termék neve *</Form.Label>
-              <Form.Control
-                type="text"
-                name="Megnevezes"
-                value={itemFormData.Megnevezes}
+              <Form.Label>Kategória</Form.Label>
+              <Form.Select
+                name="Kategoria"
+                value={itemFormData.Kategoria}
                 onChange={handleItemFormChange}
-                placeholder="pl. Kenyér"
-              />
+              >
+                <option value="">-- Összes kategória --</option>
+                {kategoriak.map(kat => (
+                  <option key={kat.id} value={kat.id}>
+                    {kat.megnevezes}
+                  </option>
+                ))}
+              </Form.Select>
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Kategória</Form.Label>
-              <Form.Control
-                type="text"
+              <Form.Label>Termék *</Form.Label>
+              <Form.Select
                 name="Alkategoria"
                 value={itemFormData.Alkategoria}
                 onChange={handleItemFormChange}
-                placeholder="pl. Pékáru"
-              />
+              >
+                <option value="">-- Válassz terméket --</option>
+                {itemFormData.Kategoria ? (
+                  filteredAlkategoriak.map(alkat => (
+                    <option key={alkat.id} value={alkat.id}>
+                      {alkat.megnevezes}
+                    </option>
+                  ))
+                ) : (
+                  kategoriak.map(kat => (
+                    <optgroup key={kat.id} label={kat.megnevezes}>
+                      {(kat.alkategoriak || []).map(alkat => (
+                        <option key={alkat.id} value={alkat.id}>
+                          {alkat.megnevezes}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))
+                )}
+              </Form.Select>
             </Form.Group>
 
             <Row>
