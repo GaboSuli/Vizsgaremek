@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alkategoriak;
 use App\Http\Controllers\Controller;
+use App\Models\Kategoriak;
 use Illuminate\Http\Request;
 
 class AlkategoriakController extends Controller
@@ -13,7 +14,7 @@ class AlkategoriakController extends Controller
      */
     public function index()
     {
-        $resp = Alkategoriak::all();
+        $resp = Kategoriak::with("alkategoriak")->get();
         return response($resp);
     }
 
