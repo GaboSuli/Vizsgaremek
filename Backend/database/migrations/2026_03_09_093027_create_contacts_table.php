@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('nev');
             $table->string('email');
             $table->unsignedBigInteger('contactTipusId');
-            $table->foreign('contactTipusId')->references('id')->on('contact_tipusok');
+            $table->foreign('contactTipusId')->references('id')->on('contact_tipusok')->cascadeOnDelete();
             $table->longText('text');
         });
     }
