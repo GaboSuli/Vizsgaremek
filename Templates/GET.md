@@ -14,6 +14,10 @@ GET
 
 \-- bearer: session token
 
+egy felhasználo minden csoport meghivása
+(http://127.0.0.1:8000/api/csoportMeghivas/all) 
+bearer: session token
+-- Controllere: CsoportMeghivasController
 
 
 \- egy csoport összes vevési listája
@@ -194,19 +198,15 @@ POST
 
 
 
-\- csoport tagság létrehozása
-
-(http://127.0.0.1:8000/api/csoportTagsag/create) 
-
-\-- bearer: session token (csak saját csoportba tudsz ami a tied)
-
+Csoport meghivás létrehozása
+(http://127.0.0.1:8000/api/csoportMeghivas/meghivas) 
+bearer: session token (csak a csoport tulajdonosa tud meghivni)
 {
-
-&#x20;   "csoport\_id":"", ##Muszály
-
-&#x20;   "felhasznalo\_id":"" ##Muszály
-
+ ”csoport_id”:””, ##Muszály, létezö csoport id
+ ”felhasznalo_id”:”” ##Muszály, létezö felhasználo id
 }
+-- Controllere: CsoportMeghivasController
+
 
 
 
@@ -314,6 +314,13 @@ PUT
 
 }
 
+csoport meghivás eldöntése 
+(http://127.0.0.1:8000/api/csoportMeghivas/decision/{csoport_id})
+bearer: session token (csak olyat tudsz elfogadni vagy elutasitani ami a tied)
+{
+"":"", ##Muszály, 0 = elutasitás, 1 = elfogadás
+}
+-- Controllere: CsoportMeghivasController
 
 
 \- csoport tagság modositása
