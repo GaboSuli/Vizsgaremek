@@ -1,9 +1,17 @@
+
+# Elinditásra javasolt programok:
+- Visual Studio Code
+- XAMPP Control Panel
+
+# Muszály dependencies:
+- Composer
+- Node.js
+
 # Adatbázis (MySQL):
 - Futtassa a MySQL-t például a XAMPP control panel alkalmazásba.
 - Importálja a "backend.sql" adatbázist amit a templates mappában talál (nem kell kiválasztani létrehozott adatbázist, benne van a "Create Database" parancs)
 
 # Backend (Laravel):
-- hozzon létre egy ".env" nevü fájlt a /backend mappában, és másolja bele a env.txt tartalmát a templates mappábol.
 - "composer install" parancs a /backend mappában (ez csak egyszer kell hogy a backendhez meg legyenek a fájlok, kell hogy telepitve legyen a composer hogy ezt le lehessen futtatni)
 - "php artisan serve" parancs a /backend mappában (ez fogja futtatni a backend szervert)
 

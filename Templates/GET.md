@@ -75,6 +75,10 @@ GET
 
 (http://127.0.0.1:8000/api/alkategoriak)
 
+\- felhasználo mennyiség
+
+(http://127.0.0.1:8000/api/felhasznaloMennyiseg)
+
 
 \- felhasználó nyilvános adatai
 
@@ -98,6 +102,17 @@ GET
 
 \-- bearer: session token (csak nagyobb mint 1 jogosultsagu szintu tud)
 
+ADMIN VÉGPONTOK:
+\-- bearer: session token (csak nagyobb mint 2 jogosultsagu szintu tud)
+
+\- legfrissebb aktivitás (csak vevesi listak)
+(http://127.0.0.1:8000/vevesilistak/admin)
+
+\- összes csoport
+(http://127.0.0.1:8000/csoportok/admin)
+
+\- összes felhasználo
+(http://127.0.0.1:8000/felhasznalo/admin)
 
 
 POST
