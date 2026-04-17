@@ -1,0 +1,181 @@
+.pi-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  color: var(--clr-text-3);
+  font-size: 0.9rem;
+}
+
+.pi-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--clr-border);
+  border-top-color: var(--clr-primary);
+  border-radius: 50%;
+  animation: pi-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pi-spin {
+  to { transform: rotate(360deg); }
+}
+
+.pi-error {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: color-mix(in srgb, var(--clr-danger) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--clr-danger) 30%, transparent);
+  border-radius: var(--radius-md, 10px);
+  color: var(--clr-danger);
+  font-size: 0.875rem;
+}
+
+.pi-retry-btn {
+  margin-left: auto;
+  padding: 0.3rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--clr-danger);
+  border-radius: var(--radius-sm, 6px);
+  color: var(--clr-danger);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.pi-retry-btn:hover {
+  background: color-mix(in srgb, var(--clr-danger) 15%, transparent);
+}
+
+/* Empty state */
+.pi-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--clr-text-3);
+}
+.pi-empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.6;
+}
+.pi-empty-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+  color: var(--clr-text-2);
+}
+.pi-empty-sub {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* List */
+.pi-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Card */
+.pi-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--clr-surface-2, var(--clr-surface));
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md, 10px);
+  transition: box-shadow 0.2s;
+}
+.pi-card:hover {
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.pi-card-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  line-height: 1;
+  padding-top: 0.1rem;
+}
+
+.pi-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.pi-card-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--clr-text-1);
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pi-card-meta {
+  font-size: 0.8rem;
+  color: var(--clr-text-3);
+  margin-bottom: 0.15rem;
+}
+.pi-card-meta-label {
+  font-weight: 500;
+  color: var(--clr-text-2);
+}
+.pi-card-date {
+  margin-top: 0.3rem;
+}
+
+/* Action buttons */
+.pi-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.pi-btn {
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius-sm, 6px);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+.pi-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.pi-btn:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+.pi-btn-accept {
+  background: var(--clr-success, #22c55e);
+  color: #fff;
+}
+.pi-btn-accept:not(:disabled):hover {
+  opacity: 0.88;
+}
+
+.pi-btn-reject {
+  background: transparent;
+  color: var(--clr-danger, #ef4444);
+  border: 1px solid var(--clr-danger, #ef4444);
+}
+.pi-btn-reject:not(:disabled):hover {
+  background: color-mix(in srgb, var(--clr-danger) 10%, transparent);
+}
+
+/* grp-alert success (if not already defined) */
+.grp-alert-success {
+  background: color-mix(in srgb, var(--clr-success, #22c55e) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--clr-success, #22c55e) 30%, transparent);
+  color: #166534;
+  border-radius: var(--radius-md, 10px);
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem;
+}

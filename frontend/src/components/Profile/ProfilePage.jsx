@@ -5,6 +5,7 @@ import * as authService from '../../services/authService.js';
 import ProfileHeader from './ProfileHeader.jsx';
 import UserInfoCard from './UserInfoCard.jsx';
 import PreferencesPanel from './PreferencesPanel.jsx';
+import PendingInvitesPanel from './PendingInvitesPanel.jsx';
 import Button from '../ui/Button.jsx';
 import './ProfilePage.css';
 
@@ -176,12 +177,19 @@ export default function ProfilePage() {
   const auth = useAuth();
   const user = auth.user;
   const [activeTab, setActiveTab] = useState('overview');
+  const [inviteCount, setInviteCount] = useState(0);
 
   const tabs = [
     { id: 'overview', label: 'Áttekintés', icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="16" height="16">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
         <circle cx="12" cy="7" r="4" />
+      </svg>
+    )},
+    { id: 'invitations', label: 'Meghívások', badge: inviteCount > 0 ? inviteCount : null, icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="16" height="16">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+        <polyline points="22,6 12,13 2,6" />
       </svg>
     )},
     { id: 'edit', label: 'Szerkesztés', icon: (
@@ -220,6 +228,9 @@ export default function ProfilePage() {
             >
               <span className="pp-tab__icon">{t.icon}</span>
               <span className="pp-tab__label">{t.label}</span>
+              {t.badge != null && (
+                <span className="pp-tab__badge">{t.badge}</span>
+              )}
             </button>
           ))}
         </div>
@@ -227,6 +238,10 @@ export default function ProfilePage() {
         {/* Tab body */}
         <div className="pp-body">
           {activeTab === 'overview' && <UserInfoCard user={user} />}
+
+          {activeTab === 'invitations' && (
+            <PendingInvitesPanel onCountChange={setInviteCount} />
+          )}
 
           {activeTab === 'edit' && (
             <EditProfileForm

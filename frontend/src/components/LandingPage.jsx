@@ -77,7 +77,7 @@ export default function Dashboard() {
     if (!newGroupName.trim()) return;
     setCreating(true);
     try {
-      const res = await apiCall('/csoport/create', 'POST', { csoport_tipus_id: 1, megnevezes: newGroupName.trim() });
+      const res = await apiCall('/csoport/create', { method: 'POST', body: { csoport_tipus_id: 1, megnevezes: newGroupName.trim() } });
       if (res.success) {
         setShowNewGroupModal(false);
         setNewGroupName('');
