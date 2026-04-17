@@ -251,10 +251,10 @@ export const getShoppingListsByUser = async (felhasznaloId) => {
    let totalCost = 0;
 
    lists.forEach(list => {
-     const items = list.VevesiLista || list.items || [];
+     const items = list.vevesobjektum || list.VevesiLista || list.veves_objektumok || list.items || [];
      totalItems += items.length;
      items.forEach(item => {
-       totalCost += (item.Ar || item.ar || 0) * (item.Mennyiseg || item.mennyiseg || 0);
+       totalCost += (item.ar || item.Ar || 0) * (item.mennyiseg || item.Mennyiseg || 1);
      });
    });
 

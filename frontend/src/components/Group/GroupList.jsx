@@ -11,6 +11,8 @@ import './groups.css';
 
 const TIPUS_LABELS = { 1: 'Család', 2: 'Egyesület', 3: 'Vállalat' };
 
+const JOGSZINT_LABELS = { 0: 'Olvasó', 1: 'Tag', 2: 'Admin', 3: 'Tulajdonos' };
+
 function ConfirmDialog({ message, onConfirm, onCancel }) {
   return (
     <div className="grp-confirm-backdrop">
@@ -23,6 +25,50 @@ function ConfirmDialog({ message, onConfirm, onCancel }) {
           <button className="grp-btn grp-btn-danger" onClick={onConfirm}>Törlés</button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function GroupCard({ group, isOwned, onDelete, onClick }) {
+  const name = group.megnevezes ?? '—';
+  const tipusLabel = TIPUS_LABELS[group.csoport_tipus_id] ?? `Típus #${group.csoport_tipus_id}`;
+  const jogszint = group.jogosultsag_szint ?? 1;
+  const jogszintLabel = JOGSZINT_LABELS[jogszint] ?? `Szint ${jogszint}`;
+  const tagokSzama = group.csoport_tagsag_count ?? group.tagok_szama ?? null;
+
+  return (
+    <div
+      className="grp-card"
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={(e) => e.key === 'Enter' && onClick()}
+    >
+      <div className="grp-card-avatar">{name.charAt(0).toUpperCase()}</div>
+      <div className="grp-card-body">
+        <div className="grp-card-name">{name}</div>
+        <div className="grp-card-meta">
+          <span className="grp-badge grp-badge-type">{tipusLabel}</span>
+          {isOwned ? (
+            <span className="grp-badge grp-badge-admin">Admin</span>
+          ) : (
+            <span className="grp-badge grp-badge-member">{jogszintLabel}</span>
+          )}
+          {tagokSzama != null && (
+            <span className="grp-badge grp-badge-neutral">👥 {tagokSzama} tag</span>
+          )}
+        </div>
+      </div>
+      {isOwned && onDelete && (
+        <button
+          className="grp-btn grp-btn-danger grp-btn-icon grp-btn-xs"
+          title="Csoport törlése"
+          onClick={(e) => { e.stopPropagation(); onDelete(group.id); }}
+        >
+          🗑
+        </button>
+      )}
+      <div className="grp-card-arrow">›</div>
     </div>
   );
 }
@@ -52,15 +98,12 @@ export default function GroupList() {
     setLoading(false);
 
     if (groupRes.success) {
-      // API returns [{..., csoportok: [...]}] – extract nested groups
       const raw = groupRes.data;
       let extracted = [];
       if (Array.isArray(raw)) {
         if (raw.length > 0 && raw[0].csoportok != null) {
-          // Standard format: user object with csoportok relationship
           extracted = Array.isArray(raw[0].csoportok) ? raw[0].csoportok : [];
         } else if (raw.length > 0 && raw[0].megnevezes != null) {
-          // Flat array of group objects
           extracted = raw;
         }
       } else if (raw && typeof raw === 'object' && Array.isArray(raw.csoportok)) {
@@ -72,13 +115,17 @@ export default function GroupList() {
     }
 
     if (listRes.success) {
-      // Personal lists = where csoport_id is null
       const all = Array.isArray(listRes.data) ? listRes.data : [];
       setPersonalLists(all.filter(l => !l.csoport_id));
     }
   }, []);
 
-  useEffect(() => { loadGroups(); }, [loadGroups]);
+  const loadGroupsRef = React.useRef(loadGroups);
+
+  useEffect(() => {
+    const fn = loadGroupsRef.current;
+    fn();
+  }, []);
 
   const handleDelete = async () => {
     const id = confirmDeleteId;
@@ -92,7 +139,14 @@ export default function GroupList() {
     }
   };
 
-  const filtered = groups.filter(g =>
+  // Split into owned (creator) and invited (member only)
+  const ownedGroups = groups.filter(g => g.keszito_felhasznalo_id === currentUserId);
+  const invitedGroups = groups.filter(g => g.keszito_felhasznalo_id !== currentUserId);
+
+  const filteredOwned = ownedGroups.filter(g =>
+    (g.megnevezes ?? '').toLowerCase().includes(search.toLowerCase())
+  );
+  const filteredInvited = invitedGroups.filter(g =>
     (g.megnevezes ?? '').toLowerCase().includes(search.toLowerCase())
   );
 
@@ -139,17 +193,11 @@ export default function GroupList() {
         </div>
       )}
 
-      {/* Groups section */}
+      {/* Loading */}
       {loading ? (
         <div className="grp-loading">
           <div className="grp-spinner" />
           <span>Csoportok betöltése...</span>
-        </div>
-      ) : filtered.length === 0 && search ? (
-        <div className="grp-empty">
-          <div className="grp-empty-icon">🔍</div>
-          <h3>Nincs találat</h3>
-          <p>Próbálj más keresési kifejezést!</p>
         </div>
       ) : groups.length === 0 ? (
         <div className="grp-empty">
@@ -162,44 +210,49 @@ export default function GroupList() {
         </div>
       ) : (
         <>
-          <div className="grp-section-label">Saját csoportok ({filtered.length})</div>
-          <div className="grp-grid">
-            {filtered.map(group => {
-              const name = group.megnevezes ?? '—';
-              const isCreator = group.keszito_felhasznalo_id === currentUserId;
-              const tipusLabel = TIPUS_LABELS[group.csoport_tipus_id] ?? `Típus #${group.csoport_tipus_id}`;
-
-              return (
-                <div key={group.id} className="grp-card" role="button" tabIndex={0}
-                  onClick={() => navigate(`/csoport/${group.id}`)}
-                  onKeyDown={(e) => e.key === 'Enter' && navigate(`/csoport/${group.id}`)}
-                >
-                  <div className="grp-card-avatar">
-                    {name.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="grp-card-body">
-                    <div className="grp-card-name">{name}</div>
-                    <div className="grp-card-meta">
-                      <span className="grp-badge grp-badge-type">{tipusLabel}</span>
-                      {isCreator && (
-                        <span className="grp-badge grp-badge-admin">Admin</span>
-                      )}
-                    </div>
-                  </div>
-                  {isCreator && (
-                    <button
-                      className="grp-btn grp-btn-danger grp-btn-icon grp-btn-xs"
-                      title="Csoport törlése"
-                      onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(group.id); }}
-                    >
-                      🗑
-                    </button>
-                  )}
-                  <div className="grp-card-arrow">›</div>
-                </div>
-              );
-            })}
+          {/* ── Saját csoportok ── */}
+          <div className="grp-section-label">
+            Saját csoportok ({filteredOwned.length})
           </div>
+          {filteredOwned.length === 0 ? (
+            <div className="grp-section-empty">
+              {search ? 'Nincs találat a saját csoportok között.' : 'Még nem hoztál létre csoportot.'}
+            </div>
+          ) : (
+            <div className="grp-grid">
+              {filteredOwned.map(group => (
+                <GroupCard
+                  key={group.id}
+                  group={group}
+                  isOwned={true}
+                  onDelete={(id) => setConfirmDeleteId(id)}
+                  onClick={() => navigate(`/csoport/${group.id}`)}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* ── Meghívott csoportok ── */}
+          <div className="grp-section-label" style={{ marginTop: '2rem' }}>
+            Csoportok ahová meghívtak ({filteredInvited.length})
+          </div>
+          {filteredInvited.length === 0 ? (
+            <div className="grp-section-empty">
+              {search ? 'Nincs találat a meghívott csoportok között.' : 'Még nem hívtak meg egyetlen csoportba sem.'}
+            </div>
+          ) : (
+            <div className="grp-grid">
+              {filteredInvited.map(group => (
+                <GroupCard
+                  key={group.id}
+                  group={group}
+                  isOwned={false}
+                  onDelete={null}
+                  onClick={() => navigate(`/csoport/${group.id}`)}
+                />
+              ))}
+            </div>
+          )}
         </>
       )}
 

@@ -70,8 +70,8 @@ class VevesObjektumController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'veves_lista_id' => 'required|exists:veves_lista,id',
-            'alKategoria_id' => 'required|exists:alkategoriak,id',
-            'megnevezes' => 'string|min:1',
+            'alKategoria_id' => 'nullable|exists:alkategoriak,id',
+            'megnevezes' => 'required|string|min:1',
             'ar' => 'required|numeric|min:0',
             'mennyiseg' => 'required|numeric|min:0'
         ]);
@@ -79,28 +79,23 @@ class VevesObjektumController extends Controller
         {
             return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
         }
-        $authCheck = VevesLista::where("felhasznalo_id","=",auth()->id())->where("id","=",$request->veves_lista_id)->first();
+        $authCheck = VevesLista::where("id","=",$request->veves_lista_id)->first();
         if (empty($authCheck))
         {
-            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+            return response(["message"=>"Nincs ilyen lista."],404);
         }
-        else if (!empty($authCheck))
+        // If it's a group list, check group membership; otherwise check ownership
+        if (!empty($authCheck->csoport_id))
         {
-            if (!empty($authCheck->csoport_id))
+            $authUser = CsoportTagsag::where("felhasznalo_id","=",auth()->id())->where("csoport_id","=",$authCheck->csoport_id)->first();
+            if (empty($authUser) || $authUser->jogosultsag_szint < 1)
             {
-                $authUser = CsoportTagsag::where("felhasznalo_id","=",auth()->id())::where("csoport_id","=",$authCheck->csoport_id)->first();
-                if (empty($authUser))
-                {
-                    return response(["message"=>"Nincs jogosultságod ehhez."],403);
-                }
-                else
-                {
-                    if ($authUser->jogosultsag_szint < 1)
-                    {
-                        return response(["message"=>"Nincs jogosultságod ehhez."],403);
-                    }
-                }
+                return response(["message"=>"Nincs jogosultságod ehhez."],403);
             }
+        }
+        else if ($authCheck->felhasznalo_id != auth()->id())
+        {
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
         }
         $newRec = new VevesObjektum();
         $newRec->veves_lista_id = $request->veves_lista_id;
