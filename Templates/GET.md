@@ -203,7 +203,7 @@ Csoport meghivás létrehozása
 bearer: session token (csak a csoport tulajdonosa tud meghivni)
 {
  ”csoport_id”:””, ##Muszály, létezö csoport id
- ”felhasznalo_id”:”” ##Muszály, létezö felhasználo id
+ ”felhasznalo_nev”:”” ##Muszály, létezö felhasználo név
 }
 -- Controllere: CsoportMeghivasController
 

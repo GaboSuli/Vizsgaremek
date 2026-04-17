@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\csoport_meghivas;
 use App\Models\Csoportok;
 use App\Models\CsoportTagsag;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -35,13 +36,14 @@ class CsoportMeghivasController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'csoport_id' => 'exists:csoportok,id',
-            'felhasznalo_id' => 'exists:users,id'
+            'felhasznalo_nev' => 'exists:users,nev'
         ]);
         if ($validator->fails())
         {
             return response()->json(['success'=>false,'errors'=>$validator->errors()->toArray()],422);
         }
         $user = auth()->user();
+        $meghivottUser = User::where("nev","=",$request->felhasznalo_nev)->first();
         $csoport = Csoportok::find($request->csoport_id);
         if (empty($csoport))
         {
@@ -51,17 +53,17 @@ class CsoportMeghivasController extends Controller
         {
             return response(["message"=>"Nem a te csoportod."],403);
         }
-        if (!empty(CsoportTagsag::where("felhasznalo_id","=",$request->felhasznalo_id)->where("csoport_id","=",$csoport->id)->first()))
+        if (!empty(CsoportTagsag::where("felhasznalo_id","=",$meghivottUser->id)->where("csoport_id","=",$csoport->id)->first()))
         {
             return response(["message"=>"Már benne van ez a felhasználó ebben a csoportban."],400);
         }
-        if (!empty(csoport_meghivas::where("felhasznalo_id","=",$request->felhasznalo_id)->where("csoport_id","=",$csoport->id)->first()))
+        if (!empty(csoport_meghivas::where("felhasznalo_id","=",$meghivottUser->id)->where("csoport_id","=",$csoport->id)->first()))
         {
             return response(["message"=>"Már meg van hívva ez a felhasználó."],400);
         }
         $newRec = new csoport_meghivas();
         $newRec->csoport_id = $csoport->id;
-        $newRec->felhasznalo_id = $request->felhasznalo_id;
+        $newRec->felhasznalo_id = $meghivottUser->id;
         $newRec->save();
         return response(["Message"=>"Sikeres létrehozás"],201);
     }
