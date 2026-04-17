@@ -77,19 +77,21 @@ class VevesListaController extends Controller
     }
     public function show3(User $user, Request $request, string $id)
     {
-        
-        $resp = VevesLista::where("csoport_id",$id)->whereHas('user', function ($q) 
-        {    
-            $q->where('id', auth()->id());
-        })->with(["vevesobjektum.alKategoria","user"])->get();
-         if (empty($resp))
+        // Check that the current user is a member of this group
+        $tagsag = CsoportTagsag::where("csoport_id", $id)
+            ->where("felhasznalo_id", auth()->id())
+            ->first();
+        if (empty($tagsag))
         {
-            return response()->json(['message'=>"Nincs ilyen vevés lista."]);
+            return response()->json(['message' => "Nincs jogosultságod ehhez."], 403);
         }
-        else
-        {
-            return response()->json($resp);
-        }
+
+        // Return ALL lists belonging to the group (not just the current user's)
+        $resp = VevesLista::where("csoport_id", $id)
+            ->with(["vevesobjektum.alKategoria", "user"])
+            ->get();
+
+        return response()->json($resp);
     }
     public function showAdmin()
     {

@@ -10,7 +10,6 @@ import {
   addItemToList,
   removeItemFromList,
   deleteShoppingList,
-  getShoppingListStats
 } from '../services/shoppingListService';
 import './ShoppingListPage.css';
 
@@ -103,8 +102,23 @@ export default function ShoppingListPage() {
 
       setLists(listsData);
 
-      const statsResult = await getShoppingListStats(userId);
-      setStats(statsResult && statsResult.data ? statsResult.data : null);
+      // Calculate stats directly from loaded lists for accuracy
+      let totalItems = 0;
+      let totalCost = 0;
+      listsData.forEach(list => {
+        const items = list.VevesiLista || [];
+        totalItems += items.length;
+        items.forEach(item => {
+          totalCost += (item.Ar || 0) * (item.Mennyiseg || 1);
+        });
+      });
+      const computedStats = {
+        totalLists: listsData.length,
+        totalItems,
+        totalCost,
+        averageCostPerList: listsData.length > 0 ? Math.round(totalCost / listsData.length) : 0,
+      };
+      setStats(computedStats);
 
       setError(null);
     } catch (err) {
@@ -211,10 +225,12 @@ export default function ShoppingListPage() {
     try {
       setLoading(true);
       // Map UI form fields to the backend expected keys to avoid validation (422)
+      // Parse Ar: extract first number from text (e.g. "kb 500", "akciós 999", "1200 Ft")
+      const parsedAr = parseFloat(String(itemFormData.Ar).replace(',', '.').match(/[\d.]+/)?.[0]) || 0;
       const itemPayload = {
         megnevezes: itemFormData.Megnevezes,
         alKategoria_id: itemFormData.Alkategoria || null,
-        ar: itemFormData.Ar || 0,
+        ar: parsedAr,
         mennyiseg: itemFormData.Mennyiseg || 0,
         mennyiseg_tipus: itemFormData.MennyisegTipusMertekegyseg
       };
@@ -318,7 +334,9 @@ export default function ShoppingListPage() {
 
     setItemFormData(prev => ({
       ...prev,
-      [name]: name === 'Ar' || name === 'Mennyiseg' ? parseFloat(value) || 0 : value
+      [name]: name === 'Ar'
+        ? value  // store raw text; parse on submit
+        : name === 'Mennyiseg' ? parseFloat(value) || 0 : value
     }));
   };
 
@@ -357,23 +375,21 @@ export default function ShoppingListPage() {
         {error && <div className="alert alert-danger" style={{marginBottom:'20px'}}>{error}</div>}
 
         {/* Stats row */}
-        {stats && (
-          <div className="dashboard-stats" style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:'16px', marginBottom:'28px'}}>
-            {[
-              { label: 'Összes lista', value: stats.totalLists },
-              { label: 'Összes tétel', value: stats.totalItems },
-              { label: 'Összköltség', value: formatMoney(stats.totalCost) },
-              { label: 'Átlag/lista', value: formatMoney(stats.averageCostPerList) },
-            ].map((s, i) => (
-              <div key={i} className="stat-card">
-                <div>
-                  <div className="stat-label">{s.label}</div>
-                  <div className="stat-value">{s.value}</div>
-                </div>
+        <div className="dashboard-stats" style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:'16px', marginBottom:'28px'}}>
+          {[
+            { label: 'Összes lista', value: stats ? stats.totalLists : lists.length },
+            { label: 'Összes tétel', value: stats ? stats.totalItems : 0 },
+            { label: 'Összköltség', value: formatMoney(stats ? stats.totalCost : 0) },
+            { label: 'Átlag/lista', value: formatMoney(stats ? stats.averageCostPerList : 0) },
+          ].map((s, i) => (
+            <div key={i} className="stat-card">
+              <div>
+                <div className="stat-label">{s.label}</div>
+                <div className="stat-value">{s.value}</div>
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
 
 
         {!selectedList ? (
@@ -652,11 +668,11 @@ export default function ShoppingListPage() {
                 <Form.Group className="mb-3">
                   <Form.Label>Egységár (Ft)</Form.Label>
                   <Form.Control
-                    type="number"
+                    type="text"
                     name="Ar"
                     value={itemFormData.Ar}
                     onChange={handleItemFormChange}
-                    placeholder="0"
+                    placeholder="pl. 1200, kb 500, akciós 999"
                   />
                 </Form.Group>
               </Col>

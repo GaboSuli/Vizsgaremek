@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   getCsoportFelhasznalok,
-  addCsoportTag,
+  sendCsoportMeghivas,
   editCsoportTag,
   deleteCsoportTag,
 } from '../../services/api';
@@ -44,9 +44,10 @@ export default function MemberManager({ csoportId, isAdmin, currentUserId }) {
   const [error, setError] = useState(null);
 
   // Add member state
-  const [addId, setAddId] = useState('');
+  const [addNev, setAddNev] = useState('');
   const [adding, setAdding] = useState(false);
   const [addError, setAddError] = useState(null);
+  const [addSuccess, setAddSuccess] = useState(null);
 
   // Edit state
   const [editId, setEditId] = useState(null);
@@ -74,16 +75,18 @@ export default function MemberManager({ csoportId, isAdmin, currentUserId }) {
   // Add member
   const handleAdd = async (e) => {
     e.preventDefault();
-    if (!addId.trim()) return;
+    if (!addNev.trim()) return;
     setAdding(true);
     setAddError(null);
-    const res = await addCsoportTag(Number(csoportId), Number(addId));
+    setAddSuccess(null);
+    const res = await sendCsoportMeghivas(csoportId, addNev.trim());
     setAdding(false);
     if (res.success) {
-      setAddId('');
-      load();
+      setAddNev('');
+      setAddSuccess('Meghívás elküldve!');
+      setTimeout(() => setAddSuccess(null), 3000);
     } else {
-      setAddError(res.message || 'Hiba a tag hozzáadásakor');
+      setAddError(res.message || 'Hiba a meghívás során');
     }
   };
 
@@ -134,28 +137,28 @@ export default function MemberManager({ csoportId, isAdmin, currentUserId }) {
       {isAdmin && (
         <form className="mm-add-form" onSubmit={handleAdd}>
           <div style={{ flex: 1 }}>
-            <label className="grp-label" htmlFor="mm-uid">Felhasználó ID</label>
+            <label className="grp-label" htmlFor="mm-uid">Felhasználó neve</label>
             <input
               id="mm-uid"
               className="grp-input"
-              type="number"
-              min="1"
-              value={addId}
-              onChange={(e) => { setAddId(e.target.value); setAddError(null); }}
-              placeholder="pl. 42"
+              type="text"
+              value={addNev}
+              onChange={(e) => { setAddNev(e.target.value); setAddError(null); setAddSuccess(null); }}
+              placeholder="pl. Kovács János"
               disabled={adding}
             />
           </div>
           <button
             type="submit"
             className="grp-btn grp-btn-primary"
-            disabled={adding || !addId.trim()}
+            disabled={adding || !addNev.trim()}
             style={{ alignSelf: 'flex-end' }}
           >
-            {adding ? <><span className="grp-spinner grp-spinner-sm" />Hozzáadás...</> : '+ Tag hozzáadása'}
+            {adding ? <><span className="grp-spinner grp-spinner-sm" />Küldés...</> : '✉️ Meghívás küldése'}
           </button>
         </form>
       )}
+      {addSuccess && <div className="grp-alert grp-alert-success" style={{ marginBottom: '0.75rem' }}>{addSuccess}</div>}
       {addError && <div className="grp-alert grp-alert-error" style={{ marginBottom: '0.75rem' }}>{addError}</div>}
 
       {/* Member list */}

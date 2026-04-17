@@ -260,4 +260,16 @@ export async function deleteVevesiLista(listaId) {
   return await apiCall(`/vevesiLista/torles/${listaId}`, { method: 'DELETE' });
 }
 
+export async function getCsoportMeghivasok() {
+  return await apiCall('/csoportMeghivas/all');
+}
+
+export async function sendCsoportMeghivas(csoport_id, felhasznalo_nev) {
+  return await apiCall('/csoportMeghivas/meghivas', { method: 'POST', body: { csoport_id, felhasznalo_nev } });
+}
+
+export async function decideCsoportMeghivas(csoport_id, elfogadott) {
+  return await apiCall(`/csoportMeghivas/decision/${csoport_id}`, { method: 'PUT', body: { elfogadott } });
+}
+
 export default api;

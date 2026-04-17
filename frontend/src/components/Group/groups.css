@@ -150,6 +150,15 @@
 .grp-badge-mod     { background: var(--clr-warning-light);  color: var(--clr-warning-dark); }
 .grp-badge-member  { background: var(--clr-primary-light);  color: var(--clr-primary-dark); }
 .grp-badge-type    { background: var(--clr-surface-3, #f0f4f8); color: var(--clr-text-2); }
+.grp-badge-neutral { background: var(--clr-surface-2, #e8ecf0); color: var(--clr-text-2); }
+
+/* ── Section empty state ─────────────────────────────────────── */
+.grp-section-empty {
+  color: var(--clr-text-muted, #8b9299);
+  font-size: 0.875rem;
+  padding: 0.75rem 0 1rem;
+  text-align: center;
+}
 
 /* ── Personal lists section ─────────────────────────────────── */
 .grp-personal-section {
