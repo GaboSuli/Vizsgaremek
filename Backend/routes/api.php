@@ -17,6 +17,7 @@ Route::get( '/statisztika/ev/{ev}',[VevesObjektumController::class, 'show2']);
 Route::get('/kuponok/get',[KuponController::class, 'index']);
 Route::post('/felhasznalo/register', [UserController::class, 'register']);
 Route::post('/felhasznalo/login', [UserController::class, 'login']) ->name('login');
+Route::post('/contact/create', [ContactController::class, 'store']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/vevesiObjektum/torles/{id}',[VevesObjektumController::class, 'destroy']);
     Route::delete('/vevesiLista/torles/{id}',[VevesListaController::class, 'destroy']);
@@ -30,7 +31,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/csoport/modositas/{csoportId}',[CsoportokController::class, 'update']);
     Route::put('/csoportTagsag/modositas/{csoportId}',[CsoportTagsagController::class, 'update']);
     Route::put('/vevesiObjektum/modositas/{objektumId}',[VevesObjektumController::class, 'update']);
-    Route::post('/contact/create', [ContactController::class, 'store']);
     Route::post('/kuponok/create', [KuponController::class, 'store']);
     Route::post('/csoport/create', [CsoportokController::class, 'store']);
     Route::post('/csoportTagsag/create', [CsoportTagsagController::class, 'store']);

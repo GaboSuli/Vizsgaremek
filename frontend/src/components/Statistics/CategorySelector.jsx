@@ -1,19 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend,
-  Filler,
-} from 'chart.js';
 import { apiCall } from '../../services/api.js';
-import useTheme from '../../context/useTheme.js';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler);
+const MAX_SELECTED = 5;
+
+const PALETTE = [
+  '#6366f1', '#10b981', '#f59e0b', '#ef4444', '#06b6d4',
+];
 
 function fmt(v) {
   if (v === null || v === undefined || isNaN(v)) return '–';
@@ -24,21 +16,27 @@ function fmt(v) {
   }).format(v);
 }
 
-function fmtDatum(d) {
-  if (!d) return d;
-  const p = d.split('-');
-  if (p.length !== 2) return d;
-  const months = ['jan.', 'feb.', 'már.', 'ápr.', 'máj.', 'jún.', 'júl.', 'aug.', 'szep.', 'okt.', 'nov.', 'dec.'];
-  const m = parseInt(p[1], 10) - 1;
-  return `20${p[0]} ${months[m] ?? p[1]}`;
+function getStatsForCat(rows) {
+  if (!rows.length) return null;
+  const unit = rows[0]?.Mertekegyseg || '';
+  const allMin = rows.map(d => parseFloat(d.LegolcsobbEgyMennyiseg) || 0);
+  const allMax = rows.map(d => parseFloat(d.LegdragabbEgyMennyiseg) || 0);
+  const allAvg = rows.map(d => parseFloat(d.KiszamoltAtlag) || 0);
+  return {
+    min: Math.min(...allMin),
+    max: Math.max(...allMax),
+    avg: allAvg.reduce((s, v) => s + v, 0) / allAvg.length,
+    current: allAvg[allAvg.length - 1],
+    ingadozas: rows.reduce((s, d) => s + (parseFloat(d.Ingadozas) || 0), 0),
+    unit,
+  };
 }
 
 export default function CategorySelector() {
-  const { isDarkMode } = useTheme();
   const [rawData, setRawData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selected, setSelected] = useState('');
+  const [selectedCats, setSelectedCats] = useState([]);
   const [retry, setRetry] = useState(0);
 
   useEffect(() => {
@@ -50,7 +48,7 @@ export default function CategorySelector() {
       if (res.success && Array.isArray(res.data) && res.data.length) {
         setRawData(res.data);
         const cats = [...new Set(res.data.map(d => d.Alkategoria))].sort();
-        setSelected(cats[0] || '');
+        setSelectedCats(cats.length ? [cats[0]] : []);
       } else if (res.success) {
         setRawData([]);
       } else {
@@ -66,68 +64,27 @@ export default function CategorySelector() {
     [rawData]
   );
 
-  const catRows = useMemo(
-    () => rawData.filter(d => d.Alkategoria === selected).sort((a, b) => a.Datum.localeCompare(b.Datum)),
-    [rawData, selected]
+  const availableToAdd = useMemo(
+    () => categories.filter(c => !selectedCats.includes(c)),
+    [categories, selectedCats]
   );
 
-  const stats = useMemo(() => {
-    if (!catRows.length) return null;
-    const prices = catRows.map(d => parseFloat(d.KiszamoltAtlag) || 0);
-    const unit = catRows[0]?.Mertekegyseg || '';
-    return {
-      min: Math.min(...prices),
-      max: Math.max(...prices),
-      avg: prices.reduce((s, v) => s + v, 0) / prices.length,
-      current: prices[prices.length - 1],
-      ingadozas: catRows[catRows.length - 1]?.Ingadozas,
-      unit,
-    };
-  }, [catRows]);
-
-  const textColor = isDarkMode ? '#94a3b8' : '#475569';
-  const gridColor = isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
-
-  const chartData = useMemo(() => ({
-    labels: catRows.map(d => fmtDatum(d.Datum)),
-    datasets: [{
-      label: `${selected} – átlagár`,
-      data: catRows.map(d => parseFloat(d.KiszamoltAtlag) || 0),
-      borderColor: '#6366f1',
-      backgroundColor: isDarkMode ? 'rgba(99,102,241,0.12)' : 'rgba(99,102,241,0.07)',
-      borderWidth: 2.5,
-      pointRadius: 4,
-      pointHoverRadius: 8,
-      pointBackgroundColor: '#6366f1',
-      pointBorderColor: isDarkMode ? '#1e293b' : '#ffffff',
-      pointBorderWidth: 2,
-      fill: true,
-      tension: 0.35,
-    }],
-  }), [catRows, selected, isDarkMode]);
-
-  const opts = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: ctx => ` ${fmt(ctx.raw)}${stats?.unit ? ' / ' + stats.unit : ''}`,
-        },
-      },
-    },
-    scales: {
-      x: {
-        grid: { color: gridColor },
-        ticks: { color: textColor, font: { size: 11 } },
-      },
-      y: {
-        grid: { color: gridColor },
-        ticks: { color: textColor, callback: v => fmt(v) },
-      },
-    },
+  const addCategory = (cat) => {
+    if (!cat || selectedCats.includes(cat) || selectedCats.length >= MAX_SELECTED) return;
+    setSelectedCats(prev => [...prev, cat]);
   };
+
+  const removeCategory = (cat) => {
+    setSelectedCats(prev => prev.filter(c => c !== cat));
+  };
+
+  // Stats per selected category
+  const allStats = useMemo(() => {
+    return selectedCats.map(cat => {
+      const rows = rawData.filter(d => d.Alkategoria === cat).sort((a, b) => a.Datum.localeCompare(b.Datum));
+      return { cat, rows, stats: getStatsForCat(rows) };
+    });
+  }, [rawData, selectedCats]);
 
   if (loading) return <div className="loading-state"><div className="spinner" /></div>;
   if (error) return (
@@ -150,61 +107,60 @@ export default function CategorySelector() {
   return (
     <div className="card cs-card">
       <div className="card-header cs-header">
-        <label className="form-label cs-label">Alkategória</label>
+        <label className="form-label cs-label">Alkategória ({selectedCats.length}/{MAX_SELECTED})</label>
         <select
           className="form-control cs-select"
-          value={selected}
-          onChange={e => setSelected(e.target.value)}
+          value=""
+          onChange={e => { addCategory(e.target.value); }}
+          disabled={selectedCats.length >= MAX_SELECTED}
         >
-          {categories.map(c => <option key={c} value={c}>{c}</option>)}
+          <option value="">+ Alkategória hozzáadása...</option>
+          {availableToAdd.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
       </div>
 
-      {stats && (
-        <div className="cs-stat-bar">
-          <div className="cs-stat-item cs-stat-success">
-            <span className="cs-stat-label">Min. ár</span>
-            <span className="cs-stat-val">{fmt(stats.min)}</span>
-            {stats.unit && <span className="cs-stat-unit">/ {stats.unit}</span>}
-          </div>
-          <div className="cs-stat-item cs-stat-danger">
-            <span className="cs-stat-label">Max. ár</span>
-            <span className="cs-stat-val">{fmt(stats.max)}</span>
-            {stats.unit && <span className="cs-stat-unit">/ {stats.unit}</span>}
-          </div>
-          <div className="cs-stat-item cs-stat-primary">
-            <span className="cs-stat-label">Átlagár</span>
-            <span className="cs-stat-val">{fmt(stats.avg)}</span>
-            {stats.unit && <span className="cs-stat-unit">/ {stats.unit}</span>}
-          </div>
-          <div className="cs-stat-item cs-stat-info">
-            <span className="cs-stat-label">Jelenlegi</span>
-            <span className="cs-stat-val">{fmt(stats.current)}</span>
-            {stats.unit && <span className="cs-stat-unit">/ {stats.unit}</span>}
-          </div>
-          {stats.ingadozas !== undefined && (
-            <div className="cs-stat-item cs-stat-warning">
-              <span className="cs-stat-label">Ingadozás</span>
-              <span className="cs-stat-val">{fmt(stats.ingadozas)}</span>
-            </div>
-          )}
+      {/* Comparison table */}
+      {allStats.length > 0 && allStats.some(s => s.stats) && (
+        <div className="cs-table-wrap">
+          <table className="cs-compare-table">
+            <thead>
+              <tr>
+                <th className="cs-th-name">Alkategória</th>
+                <th className="cs-th cs-th-success">Min. ár</th>
+                <th className="cs-th cs-th-danger">Max. ár</th>
+                <th className="cs-th cs-th-primary">Átlagár</th>
+                <th className="cs-th cs-th-info">Jelenlegi</th>
+                <th className="cs-th cs-th-warning">Ingadozás</th>
+                <th className="cs-th-action"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {allStats.map(({ cat, stats }, i) => {
+                const color = PALETTE[i % PALETTE.length];
+                return stats ? (
+                  <tr key={cat} className="cs-compare-row">
+                    <td className="cs-td-name">
+                      <span className="cs-dot" style={{ background: color }} />
+                      <span className="cs-cat-name">{cat}</span>
+                      {stats.unit && <span className="cs-cat-unit">/ {stats.unit}</span>}
+                    </td>
+                    <td className="cs-td cs-td-success">{fmt(stats.min)}</td>
+                    <td className="cs-td cs-td-danger">{fmt(stats.max)}</td>
+                    <td className="cs-td cs-td-primary">{fmt(stats.avg)}</td>
+                    <td className="cs-td cs-td-info">{fmt(stats.current)}</td>
+                    <td className="cs-td cs-td-warning">{fmt(stats.ingadozas)}</td>
+                    <td className="cs-td-action">
+                      <button className="cs-remove-btn" onClick={() => removeCategory(cat)} title="Eltávolítás">×</button>
+                    </td>
+                  </tr>
+                ) : null;
+              })}
+            </tbody>
+          </table>
         </div>
       )}
 
-      <div className="card-body">
-        <div className="chart-wrapper" style={{ height: '300px' }}>
-          {catRows.length > 1 ? (
-            <Line data={chartData} options={opts} />
-          ) : (
-            <div className="empty-state">
-              <div className="empty-state-icon">📈</div>
-              <div className="empty-state-title">
-                {catRows.length === 1 ? 'Csak egy adatpont áll rendelkezésre' : 'Nincs adat ehhez az alkategóriához'}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   );
 }
+
