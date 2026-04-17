@@ -45,7 +45,7 @@ export default function StatisticsPage() {
           <div className="section-header">
             <div>
               <h2 className="section-title">Piaci árfigyelő</h2>
-              <p className="section-subtitle">Alkategóriák havi átlagár változása – válasszon ki kategóriákat a tag gombokkal</p>
+              <p className="section-subtitle">Válasszon egy főkategóriát, majd szűrjön alkategóriákra</p>
             </div>
           </div>
           <MonthlyTrendChart />

@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactMail;
 use App\Models\Contact;
+use App\Models\ContactTipusok;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
@@ -34,9 +38,8 @@ class ContactController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, User $user)
+    public function store(Request $request)
     {
-        $authUser = auth()->user();
         $validator = Validator::make($request->all(),
         [
             'nev' => 'required|string|min:1',
@@ -46,7 +49,7 @@ class ContactController extends Controller
         ]);
         if ($validator->fails())
         {
-            return response(["validacios_hibak"=>$validator->errors()->toArray()],400);
+            return response(["success" => false, "errors" => ["validacios_hibak"=>$validator->errors()->toArray()]],400);
         }
         $newRec = new Contact();
         $newRec->nev = $request->nev;
@@ -54,7 +57,23 @@ class ContactController extends Controller
         $newRec->contactTipusId = $request->contactTipusId;
         $newRec->text = $request->text;
         $newRec->save();
-        return response(["message"=>"Ürlap kitöltve"],201);
+
+        // Send email notification
+        try {
+            $tipusNev = ContactTipusok::find($request->contactTipusId)?->megnevezes ?? 'Ismeretlen';
+            Mail::to(config('mail.contact_recipient', 'cashentis@gmail.com'))
+                ->send(new ContactMail(
+                    $request->nev,
+                    $request->email,
+                    $tipusNev,
+                    $request->text
+                ));
+        } catch (\Exception $e) {
+            Log::error('[Contact] Email sending failed: ' . $e->getMessage());
+            // Don't fail the request if email fails – data is already saved
+        }
+
+        return response(["success" => true, "message"=>"Ürlap kitöltve"],201);
     }
 
     /**

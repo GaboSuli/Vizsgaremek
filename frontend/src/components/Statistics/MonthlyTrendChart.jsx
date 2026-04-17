@@ -44,8 +44,18 @@ export default function MonthlyTrendChart() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [visibleCats, setVisibleCats] = useState(new Set());
-  const [search, setSearch] = useState('');
   const [retry, setRetry] = useState(0);
+  const [kategoriak, setKategoriak] = useState([]);
+  const [selectedFoKategoria, setSelectedFoKategoria] = useState('');
+
+  useEffect(() => {
+    apiCall('/alkategoriak').then(res => {
+      if (res.success !== false && Array.isArray(res.data || res)) {
+        const data = res.data || res;
+        setKategoriak(data);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -67,15 +77,43 @@ export default function MonthlyTrendChart() {
     return () => { active = false; };
   }, [retry]);
 
+  // Build a map of alkategória name -> főkategória name
+  const alkategoriaToFoKategoria = useMemo(() => {
+    const map = {};
+    kategoriak.forEach(kat => {
+      const foNev = kat.megnevezes;
+      (kat.alkategoriak || []).forEach(alk => {
+        map[alk.megnevezes] = foNev;
+      });
+    });
+    return map;
+  }, [kategoriak]);
+
+  const foKategoriaNames = useMemo(
+    () => kategoriak.map(k => k.megnevezes).sort(),
+    [kategoriak]
+  );
+
   const allCats = useMemo(
     () => [...new Set(rawData.map(d => d.Alkategoria))].sort(),
     [rawData]
   );
 
-  const filteredCats = useMemo(
-    () => allCats.filter(c => c.toLowerCase().includes(search.toLowerCase())),
-    [allCats, search]
-  );
+  const filteredCats = useMemo(() => {
+    if (!selectedFoKategoria) return [];
+    return allCats.filter(c => alkategoriaToFoKategoria[c] === selectedFoKategoria);
+  }, [allCats, selectedFoKategoria, alkategoriaToFoKategoria]);
+
+  // When főkategória changes, auto-select all its alkategóriák
+  const handleFoKategoriaChange = (value) => {
+    setSelectedFoKategoria(value);
+    if (value) {
+      const catsInKat = allCats.filter(c => alkategoriaToFoKategoria[c] === value);
+      setVisibleCats(new Set(catsInKat));
+    } else {
+      setVisibleCats(new Set());
+    }
+  };
 
   const { labels, datasets } = useMemo(() => {
     if (!rawData.length) return { labels: [], datasets: [] };
@@ -167,16 +205,21 @@ export default function MonthlyTrendChart() {
     <div className="card mtc-card">
       <div className="card-body mtc-body">
         <div className="mtc-filter-bar">
-          <input
+          <select
             className="form-control mtc-search"
-            placeholder="Alkategória szűrése..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
+            value={selectedFoKategoria}
+            onChange={e => handleFoKategoriaChange(e.target.value)}
+            style={{ minWidth: '180px', maxWidth: '240px' }}
+          >
+            <option value="">Összes főkategória</option>
+            {foKategoriaNames.map(name => (
+              <option key={name} value={name}>{name}</option>
+            ))}
+          </select>
           <div className="mtc-actions">
             <button className="btn btn-secondary btn-sm" onClick={selectAll}>Mind</button>
             <button className="btn btn-ghost btn-sm" onClick={clearAll}>Töröl</button>
-            <span className="badge badge-gray">{visibleCats.size} / {allCats.length} aktív</span>
+            <span className="badge badge-gray">{visibleCats.size} / {filteredCats.length} aktív</span>
           </div>
         </div>
 
