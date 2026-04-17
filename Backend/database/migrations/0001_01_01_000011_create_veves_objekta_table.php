@@ -16,9 +16,9 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->unsignedBigInteger('veves_lista_id');
-            $table->foreign('veves_lista_id')->references('id')->on('veves_lista');
+            $table->foreign('veves_lista_id')->references('id')->on('veves_lista')->cascadeOnDelete();
             $table->unsignedBigInteger('alKategoria_id');
-            $table->foreign('alKategoria_id')->references('id')->on('alkategoriak');
+            $table->foreign('alKategoria_id')->references('id')->on('alkategoriak')->cascadeOnDelete();
             $table->string('megnevezes')->default("");
             $table->float('ar');
             $table->float('mennyiseg');

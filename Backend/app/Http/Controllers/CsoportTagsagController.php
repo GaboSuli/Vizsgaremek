@@ -66,7 +66,7 @@ class CsoportTagsagController extends Controller
     public function show(User $user, string $id)
     {
         $authUser = CsoportTagsag::where("csoport_id","=",$id)->where("felhasznalo_id","=",auth()->id())->first();
-        if (empty($authUser))
+        if (empty($authUser) and auth()->user()->jogosultsag_szing < 2)
         {
             return response(["message"=>"Nincs jogosultságod ehhez."],403);
         }
@@ -83,7 +83,19 @@ class CsoportTagsagController extends Controller
             }
         }
     }
-
+    public function showAdmin()
+    {
+        $user = auth()->user();
+        if ($user->jogosultsag_szint > 2)
+        {
+            $resp = Csoportok::join("csoport_tagsag","csoport_tagsag.csoport_id","=","csoportok.id")->groupBy("csoportok.id","csoportok.megnevezes")->selectRaw("count(csoport_tagsag.id) as mennyiseg, csoportok.megnevezes")->get();
+            return response($resp);
+        }
+        else
+        {
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+        }
+    }
     /**
      * Show the form for editing the specified resource.
      */

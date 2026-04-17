@@ -91,6 +91,18 @@ class VevesListaController extends Controller
             return response()->json($resp);
         }
     }
+    public function showAdmin()
+    {
+        $user = auth()->user();
+        if ($user->jogosultsag_szint > 2)
+        {
+            $resp = VevesLista::orderBy("updated_at","desc")->limit(100)->with("vevesobjektum")->get();
+            return response($resp);
+        }
+        else{
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+        }
+    }
     
     /**
      * Show the form for editing the specified resource.

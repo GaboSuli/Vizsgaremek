@@ -10,6 +10,8 @@ use App\Http\Controllers\VevesListaController;
 use App\Http\Controllers\VevesObjektumController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/legtobbetVett',[VevesObjektumController::class,'legtobbetVett']);
+Route::get( '/felhasznaloMennyiseg',[UserController::class, 'amountOfUsers']);
 Route::get( '/alkategoriak',[AlkategoriakController::class, 'index']);
 Route::get( '/statisztika/all',[VevesObjektumController::class, 'index']);
 Route::get( '/statisztika/id/{id}',[VevesObjektumController::class, 'show']);
@@ -46,4 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/csoport/{id}/felhasznalok', [CsoportTagsagController::class, 'show']);
     Route::get('/csoport/{id}/vevesiListak', [VevesListaController::class, 'show3']);
     Route::get('/felhasznalo/csoportjai', [UserController::class, 'show']);
+
+    Route::get('/vevesilistak/admin', [VevesListaController::class, 'showAdmin']);
+    Route::get('/csoportok/admin', [CsoportTagsagController::class, 'showAdmin']);
+    Route::get('/felhasznalo/admin', [UserController::class, 'showAdmin']);
 });

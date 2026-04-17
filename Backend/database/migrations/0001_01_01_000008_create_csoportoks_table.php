@@ -16,10 +16,10 @@ return new class extends Migration
             $table->id()->onDelete('cascade');;
             $table->timestamps();
             $table->unsignedBigInteger('csoport_tipus_id');
-            $table->foreign('csoport_tipus_id')->references('id')->on('csoport_tipusok');
+            $table->foreign('csoport_tipus_id')->references('id')->on('csoport_tipusok')->cascadeOnDelete();
             $table->string('megnevezes');
             $table->unsignedBigInteger('keszito_felhasznalo_id');
-            $table->foreign('keszito_felhasznalo_id')->references('id')->on('users');
+            $table->foreign('keszito_felhasznalo_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 

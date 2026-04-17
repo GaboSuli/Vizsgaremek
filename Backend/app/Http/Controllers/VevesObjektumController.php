@@ -241,6 +241,12 @@ public function show2(int $ev)
         ->get();
         return response()->json($data);
     }
+
+    public function legtobbetVett()
+    {
+        $resp = DB::select("SELECT COUNT(veves_objekt.id) AS mennyisegOssz, alkategoriak.megnevezes FROM veves_objekt INNER JOIN veves_lista ON veves_lista.id = veves_objekt.veves_lista_id INNER JOIN alkategoriak ON alkategoriak.id = veves_objekt.alKategoria_id WHERE elfogadott_statisztikara = 1 GROUP BY alkategoriak.megnevezes ORDER BY mennyisegOssz DESC LIMIT 1;");
+        return response($resp);
+    }
     /**
      * Show the form for editing the specified resource.
      */

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('megjegyzes')->nullable();
             $table->string('hasznalasi_hely');
             $table->foreignId('feltolto_kuponos_id');
-            $table->foreign('feltolto_kuponos_id')->references('id')->on('users');
+            $table->foreign('feltolto_kuponos_id')->references('id')->on('users')->nullOnDelete();
         });
     }
 

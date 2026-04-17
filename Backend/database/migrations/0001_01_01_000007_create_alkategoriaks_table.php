@@ -16,9 +16,9 @@ return new class extends Migration
             $table->id();
             $table->string('megnevezes');
             $table->unsignedBigInteger('kategoria_id');
-            $table->foreign('kategoria_id')->references('id')->on('kategoriak');
+            $table->foreign('kategoria_id')->references('id')->on('kategoriak')->cascadeOnDelete();
             $table->unsignedBigInteger('mennyiseg_tipus_id');
-            $table->foreign('mennyiseg_tipus_id')->references('id')->on('mennyiseg_tipusok');
+            $table->foreign('mennyiseg_tipus_id')->references('id')->on('mennyiseg_tipusok')->cascadeOnDelete();
         });
     }
 

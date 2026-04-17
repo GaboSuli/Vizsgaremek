@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Csoportok;
 use App\Models\CsoportTagsag;
 use App\Models\User;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -113,7 +114,23 @@ class UserController extends Controller
     {
         return response()->json($request->user());
     }
-
+    public function showAdmin()
+    {
+        $user = auth()->user();
+        if ($user->jogosultsag_szint > 2)
+        {
+            $resp = DB::select("SELECT users.nev, users.jogosultsag_szint, COUNT(DISTINCT csoportok.id) AS 'csoportokMennyiseg', COUNT(veves_lista.id) AS 'vevesiListaMennyiseg' FROM users INNER JOIN csoport_tagsag ON csoport_tagsag.felhasznalo_id = users.id INNER JOIN csoportok ON csoport_tagsag.csoport_id = csoportok.id INNER JOIN veves_lista ON veves_lista.felhasznalo_id = users.id GROUP BY users.id, users.nev, users.jogosultsag_szint;");
+            return response($resp);
+        }
+        else{
+            return response(["message"=>"Nincs jogosultságod ehhez."],403);
+        }
+    }
+    public function amountOfUsers()
+    {
+        $resp = User::selectRaw("count(users.id) as mennyiseg")->get();
+        return response($resp);
+    }
     /**
      * Show the form for editing the specified resource.
      */
