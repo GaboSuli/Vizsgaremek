@@ -363,22 +363,27 @@ foreach ($categories as $key => $value) {
         ];
         foreach ($csaladnevek as $key => $csaladnev)
         {
+            
             foreach ($keresztnevek as $key => $keresztnev) {
-                DB::table("users")->insert([
-                    'nev' => $csaladnev.' '.$keresztnev,
-                    'email' => $csaladnev.'.'.$keresztnev.'@email.com',
-                    'email_verified_at' => now(),
-                    'remember_token' => Str::random(10),
-                    'password' => Hash::make('password'),
-                    'tema_id' => random_int(1,2),
-                    'kuponok' => random_int(0,1),
-                    'termekArKovetes' => random_int(0,1),
-                    'brokerArKovetes' => random_int(0,1)
-                ]);
+                if (random_int(1,10) == 2)
+                    {
+                        DB::table("users")->insert([
+                            'nev' => $csaladnev.' '.$keresztnev,
+                            'email' => $csaladnev.'.'.$keresztnev.'@email.com',
+                            'email_verified_at' => now(),
+                            'remember_token' => Str::random(10),
+                            'password' => Hash::make('password'),
+                            'tema_id' => random_int(1,2),
+                            'kuponok' => random_int(0,1),
+                            'termekArKovetes' => random_int(0,1),
+                            'brokerArKovetes' => random_int(0,1)
+                        ]);
+                    }
+                        
             }
         }
-        $kupons = Kupon::factory()->count(10)->create();
-        $csoportok = Csoportok::factory()->count(100)->create();
+        $kupons = Kupon::factory()->count(50)->create();
+        $csoportok = Csoportok::factory()->count(1000)->create();
         foreach ($csoportok as $key => $value) {
             $newrec = new CsoportTagsag();
             $newrec->felhasznalo_id = $value->keszito_felhasznalo_id;
@@ -386,8 +391,8 @@ foreach ($categories as $key => $value) {
             $newrec->jogosultsag_szint = 3;
             $newrec->save();
         }
-        $csoportTagsagok = CsoportTagsag::factory()->count(300)->create();
-        $vevesListak = VevesLista::factory()->count(1000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $csoportTagsagok = CsoportTagsag::factory()->count(3000)->create();
+        $vevesListak = VevesLista::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(200000)->create();
     }
 }
