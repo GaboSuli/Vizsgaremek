@@ -17,6 +17,7 @@
 
 # Frontend (React)
 - "npm install" a /frontend mappában (ez csak egyszer kell hogy a frontendnek meg legyen a fájljai, kell hogy a node.js telepitve legyen hogy ezt le lehessen futtatni)
+- "npm audit fix" hogyha vulnerabilitiest jelez az "npm install" után
 - "npm run dev" a /frontend mappában (ez fogja futtatni a frontend szervert)
 
 # Utána:

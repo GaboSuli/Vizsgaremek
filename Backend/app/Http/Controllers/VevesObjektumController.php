@@ -210,7 +210,6 @@ public function show2(int $ev)
         ->join("alkategoriak","veves_objekt.alKategoria_id","=","alkategoriak.id")
         ->join("veves_lista","veves_objekt.veves_lista_id","=","veves_lista.id")
         ->selectRaw("alkategoriak.megnevezes, SUM(veves_objekt.ar) as 'Osszegzett' ")
-        ->where("elfogadott_statisztikara","=",1)
         ->where("veves_lista.felhasznalo_id","=", auth()->id())
         ->groupBy("alkategoriak.megnevezes")
         ->get();
@@ -222,7 +221,6 @@ public function show2(int $ev)
         ->join("alkategoriak","veves_objekt.alKategoria_id","=","alkategoriak.id")
         ->join("veves_lista","veves_objekt.veves_lista_id","=","veves_lista.id")
         ->selectRaw("alkategoriak.megnevezes, SUM(veves_objekt.ar) as 'Osszegzett' ")
-        ->where("elfogadott_statisztikara","=",1)
         ->where("veves_lista.felhasznalo_id","=", auth()->id())
         ->whereRaw("month(veves_lista.created_at) = " . date("m"))
         ->whereRaw("year(veves_lista.created_at) = " . date("Y"))
@@ -237,12 +235,17 @@ public function show2(int $ev)
         ->join("alkategoriak","veves_objekt.alKategoria_id","=","alkategoriak.id")
         ->join("veves_lista","veves_objekt.veves_lista_id","=","veves_lista.id")
         ->selectRaw("alkategoriak.megnevezes, SUM(veves_objekt.ar) as 'Osszegzett' ")
-        ->where("elfogadott_statisztikara","=",1)
         ->where("veves_lista.felhasznalo_id","=", auth()->id())
         ->whereRaw("year(veves_lista.created_at) = " . date("Y"))
         ->groupBy("alkategoriak.megnevezes")
         ->get();
         return response()->json($data);
+    }
+
+    public function legtobbetVett()
+    {
+        $resp = DB::select("SELECT COUNT(veves_objekt.id) AS mennyisegOssz, alkategoriak.megnevezes FROM veves_objekt INNER JOIN veves_lista ON veves_lista.id = veves_objekt.veves_lista_id INNER JOIN alkategoriak ON alkategoriak.id = veves_objekt.alKategoria_id WHERE elfogadott_statisztikara = 1 GROUP BY alkategoriak.megnevezes ORDER BY mennyisegOssz DESC LIMIT 1;");
+        return response($resp);
     }
     /**
      * Show the form for editing the specified resource.

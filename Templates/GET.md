@@ -79,6 +79,9 @@ GET
 
 (http://127.0.0.1:8000/api/felhasznaloMennyiseg)
 
+\- legtöbbet vett alkategoria
+
+(http://127.0.0.1:8000/api/legtobbetVett)
 
 \- felhasználó nyilvános adatai
 
