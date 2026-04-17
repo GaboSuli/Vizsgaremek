@@ -18,7 +18,7 @@ class UserController extends Controller
     {
         //Validálás
         $validated = $request->validate([
-            'nev' => 'required|string|min:1|max:255',
+            'nev' => 'required|string|min:1|max:255|unique:users',
             //e-mail egyedi legyen a user táblában
             //e-mail formailag helyes
             'email' => 'required|email|unique:users',
@@ -148,7 +148,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(),
         [
             'felhasznalo_id_valtoztatni' => 'exists:users,id',
-            'nev' => 'string|min:1',
+            'nev' => 'string|min:1|unique:users',
             'becenev' => 'string',
             'profilkep_url' => 'string|min:1',
             'kuponok' => 'numeric|in:0,1',

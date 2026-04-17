@@ -13,6 +13,8 @@ use App\Models\VevesObjektum;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -338,8 +340,43 @@ foreach ($categories as $key => $value) {
             'tema_id' => 1,
             'jogosultsag_szint'=>255
         ]);
-        
-        $users = User::factory()->count(100)->create();
+        $csaladnevek = [
+            "Kovács", "Szabó", "Tóth", "Nagy", "Horváth", "Varga", "Kiss", "Molnár",
+            "Németh", "Farkas", "Balogh", "Papp", "Lakatos", "Takács", "Juhász",
+            "Mészáros", "Oláh", "Simon", "Rácz", "Fekete", "Szűcs", "Boros",
+            "Kelemen", "Antal", "Sipos", "Bognár", "Gáspár", "Péter", "Kocsis",
+            "Katona", "Szilágyi", "Veres", "Kardos", "Vincze", "Hegedűs", "Sánta",
+            "Orbán", "Szekeres", "Barta", "Bíró", "Király", "Major", "Pál",
+            "Gulyás", "Székely", "Bencsik", "Barna", "Cseh", "Fodor", "Hajdú",
+            "Kádár", "Kertész", "Kis", "Lukács", "Madarász", "Nyíri", "Pintér"
+        ];
+
+        $keresztnevek = [
+            "Ádám", "Bence", "Csaba", "Dániel", "Erik", "Ferenc", "Gábor", "Hunor",
+            "István", "János", "Károly", "László", "Máté", "Norbert", "Olivér",
+            "Péter", "Richárd", "Sándor", "Tamás", "Viktor", "Zoltán", "Balázs",
+            "Cintia", "Dóra", "Emese", "Fanni", "Gabriella", "Hanna", "Ilona",
+            "Judit", "Katalin", "Lili", "Mónika", "Noémi", "Orsolya", "Petra",
+            "Réka", "Szilvia", "Tímea", "Vanda", "Zsófia", "Anita", "Beáta",
+            "Csilla", "Diána", "Eszter", "Flóra", "Gréta", "Helga", "Ivett",
+            "Jázmin", "Kinga", "Luca", "Melinda", "Nikolett", "Vivien"
+        ];
+        foreach ($csaladnevek as $key => $csaladnev)
+        {
+            foreach ($keresztnevek as $key => $keresztnev) {
+                DB::table("users")->insert([
+                    'nev' => $csaladnev.' '.$keresztnev,
+                    'email' => $csaladnev.'.'.$keresztnev.'@email.com',
+                    'email_verified_at' => now(),
+                    'remember_token' => Str::random(10),
+                    'password' => Hash::make('password'),
+                    'tema_id' => random_int(1,2),
+                    'kuponok' => random_int(0,1),
+                    'termekArKovetes' => random_int(0,1),
+                    'brokerArKovetes' => random_int(0,1)
+                ]);
+            }
+        }
         $kupons = Kupon::factory()->count(10)->create();
         $csoportok = Csoportok::factory()->count(100)->create();
         foreach ($csoportok as $key => $value) {
