@@ -609,3 +609,74 @@
 .detail-card {
   animation: slideIn 0.5s ease;
 }
+
+/* ── Dark mode label brightness fixes ──────────── */
+[data-theme='dark'] .list-title {
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .list-meta small,
+[data-theme='dark'] .list-card-meta {
+  color: #94a3b8;
+}
+
+[data-theme='dark'] .info-badge {
+  color: #e2e8f0;
+}
+
+[data-theme='dark'] .info-badge.total {
+  color: #fbbf24;
+}
+
+[data-theme='dark'] .stat-label {
+  color: #cbd5e1;
+}
+
+[data-theme='dark'] .stat-value {
+  color: #a5b4fc;
+}
+
+[data-theme='dark'] .page-title {
+  color: #f8fafc;
+}
+
+[data-theme='dark'] .page-subtitle {
+  color: #94a3b8;
+}
+
+[data-theme='dark'] .detail-header h4 {
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .items-table th {
+  color: #cbd5e1;
+}
+
+[data-theme='dark'] .items-table td {
+  color: #e2e8f0;
+}
+
+[data-theme='dark'] .sl-item-label {
+  color: #94a3b8;
+}
+
+[data-theme='dark'] .sl-item-card-header strong {
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .sl-item-row {
+  color: #e2e8f0;
+}
+
+[data-theme='dark'] .sl-total-card {
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .summary-row td {
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .form-label,
+[data-theme='dark'] .modal-title {
+  color: #f1f5f9;
+}
