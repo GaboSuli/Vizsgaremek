@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useEffect, useCallback, useMemo } from 'react';
 
 const STORAGE_KEY = 'cookie_consent';
 
@@ -81,21 +81,21 @@ export function CookieProvider({ children }) {
     return preferences[category] === true;
   }, [preferences]);
 
+  const value = useMemo(() => ({
+    consent,
+    preferences,
+    showBanner,
+    showSettings,
+    acceptAll,
+    acceptNecessaryOnly,
+    savePreferences,
+    openSettings,
+    closeSettings,
+    hasConsent,
+  }), [consent, preferences, showBanner, showSettings, acceptAll, acceptNecessaryOnly, savePreferences, openSettings, closeSettings, hasConsent]);
+
   return (
-    <CookieContext.Provider
-      value={{
-        consent,
-        preferences,
-        showBanner,
-        showSettings,
-        acceptAll,
-        acceptNecessaryOnly,
-        savePreferences,
-        openSettings,
-        closeSettings,
-        hasConsent,
-      }}
-    >
+    <CookieContext.Provider value={value}>
       {children}
     </CookieContext.Provider>
   );

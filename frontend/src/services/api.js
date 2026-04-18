@@ -123,7 +123,7 @@ export async function registerUser(payload) {
 // ── GET request cache — 30 s TTL, in-flight deduplication ──────────────────
 const _getCache  = new Map(); // path → { data, expiry }
 const _inflight  = new Map(); // path → Promise
-const GET_TTL    = 30_000;    // ms
+const GET_TTL    = 60_000;    // ms
 
 function _cacheGet(path) {
   const hit = _getCache.get(path);

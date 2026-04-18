@@ -348,6 +348,11 @@ export default function AdminDashboard() {
   /* ── Delete handler ────────────────────────────── */
   const handleDelete = async () => {
     if (!deleteDialog.target) return;
+    if (deleteDialog.type === 'user' && deleteDialog.target.id === user?.id) {
+      showToast('Saját fiókod nem törölheted.', 'error');
+      setDeleteDialog({ open: false, type: '', target: null });
+      return;
+    }
     setDeleting(true);
     try {
       let res;
@@ -547,9 +552,15 @@ export default function AdminDashboard() {
                           <td><span className={`adm-badge adm-badge--${role.cls}`}>{role.label}</span></td>
                           <td className="adm-cell-date">{formatDate(u.created_at)}</td>
                           <td>
-                            <button className="adm-icon-btn adm-icon-btn--danger" title="Törlés" onClick={() => setDeleteDialog({ open: true, type: 'user', target: u })}>
-                              <Icons.Trash />
-                            </button>
+                            {u.id === user?.id ? (
+                              <button className="adm-icon-btn adm-icon-btn--danger" title="Saját fiók nem törölhető" disabled style={{ opacity: 0.4, cursor: 'not-allowed' }}>
+                                <Icons.Trash />
+                              </button>
+                            ) : (
+                              <button className="adm-icon-btn adm-icon-btn--danger" title="Törlés" onClick={() => setDeleteDialog({ open: true, type: 'user', target: u })}>
+                                <Icons.Trash />
+                              </button>
+                            )}
                           </td>
                         </tr>
                       );

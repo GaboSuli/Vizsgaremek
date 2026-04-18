@@ -565,15 +565,16 @@
 .fp-feature-shine {
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 60%;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
-  transition: left 0.6s ease;
+  transform: translateX(-167%);
+  transition: transform 0.6s ease;
   pointer-events: none;
 }
 .fp-feature-card:hover .fp-feature-shine {
-  left: 120%;
+  transform: translateX(200%);
 }
 .fp-feature-icon-wrap {
   width: 52px;

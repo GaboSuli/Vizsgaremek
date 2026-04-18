@@ -1,10 +1,3 @@
-/* ═══════════════════════════════════════════════════════════
-   SIDEBAR  —  Premium role-aware navigation panel
-   Theme-adaptive: light in light mode, dark in dark mode
-   Admin variant with enhanced visual hierarchy
-═══════════════════════════════════════════════════════════ */
-
-/* ── Base ─────────────────────────────────────────────── */
 .sidebar {
   position: fixed;
   top: 0;
@@ -70,18 +63,15 @@
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
   opacity: 1;
   transform: scale(1) rotate(0deg);
+  will-change: opacity, transform;
   transition: opacity 0.35s cubic-bezier(.4,0,.2,1),
-              transform 0.35s cubic-bezier(.4,0,.2,1),
-              width 0.35s cubic-bezier(.4,0,.2,1),
-              margin 0.35s cubic-bezier(.4,0,.2,1);
+              transform 0.35s cubic-bezier(.4,0,.2,1);
 }
 
 .sidebar--collapsed .sidebar-logo-icon {
   opacity: 0;
-  transform: scale(0.4) rotate(-90deg);
-  width: 0;
-  overflow: hidden;
-  margin: 0;
+  transform: scale(0) rotate(-90deg);
+  pointer-events: none;
 }
 
 .sidebar-logo-text {
@@ -708,3 +698,124 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   LIGHT MODE — Premium sidebar surface overrides
+   Applied when [data-theme='dark'] is NOT active.
+═══════════════════════════════════════════════════════════ */
+
+/* Sidebar panel — distinct from page bg, premium feel */
+html:not([data-theme='dark']) .sidebar {
+  background: var(--sidebar-bg);
+  border-right-color: var(--sidebar-border);
+  box-shadow: var(--sidebar-shadow);
+}
+
+/* Logo icon — keep vibrant gradient in light mode */
+html:not([data-theme='dark']) .sidebar-logo-icon {
+  background: linear-gradient(135deg, #5b5ef4 0%, #7c3aed 100%);
+  box-shadow: 0 4px 14px rgba(91, 94, 244, 0.35);
+}
+
+/* Active item glow tweak for light mode */
+html:not([data-theme='dark']) .sidebar-nav-item.active::before {
+  box-shadow: 0 0 10px rgba(91, 94, 244, 0.3);
+}
+
+/* Nav item text in light mode */
+html:not([data-theme='dark']) .sidebar-nav-item {
+  color: var(--sidebar-text);
+}
+html:not([data-theme='dark']) .sidebar-nav-item:hover {
+  background: var(--sidebar-hover-bg);
+  color: var(--sidebar-text-active);
+}
+html:not([data-theme='dark']) .sidebar-nav-item.active {
+  color: var(--clr-primary);
+  background: var(--sidebar-active-bg);
+}
+
+/* Default nav icon inherits color from item */
+html:not([data-theme='dark']) .sidebar-nav-icon {
+  color: inherit;
+  opacity: 0.75;
+}
+html:not([data-theme='dark']) .sidebar-nav-item.active .sidebar-nav-icon {
+  opacity: 1;
+  color: var(--clr-primary);
+}
+html:not([data-theme='dark']) .sidebar-nav-item:hover .sidebar-nav-icon {
+  opacity: 1;
+}
+
+/* Section labels */
+html:not([data-theme='dark']) .sidebar-nav-label {
+  color: var(--sidebar-label);
+}
+
+/* Collapse button */
+html:not([data-theme='dark']) .sidebar-collapse-btn {
+  color: var(--sidebar-text);
+}
+html:not([data-theme='dark']) .sidebar-collapse-btn:hover {
+  background: var(--sidebar-hover-bg);
+  border-color: var(--sidebar-border);
+  color: var(--sidebar-text-active);
+}
+
+/* Footer */
+html:not([data-theme='dark']) .sidebar-footer {
+  background: var(--sidebar-footer-bg);
+  border-top-color: var(--sidebar-border);
+}
+
+/* User avatar ring in light mode */
+html:not([data-theme='dark']) .sidebar-user-avatar {
+  border-color: rgba(91, 94, 244, 0.18);
+  box-shadow: 0 2px 8px rgba(91, 94, 244, 0.2);
+}
+
+/* Legal links */
+html:not([data-theme='dark']) .sidebar-legal {
+  border-top-color: var(--sidebar-border);
+}
+
+/* Hamburger */
+html:not([data-theme='dark']) .sidebar-hamburger {
+  background: var(--sidebar-bg);
+  border-color: var(--sidebar-border);
+  color: var(--sidebar-text-active);
+  box-shadow: 0 4px 14px rgba(15, 22, 41, 0.08);
+}
+html:not([data-theme='dark']) .sidebar-hamburger:hover {
+  background: var(--clr-surface-2);
+  box-shadow: 0 4px 20px rgba(15, 22, 41, 0.12);
+}
+
+/* Tooltip in light mode */
+html:not([data-theme='dark']) .sidebar--collapsed .sidebar-nav-item::after {
+  background: #1f2937;
+  color: #f9fafb;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 20px rgba(15, 22, 41, 0.16);
+}
+
+/* Admin nav items light mode */
+html:not([data-theme='dark']) .sidebar-nav-item--admin {
+  border-color: rgba(217, 119, 6, 0.12);
+  background: rgba(217, 119, 6, 0.04);
+}
+html:not([data-theme='dark']) .sidebar-nav-item--admin:hover {
+  background: rgba(217, 119, 6, 0.08);
+  border-color: rgba(217, 119, 6, 0.2);
+}
+html:not([data-theme='dark']) .sidebar-nav-item--admin.active {
+  background: rgba(217, 119, 6, 0.1);
+  border-color: rgba(217, 119, 6, 0.28);
+}
+
+/* Role badge in light mode */
+html:not([data-theme='dark']) .sidebar-role-badge {
+  background: rgba(217, 119, 6, 0.1);
+  color: #b45309;
+  border-color: rgba(217, 119, 6, 0.22);
+}

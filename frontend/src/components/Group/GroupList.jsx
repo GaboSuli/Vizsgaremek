@@ -120,12 +120,9 @@ export default function GroupList() {
     }
   }, []);
 
-  const loadGroupsRef = React.useRef(loadGroups);
-
   useEffect(() => {
-    const fn = loadGroupsRef.current;
-    fn();
-  }, []);
+    loadGroups();
+  }, [loadGroups]);
 
   const handleDelete = async () => {
     const id = confirmDeleteId;

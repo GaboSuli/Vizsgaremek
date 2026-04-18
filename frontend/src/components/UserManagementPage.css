@@ -137,6 +137,24 @@
   padding-top: 0.5rem;
 }
 
+/* ── Theme toggle row ────────────────────────── */
+.ump-theme-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.ump-theme-title {
+  margin: 0;
+  font-weight: 600;
+  color: var(--clr-text);
+}
+.ump-theme-subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--clr-text-3);
+}
+
 /* ── Theme grid ──────────────────────────────── */
 
 .ump-theme-grid {

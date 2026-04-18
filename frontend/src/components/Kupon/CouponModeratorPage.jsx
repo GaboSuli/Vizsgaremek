@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { getAllKupons } from '../../services/kuponService.js';
 import CouponList from './CouponList.jsx';
 import CreateCouponModal from './CreateCouponModal.jsx';
@@ -74,6 +74,17 @@ export default function CouponModeratorPage() {
     loadKupons();
   };
 
+  const kuponStats = useMemo(() => {
+    const today = new Date().toISOString().split('T')[0];
+    let active = 0, upcoming = 0, expired = 0;
+    for (const k of kupons) {
+      if (k.lejarasi_datum < today) expired++;
+      else if (k.kezdesi_datum > today) upcoming++;
+      else active++;
+    }
+    return { total: kupons.length, active, upcoming, expired };
+  }, [kupons]);
+
   return (
     <div className="cmp-page">
       <div className="page-container">
@@ -97,34 +108,19 @@ export default function CouponModeratorPage() {
         {/* Stats row */}
         <div className="cmp-stats">
           <div className="cmp-stat-card">
-            <span className="cmp-stat-value">{kupons.length}</span>
+            <span className="cmp-stat-value">{kuponStats.total}</span>
             <span className="cmp-stat-label">Összes kupon</span>
           </div>
           <div className="cmp-stat-card cmp-stat-card--success">
-            <span className="cmp-stat-value">
-              {kupons.filter(k => {
-                const today = new Date().toISOString().split('T')[0];
-                return k.lejarasi_datum >= today && k.kezdesi_datum <= today;
-              }).length}
-            </span>
+            <span className="cmp-stat-value">{kuponStats.active}</span>
             <span className="cmp-stat-label">Aktív kupon</span>
           </div>
           <div className="cmp-stat-card cmp-stat-card--warning">
-            <span className="cmp-stat-value">
-              {kupons.filter(k => {
-                const today = new Date().toISOString().split('T')[0];
-                return k.kezdesi_datum > today;
-              }).length}
-            </span>
+            <span className="cmp-stat-value">{kuponStats.upcoming}</span>
             <span className="cmp-stat-label">Hamarosan</span>
           </div>
           <div className="cmp-stat-card cmp-stat-card--danger">
-            <span className="cmp-stat-value">
-              {kupons.filter(k => {
-                const today = new Date().toISOString().split('T')[0];
-                return k.lejarasi_datum < today;
-              }).length}
-            </span>
+            <span className="cmp-stat-value">{kuponStats.expired}</span>
             <span className="cmp-stat-label">Lejárt</span>
           </div>
         </div>

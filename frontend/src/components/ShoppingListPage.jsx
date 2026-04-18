@@ -346,6 +346,13 @@ export default function ShoppingListPage() {
     return allAlkategoriak.filter(a => String(a.kategoria_id || a.kategoriak_id) === String(itemFormData.Kategoria));
   }, [allAlkategoriak, itemFormData.Kategoria]);
 
+  const statsCards = useMemo(() => [
+    { label: 'Összes lista', value: stats ? stats.totalLists : lists.length },
+    { label: 'Összes tétel', value: stats ? stats.totalItems : 0 },
+    { label: 'Összköltség', value: formatMoney(stats ? stats.totalCost : 0) },
+    { label: 'Átlag/lista', value: formatMoney(stats ? stats.averageCostPerList : 0) },
+  ], [stats, lists.length]);
+
   if (loading && !selectedList) {
     return (
       <div className="text-center py-5">
@@ -359,7 +366,7 @@ export default function ShoppingListPage() {
     <div className="sl-page">
       <div className="page-container">
         {/* Page header */}
-        <div className="page-header" style={{display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:'16px'}}>
+        <div className="page-header sl-page-header">
           <div>
             <h1 className="page-title">🛒 Bevásárlólisták</h1>
             <p className="page-subtitle">Hozz létre és kezeld bevásárlólistáidat</p>
@@ -372,16 +379,11 @@ export default function ShoppingListPage() {
           </button>
         </div>
 
-        {error && <div className="alert alert-danger" style={{marginBottom:'20px'}}>{error}</div>}
+        {error && <div className="alert alert-danger sl-error-alert">{error}</div>}
 
         {/* Stats row */}
-        <div className="dashboard-stats" style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:'16px', marginBottom:'28px'}}>
-          {[
-            { label: 'Összes lista', value: stats ? stats.totalLists : lists.length },
-            { label: 'Összes tétel', value: stats ? stats.totalItems : 0 },
-            { label: 'Összköltség', value: formatMoney(stats ? stats.totalCost : 0) },
-            { label: 'Átlag/lista', value: formatMoney(stats ? stats.averageCostPerList : 0) },
-          ].map((s, i) => (
+        <div className="dashboard-stats sl-stats-grid">
+          {statsCards.map((s, i) => (
             <div key={i} className="stat-card">
               <div>
                 <div className="stat-label">{s.label}</div>

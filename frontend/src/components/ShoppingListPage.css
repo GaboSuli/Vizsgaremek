@@ -3,6 +3,25 @@
   min-height: 100vh;
 }
 
+.sl-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.sl-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.sl-error-alert {
+  margin-bottom: 20px;
+}
+
 /* page header is handled by global .page-header + .page-title */
 
 /* List cards */
@@ -172,6 +191,28 @@
   .sl-actions {
     width: 100%;
     justify-content: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .list-card-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .list-actions-row {
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .lists-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-title-section {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
