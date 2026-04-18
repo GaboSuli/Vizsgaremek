@@ -191,12 +191,12 @@ function ThemeSettings() {
   return (
     <div className="ump-form">
       {error && <div className="alert alert-danger">{error}</div>}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+      <div className="ump-theme-row">
         <div>
-          <p style={{ margin: 0, fontWeight: 600, color: 'var(--clr-text)' }}>
+          <p className="ump-theme-title">
             {isDarkMode ? '🌙 Sötét mód' : '☀️ Világos mód'}
           </p>
-          <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: 'var(--clr-text-3)' }}>
+          <p className="ump-theme-subtitle">
             {isDarkMode
               ? 'Sötét háttér, kíméletes az éjszakai olvasáshoz'
               : 'Fehér háttér, könnyű olvasás nappal'}

@@ -38,7 +38,7 @@ function ConfirmDialog({ message, onConfirm, onCancel }) {
   );
 }
 
-export default function MemberManager({ csoportId, isAdmin, currentUserId }) {
+export default React.memo(function MemberManager({ csoportId, isAdmin, currentUserId }) {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -273,4 +273,4 @@ export default function MemberManager({ csoportId, isAdmin, currentUserId }) {
       )}
     </div>
   );
-}
+});

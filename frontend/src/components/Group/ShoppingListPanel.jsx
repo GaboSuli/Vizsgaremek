@@ -23,7 +23,7 @@ const formatDate = (dateStr) => {
   } catch { return dateStr; }
 };
 
-export default function ShoppingListPanel({ csoportId, canEdit }) {
+export default React.memo(function ShoppingListPanel({ csoportId, canEdit }) {
   const [lists, setLists] = useState([]);
   const [selectedList, setSelectedList] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -468,4 +468,4 @@ export default function ShoppingListPanel({ csoportId, canEdit }) {
       </Modal>
     </div>
   );
-}
+});

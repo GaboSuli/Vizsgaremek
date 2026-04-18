@@ -176,7 +176,7 @@
   padding: 6px 16px;
   border-radius: var(--r-md);
   border: 1px solid var(--clr-danger);
-  background: white;
+  background: var(--clr-surface);
   color: var(--clr-danger);
   font-size: var(--text-xs);
   font-weight: var(--fw-semibold);

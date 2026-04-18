@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import ConfirmDialog from '../ui/ConfirmDialog.jsx';
 import { deleteUser } from '../../services/adminService.js';
 import Avatar from '../Profile/Avatar.jsx';
+import useAuth from '../../context/useAuth.js';
 
 const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -26,6 +27,7 @@ function getInitials(name) {
 }
 
 export default function UserManagement({ users, loading, onRefresh, onToast }) {
+  const { user: currentUser } = useAuth();
   const [search, setSearch] = useState('');
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
@@ -136,13 +138,24 @@ export default function UserManagement({ users, loading, onRefresh, onToast }) {
                       <td data-label="Regisztráció" style={{ fontSize: 'var(--text-xs)', color: 'var(--clr-text-3)' }}>{date}</td>
                       <td data-label="Művelet">
                         <div className="admin-action-group">
-                          <button
-                            className="admin-action-btn admin-action-btn--danger"
-                            title="Felhasználó törlése"
-                            onClick={() => setDeleteTarget(user)}
-                          >
-                            <TrashIcon />
-                          </button>
+                          {user.id === currentUser?.id ? (
+                            <button
+                              className="admin-action-btn admin-action-btn--danger"
+                              title="Saját fiók nem törölhető"
+                              disabled
+                              style={{ opacity: 0.4, cursor: 'not-allowed' }}
+                            >
+                              <TrashIcon />
+                            </button>
+                          ) : (
+                            <button
+                              className="admin-action-btn admin-action-btn--danger"
+                              title="Felhasználó törlése"
+                              onClick={() => setDeleteTarget(user)}
+                            >
+                              <TrashIcon />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

@@ -35,6 +35,8 @@ export default function Avatar({ src, name, size = 'md', className = '', onClick
           src={src}
           alt={name || 'Avatar'}
           className="avatar__img"
+          loading="lazy"
+          decoding="async"
           onError={(e) => {
             e.target.style.display = 'none';
             e.target.nextSibling.style.display = 'flex';

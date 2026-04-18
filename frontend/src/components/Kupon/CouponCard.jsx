@@ -66,7 +66,7 @@ const NoteIcon = () => (
   </svg>
 );
 
-export default function CouponCard({ kupon, isModerator = false, onEdit, onDelete }) {
+export default React.memo(function CouponCard({ kupon, isModerator = false, onEdit, onDelete }) {
   const status = getKuponStatus(kupon.kezdesi_datum, kupon.lejarasi_datum);
 
   const statusLabel = { active: 'Aktív', expired: 'Lejárt', upcoming: 'Hamarosan', unknown: '?' };
@@ -141,4 +141,4 @@ export default function CouponCard({ kupon, isModerator = false, onEdit, onDelet
       )}
     </div>
   );
-}
+});
