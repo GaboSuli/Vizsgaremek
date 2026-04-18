@@ -393,6 +393,35 @@ foreach ($categories as $key => $value) {
         }
         $csoportTagsagok = CsoportTagsag::factory()->count(3000)->create();
         $vevesListak = VevesLista::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(200000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
     }
 }
