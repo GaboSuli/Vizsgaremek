@@ -365,7 +365,7 @@ foreach ($categories as $key => $value) {
         {
             
             foreach ($keresztnevek as $key => $keresztnev) {
-                if (random_int(1,10) == 2)
+                if (random_int(1,6) == 2)
                     {
                         DB::table("users")->insert([
                             'nev' => $csaladnev.' '.$keresztnev,
@@ -383,7 +383,7 @@ foreach ($categories as $key => $value) {
             }
         }
         $kupons = Kupon::factory()->count(50)->create();
-        $csoportok = Csoportok::factory()->count(1000)->create();
+        $csoportok = Csoportok::factory()->count(500)->create();
         foreach ($csoportok as $key => $value) {
             $newrec = new CsoportTagsag();
             $newrec->felhasznalo_id = $value->keszito_felhasznalo_id;
@@ -391,37 +391,8 @@ foreach ($categories as $key => $value) {
             $newrec->jogosultsag_szint = 3;
             $newrec->save();
         }
-        $csoportTagsagok = CsoportTagsag::factory()->count(3000)->create();
-        $vevesListak = VevesLista::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
-        $vevesObjektumok = VevesObjektum::factory()->count(10000)->create();
+        $csoportTagsagok = CsoportTagsag::factory()->count(2000)->create();
+        $vevesListak = VevesLista::factory()->count(2000)->create();
+        $vevesObjektumok = VevesObjektum::factory()->count(30000)->create();
     }
 }

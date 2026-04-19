@@ -88,11 +88,7 @@ class CsoportTagsagController extends Controller
         $user = auth()->user();
         if ($user->jogosultsag_szint > 2)
         {
-            $resp = Csoportok::join("csoport_tagsag","csoport_tagsag.csoport_id","=","csoportok.id")
-                ->join("csoport_tipusok","csoportok.csoport_tipus_id","=","csoport_tipusok.id")
-                ->groupBy("csoportok.id","csoportok.megnevezes","csoportok.csoport_tipus_id","csoport_tipusok.megnevezes","csoportok.created_at")
-                ->selectRaw("csoportok.id, csoportok.megnevezes, csoportok.csoport_tipus_id, csoport_tipusok.megnevezes as csoport_tipus_neve, csoportok.created_at, count(csoport_tagsag.id) as mennyiseg")
-                ->get();
+            $resp = Csoportok::join("csoport_tagsag","csoport_tagsag.csoport_id","=","csoportok.id")->join("csoport_tipusok","csoportok.csoport_tipus_id","=","csoport_tipusok.id")->groupBy("csoportok.id","csoportok.megnevezes","csoport_tipusok.megnevezes")->selectRaw("count(csoport_tagsag.id) as mennyiseg, csoportok.megnevezes, csoportok.id, csoport_tipusok.megnevezes")->get();
             return response($resp);
         }
         else
