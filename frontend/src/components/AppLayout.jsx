@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar.jsx';
+import BottomNav from './BottomNav.jsx';
 
 export default function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);
@@ -12,6 +13,7 @@ export default function AppLayout() {
       <main className="app-main">
         <Outlet />
       </main>
+      <BottomNav />
     </div>
   );
 }

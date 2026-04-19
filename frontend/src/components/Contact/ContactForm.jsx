@@ -157,7 +157,6 @@ export default function ContactForm({ user, onSuccess }) {
       startCooldown();
       onSuccess();
     } catch (err) {
-      console.error('[ContactForm] Submission error:', err);
       setApiError(
         err.message && err.message !== 'Hálózati hiba'
           ? err.message

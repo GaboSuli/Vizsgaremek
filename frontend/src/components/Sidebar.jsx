@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import useAuth from '../context/useAuth.js';
 import useCookieConsent from '../context/useCookieConsent.js';
@@ -156,17 +156,27 @@ export default function Sidebar({ collapsed, onToggle }) {
   );
 
   useEffect(() => {
-    const resize = () => { if (window.innerWidth > 768) setMobileOpen(false); };
-    window.addEventListener('resize', resize);
-    return () => window.removeEventListener('resize', resize);
+    let rafId = null;
+    const resize = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        if (window.innerWidth > 768) setMobileOpen(false);
+        rafId = null;
+      });
+    };
+    window.addEventListener('resize', resize, { passive: true });
+    return () => {
+      window.removeEventListener('resize', resize);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
-  const handleLogout = () => { logout(); navigate(''); };
-  const closeMobile = () => setMobileOpen(false);
-  const handleToggle = () => {
+  const handleLogout = useCallback(() => { logout(); navigate(''); }, [logout, navigate]);
+  const closeMobile = useCallback(() => setMobileOpen(false), []);
+  const handleToggle = useCallback(() => {
     if (window.innerWidth < 768) setMobileOpen(o => !o);
     else onToggle();
-  };
+  }, [onToggle]);
 
   const initials = user ? (user.Nev || user.nev || user.name || 'U').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() : 'U';
   const displayName = user ? (user.Nev || user.nev || user.name || 'Felhasználó') : 'Felhasználó';

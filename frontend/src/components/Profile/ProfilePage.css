@@ -240,3 +240,25 @@
     padding: 1.25rem;
   }
 }
+
+/* ── Logout section ───────────────────────── */
+.pp-logout-section {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 1rem;
+}
+
+.pp-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 160px;
+  justify-content: center;
+  color: var(--clr-text-2);
+  border-color: var(--clr-border);
+}
+.pp-logout-btn:hover {
+  color: var(--clr-danger, #ef4444);
+  border-color: var(--clr-danger, #ef4444);
+  background: color-mix(in srgb, var(--clr-danger, #ef4444) 8%, transparent);
+}

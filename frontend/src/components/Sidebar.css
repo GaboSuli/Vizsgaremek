@@ -649,7 +649,7 @@
   [data-theme='dark'] .sidebar--mobile-open {
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.55);
   }
-  .sidebar-hamburger { display: flex; }
+  .sidebar-hamburger { display: none; }  /* BottomNav kezeli a navigációt mobilon */
   .sidebar-overlay   { display: block; }
 
   /* No tooltips on mobile */

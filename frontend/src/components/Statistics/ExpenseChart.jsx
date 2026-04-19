@@ -1,18 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Doughnut, Bar } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  ArcElement,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-} from 'chart.js';
 import { apiCall } from '../../services/api.js';
 import useTheme from '../../context/useTheme.js';
-
-ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+import '../../utils/chartSetup.js';
 
 const PALETTE = [
   '#6366f1', '#10b981', '#f59e0b', '#ef4444', '#06b6d4',

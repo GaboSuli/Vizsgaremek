@@ -1,19 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend,
-  Filler,
-} from 'chart.js';
 import { apiCall } from '../../services/api.js';
 import useTheme from '../../context/useTheme.js';
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler);
+import '../../utils/chartSetup.js';
 
 const PALETTE = [
   '#6366f1', '#10b981', '#f59e0b', '#ef4444', '#06b6d4',

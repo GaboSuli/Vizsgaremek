@@ -29,8 +29,8 @@ const KuponPage            = lazy(() => import('./components/KuponPage.jsx'))
 const ProfilePage          = lazy(() => import('./components/Profile/ProfilePage.jsx'))
 const ContactPage          = lazy(() => import('./components/ContactPage.jsx'))
 const AdminDashboard       = lazy(() => import('./components/Admin/AdminDashboard.jsx'))
-const UserManagementPage   = lazy(() => import('./components/UserManagementPage.jsx'))
 const CouponModeratorPage  = lazy(() => import('./components/Kupon/CouponModeratorPage.jsx'))
+const DocsPage             = lazy(() => import('./components/Docs/DocsPage.jsx'))
 
 function PageLoader() {
   return (
@@ -54,6 +54,7 @@ function AppRoutes() {
         {/* public policy pages */}
         <Route path="/cookie-szabalyzat" element={<CookiePolicyPage />} />
         <Route path="/adatkezeles" element={<PrivacyPolicyPage />} />
+        <Route path="/docs" element={<DocsPage />} />
 
         {/* all functional pages live under layout and are protected */}
         <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
