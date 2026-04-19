@@ -16,6 +16,9 @@ export default function GroupsSection({ data, loading, onRefresh, onToast }) {
   const [deleting, setDeleting] = useState(false);
   const PER_PAGE = 12;
 
+const TIPUS_LABELS = { 1: 'Család', 2: 'Egyesület', 3: 'Vállalat' };
+const TIPUS_KEY    = { 1: 'purple',  2: 'blue',       3: 'green' };
+
   const groups = data.groups || [];
 
   const debouncedSearch = useDebounce(search, 200);
@@ -74,17 +77,23 @@ export default function GroupsSection({ data, loading, onRefresh, onToast }) {
       ) : (
         <div className="adm2-groups-grid">
           {page_groups.map(g => {
-            const name = g.megnevezes || g.nev || g.Nev || 'Névtelen csoport';
-            const initial = (name[0] || 'C').toUpperCase();
-            const type = g.csoport_tipus_id ?? g.tipus ?? '—';
+            const name     = g.megnevezes || g.nev || g.Nev || 'Névtelen csoport';
+            const initial  = (name[0] || 'C').toUpperCase();
+            const tipusId  = g.csoport_tipus_id;
+            const tipusNev = g.csoport_tipus_neve ?? TIPUS_LABELS[tipusId] ?? (tipusId ? `Típus #${tipusId}` : '—');
+            const tipusKey = TIPUS_KEY[tipusId] ?? 'default';
+            const tagSzam  = g.mennyiseg ?? g.tagok_szama ?? null;
             return (
               <div key={g.id} className="adm2-group-card">
-                <div className="adm2-group-avatar">{initial}</div>
+                <div className={`adm2-group-avatar adm2-group-avatar--${tipusKey}`}>{initial}</div>
                 <div className="adm2-group-info">
                   <span className="adm2-group-name">{name}</span>
                   <span className="adm2-group-meta">
-                    <span>ID: {g.id}</span>
-                    <span>Típus: {type}</span>
+                    <span className="adm2-group-meta-chip">#{g.id}</span>
+                    <span className={`adm2-group-type-badge adm2-group-type-badge--${tipusKey}`}>{tipusNev}</span>
+                    {tagSzam != null && (
+                      <span className="adm2-group-meta-chip">👥 {tagSzam} fő</span>
+                    )}
                   </span>
                   <span className="adm2-group-date">{fmtDate(g.created_at)}</span>
                 </div>

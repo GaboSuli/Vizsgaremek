@@ -1571,6 +1571,48 @@
   font-size: var(--text-lg, 1.125rem); font-weight: var(--fw-bold, 700);
   margin-bottom: var(--sp-3, 0.75rem);
 }
+.adm2-group-avatar--purple { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+.adm2-group-avatar--blue   { background: linear-gradient(135deg, #0284c7, #38bdf8); }
+.adm2-group-avatar--green  { background: linear-gradient(135deg, #059669, #34d399); }
+.adm2-group-avatar--default{ background: linear-gradient(135deg, var(--clr-primary, #6366f1), #818cf8); }
+
+.adm2-group-name {
+  display: block;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: var(--fw-semibold, 600);
+  color: var(--clr-text-1, #111);
+  margin-bottom: 0.3rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.adm2-group-meta {
+  display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+  margin-bottom: 0.3rem;
+}
+.adm2-group-meta-chip {
+  display: inline-flex; align-items: center;
+  padding: 0.12rem 0.45rem;
+  background: var(--clr-surface-2, #f3f4f6);
+  border: 1px solid var(--clr-border, #e5e7eb);
+  border-radius: var(--r-full, 9999px);
+  font-size: 0.68rem; font-weight: 600;
+  color: var(--clr-text-2, #374565);
+}
+.adm2-group-type-badge {
+  display: inline-flex; align-items: center;
+  padding: 0.12rem 0.45rem;
+  border-radius: var(--r-full, 9999px);
+  font-size: 0.68rem; font-weight: 600;
+}
+.adm2-group-type-badge--purple  { background: rgba(124, 58, 237, 0.1);  color: #7c3aed; }
+.adm2-group-type-badge--blue    { background: rgba(2, 132, 199,  0.1);  color: #0284c7; }
+.adm2-group-type-badge--green   { background: rgba(5, 150, 105,  0.1);  color: #059669; }
+.adm2-group-type-badge--default { background: var(--clr-surface-2, #f3f4f6); color: var(--clr-text-3, #9ca3af); }
+[data-theme='dark'] .adm2-group-type-badge--purple  { background: rgba(167,139,250,0.15); color: #a78bfa; }
+[data-theme='dark'] .adm2-group-type-badge--blue    { background: rgba(56, 189,248,0.15); color: #38bdf8; }
+[data-theme='dark'] .adm2-group-type-badge--green   { background: rgba(52, 211,153,0.15); color: #34d399; }
+[data-theme='dark'] .adm2-group-meta-chip           { background: var(--clr-surface-2); border-color: var(--clr-border); color: var(--clr-text-2); }
+
+.adm2-group-date { font-size: 0.72rem; color: var(--clr-text-3, #9ca3af); }
 
 /* ── Modal ──────────────────────────────────────── */
 .adm2-modal-overlay {
@@ -1884,4 +1926,108 @@
   .adm2-table-wrap { font-size: 12px; }
   .adm2-table th, .adm2-table td { padding: var(--sp-2, 0.5rem) var(--sp-3, 0.75rem); }
   .adm2-content-inner { padding: var(--sp-3, 0.75rem); }
+}
+
+/* ── Dark Mode Overrides ─────────────────────────── */
+[data-theme='dark'] .adm2-role--admin {
+  background: rgba(217, 119, 6, 0.2);
+  color: #fbbf24;
+}
+[data-theme='dark'] .adm2-role--user {
+  background: var(--clr-surface-2);
+  color: var(--clr-text-3);
+}
+[data-theme='dark'] .adm2-status--success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+[data-theme='dark'] .adm2-status--danger {
+  background: rgba(248, 113, 113, 0.15);
+}
+[data-theme='dark'] .adm2-badge--info {
+  background: rgba(6, 182, 212, 0.15);
+  color: #06b6d4;
+}
+[data-theme='dark'] .adm2-badge--ghost {
+  background: var(--clr-surface-2);
+  color: var(--clr-text-3);
+}
+[data-theme='dark'] .adm2-discount-badge {
+  background: rgba(217, 119, 6, 0.2);
+  color: #fbbf24;
+}
+[data-theme='dark'] .adm2-stat--success .adm2-stat-icon {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+[data-theme='dark'] .adm2-stat--warning .adm2-stat-icon {
+  background: rgba(217, 119, 6, 0.15);
+  color: #fbbf24;
+}
+[data-theme='dark'] .adm2-stat--info .adm2-stat-icon {
+  background: rgba(6, 182, 212, 0.15);
+  color: #06b6d4;
+}
+[data-theme='dark'] .adm2-stat--purple .adm2-stat-icon {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+}
+[data-theme='dark'] .adm2-act--group .adm2-act-icon {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+[data-theme='dark'] .adm2-act--contact .adm2-act-icon {
+  background: rgba(6, 182, 212, 0.15);
+  color: #06b6d4;
+}
+[data-theme='dark'] .adm2-quick--success .adm2-quick-icon {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+[data-theme='dark'] .adm2-quick--warning .adm2-quick-icon {
+  background: rgba(217, 119, 6, 0.15);
+  color: #fbbf24;
+}
+[data-theme='dark'] .adm2-quick--info .adm2-quick-icon {
+  background: rgba(6, 182, 212, 0.15);
+  color: #06b6d4;
+}
+[data-theme='dark'] .adm2-quick--purple .adm2-quick-icon {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+}
+[data-theme='dark'] .adm2-clr-success {
+  color: #10b981;
+}
+[data-theme='dark'] .adm2-sub-price {
+  color: #10b981;
+}
+[data-theme='dark'] .adm2-icon-btn--view:hover {
+  background: rgba(6, 182, 212, 0.15);
+  color: #06b6d4;
+  border-color: #06b6d4;
+}
+[data-theme='dark'] .adm2-cat-info--highlight {
+  background: var(--clr-primary-light);
+  border-color: var(--clr-primary);
+}
+[data-theme='dark'] .adm2-form-err {
+  background: rgba(248, 113, 113, 0.12);
+}
+[data-theme='dark'] .adm2-activity-item:hover {
+  background: var(--clr-surface-2);
+}
+[data-theme='dark'] .adm2-sys-item {
+  background: var(--clr-surface-2);
+}
+[data-theme='dark'] .adm2-cat-header--clickable:hover {
+  background: var(--clr-surface-2);
+}
+[data-theme='dark'] .adm2-sub-item:hover {
+  background: var(--clr-surface-2);
+}
+[data-theme='dark'] .adm2-coupon-code {
+  background: var(--clr-surface-2);
+  border-color: var(--clr-border);
+  color: var(--clr-text-2);
 }

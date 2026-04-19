@@ -100,7 +100,11 @@ class UserController extends Controller
      */
     public function show(Request $request)
     {
-        $resp = Csoportok::join("csoport_tagsag","csoportok.id","=","csoport_tagsag.csoport_id")->where("csoport_tagsag.felhasznalo_id",'=',auth()->id())->select('csoportok.*','csoport_tagsag.jogosultsag_szint')->get();
+        $resp = Csoportok::join("csoport_tagsag","csoportok.id","=","csoport_tagsag.csoport_id")
+            ->join("csoport_tipusok","csoportok.csoport_tipus_id","=","csoport_tipusok.id")
+            ->where("csoport_tagsag.felhasznalo_id",'=',auth()->id())
+            ->selectRaw('csoportok.*, csoport_tagsag.jogosultsag_szint, csoport_tipusok.megnevezes as csoport_tipus_neve, (SELECT COUNT(*) FROM csoport_tagsag ct WHERE ct.csoport_id = csoportok.id) as tagok_szama')
+            ->get();
         if (empty($resp))
         {
             return response()->json(['message'=>"Nincs ilyen felhasználó."]);

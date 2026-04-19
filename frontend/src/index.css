@@ -51,6 +51,7 @@
 
   /* Text — deep navy hierarchy (not flat slate) */
   --clr-text: #0f1629;
+  --clr-text-1: #0f1629;
   --clr-text-2: #374565;
   --clr-text-3: #7b88a8;
   --clr-text-inv: #ffffff;
@@ -142,6 +143,7 @@
 
   /* Text */
   --clr-text: #e2e8f0;
+  --clr-text-1: #e2e8f0;
   --clr-text-2: #cbd5e1;
   --clr-text-3: #94a3b8;
   --clr-text-inv: #1e293b;
@@ -187,6 +189,84 @@
   --sidebar-tooltip-bg: #1e293b;
   --sidebar-tooltip-text: #e2e8f0;
   --sidebar-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+  /* Bootstrap CSS variable overrides — dark mode */
+  --bs-body-color: #e2e8f0;
+  --bs-body-color-rgb: 226, 232, 240;
+  --bs-body-bg: #0f172a;
+  --bs-body-bg-rgb: 15, 23, 42;
+  --bs-secondary-color: rgba(226, 232, 240, 0.75);
+  --bs-secondary-color-rgb: 226, 232, 240;
+  --bs-tertiary-color: rgba(226, 232, 240, 0.5);
+  --bs-tertiary-color-rgb: 226, 232, 240;
+  --bs-secondary-bg: #1e293b;
+  --bs-secondary-bg-rgb: 30, 41, 59;
+  --bs-tertiary-bg: #334155;
+  --bs-tertiary-bg-rgb: 51, 65, 85;
+  --bs-heading-color: #e2e8f0;
+  --bs-link-color: #818cf8;
+  --bs-link-color-rgb: 129, 140, 248;
+  --bs-link-hover-color: #6366f1;
+  --bs-link-hover-color-rgb: 99, 102, 241;
+  --bs-border-color: #334155;
+  --bs-border-color-translucent: rgba(255, 255, 255, 0.15);
+  --bs-code-color: #f87171;
+  --bs-emphasis-color: #f1f5f9;
+  --bs-emphasis-color-rgb: 241, 245, 249;
+  --bs-card-bg: #1e293b;
+  --bs-card-color: #e2e8f0;
+  --bs-card-cap-bg: rgba(255, 255, 255, 0.03);
+  --bs-card-cap-color: #cbd5e1;
+  --bs-card-border-color: #334155;
+  --bs-list-group-bg: #1e293b;
+  --bs-list-group-color: #e2e8f0;
+  --bs-list-group-border-color: #334155;
+  --bs-list-group-action-color: #e2e8f0;
+  --bs-list-group-action-hover-color: #f1f5f9;
+  --bs-list-group-action-hover-bg: #334155;
+  --bs-list-group-action-active-color: #e2e8f0;
+  --bs-list-group-action-active-bg: #334155;
+  --bs-list-group-active-color: #f1f5f9;
+  --bs-list-group-active-bg: #6366f1;
+  --bs-list-group-active-border-color: #6366f1;
+  --bs-list-group-disabled-color: #94a3b8;
+  --bs-list-group-disabled-bg: #1e293b;
+  --bs-dropdown-bg: #1e293b;
+  --bs-dropdown-color: #e2e8f0;
+  --bs-dropdown-border-color: #334155;
+  --bs-dropdown-divider-bg: #334155;
+  --bs-dropdown-link-color: #e2e8f0;
+  --bs-dropdown-link-hover-color: #f1f5f9;
+  --bs-dropdown-link-hover-bg: #334155;
+  --bs-dropdown-link-active-color: #f1f5f9;
+  --bs-dropdown-link-active-bg: #6366f1;
+  --bs-dropdown-link-disabled-color: #94a3b8;
+  --bs-dropdown-header-color: #94a3b8;
+  --bs-modal-bg: #1e293b;
+  --bs-modal-color: #e2e8f0;
+  --bs-modal-border-color: #334155;
+  --bs-modal-header-border-color: #334155;
+  --bs-modal-footer-border-color: #334155;
+  --bs-nav-link-color: #94a3b8;
+  --bs-nav-link-hover-color: #e2e8f0;
+  --bs-nav-tabs-border-color: #334155;
+  --bs-nav-tabs-link-hover-border-color: #334155;
+  --bs-nav-tabs-link-active-color: #e2e8f0;
+  --bs-nav-tabs-link-active-bg: #1e293b;
+  --bs-nav-tabs-link-active-border-color: #334155 #334155 #1e293b;
+  --bs-nav-pills-link-active-color: #f1f5f9;
+  --bs-nav-pills-link-active-bg: #6366f1;
+  --bs-input-bg: #1e293b;
+  --bs-input-color: #e2e8f0;
+  --bs-input-border-color: #334155;
+  --bs-input-placeholder-color: #94a3b8;
+  --bs-table-color: #e2e8f0;
+  --bs-table-bg: transparent;
+  --bs-table-border-color: #334155;
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.03);
+  --bs-table-striped-color: #e2e8f0;
+  --bs-table-hover-bg: rgba(255, 255, 255, 0.04);
+  --bs-table-hover-color: #e2e8f0;
 }
 
 /* ── Reset ────────────────────────────────── */
@@ -804,6 +884,76 @@ img { max-width: 100%; display: block; }
   box-shadow: var(--shadow-sm) !important;
 }
 
+/* ── Additional dark mode text overrides ──── */
+[data-theme='dark'] .nav-tabs .nav-link {
+  color: var(--clr-text-3);
+}
+[data-theme='dark'] .nav-tabs .nav-link:hover {
+  color: var(--clr-text);
+  border-color: var(--clr-border) var(--clr-border) transparent;
+}
+[data-theme='dark'] .nav-tabs .nav-link.active {
+  background-color: var(--clr-surface);
+  border-color: var(--clr-border) var(--clr-border) var(--clr-surface);
+  color: var(--clr-text);
+}
+[data-theme='dark'] .nav-pills .nav-link {
+  color: var(--clr-text-3);
+}
+[data-theme='dark'] .nav-pills .nav-link.active {
+  background-color: var(--clr-primary);
+  color: #fff;
+}
+[data-theme='dark'] .card-title,
+[data-theme='dark'] .card-subtitle,
+[data-theme='dark'] .card-text,
+[data-theme='dark'] .card-body,
+[data-theme='dark'] .card-header,
+[data-theme='dark'] .card-footer {
+  color: var(--clr-text);
+}
+[data-theme='dark'] .card-subtitle {
+  color: var(--clr-text-3);
+}
+[data-theme='dark'] .form-check-label,
+[data-theme='dark'] .col-form-label,
+[data-theme='dark'] .form-floating > label {
+  color: var(--clr-text);
+}
+[data-theme='dark'] .input-group-text {
+  background-color: var(--clr-surface-2);
+  border-color: var(--clr-border);
+  color: var(--clr-text-2);
+}
+[data-theme='dark'] .text-body {
+  color: var(--clr-text) !important;
+}
+[data-theme='dark'] .text-secondary {
+  color: var(--clr-text-3) !important;
+}
+[data-theme='dark'] .text-dark {
+  color: var(--clr-text) !important;
+}
+[data-theme='dark'] .text-black {
+  color: var(--clr-text) !important;
+}
+[data-theme='dark'] small,
+[data-theme='dark'] .small {
+  color: var(--clr-text-3);
+}
+[data-theme='dark'] .table-light {
+  --bs-table-bg: var(--clr-surface-2);
+  --bs-table-border-color: var(--clr-border);
+  --bs-table-color: var(--clr-text);
+}
+[data-theme='dark'] .progress {
+  background-color: var(--clr-surface-2);
+}
+[data-theme='dark'] .close {
+  color: var(--clr-text);
+  filter: invert(1);
+}
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -822,14 +972,7 @@ body,
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* ═══════════════════════════════════════════════════════
-   PREMIUM LIGHT MODE — Component Enhancements
-   Applied only when [data-theme='dark'] is NOT active.
-   Elevates cards, buttons, tables, badges, sidebar and
-   all surfaces to a polished SaaS-grade day theme.
-═══════════════════════════════════════════════════════ */
 
-/* color-scheme hint for browsers */
 html:not([data-theme='dark']) {
   color-scheme: light;
 }

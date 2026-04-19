@@ -10,7 +10,7 @@ import CreateGroupModal from './CreateGroupModal';
 import './groups.css';
 
 const TIPUS_LABELS = { 1: 'Család', 2: 'Egyesület', 3: 'Vállalat' };
-
+const TIPUS_KEY    = { 1: 'purple',  2: 'blue',       3: 'green' };
 const JOGSZINT_LABELS = { 0: 'Olvasó', 1: 'Tag', 2: 'Admin', 3: 'Tulajdonos' };
 
 function ConfirmDialog({ message, onConfirm, onCancel }) {
@@ -30,11 +30,17 @@ function ConfirmDialog({ message, onConfirm, onCancel }) {
 }
 
 function GroupCard({ group, isOwned, onDelete, onClick }) {
-  const name = group.megnevezes ?? '—';
-  const tipusLabel = TIPUS_LABELS[group.csoport_tipus_id] ?? `Típus #${group.csoport_tipus_id}`;
-  const jogszint = group.jogosultsag_szint ?? 1;
-  const jogszintLabel = JOGSZINT_LABELS[jogszint] ?? `Szint ${jogszint}`;
-  const tagokSzama = group.csoport_tagsag_count ?? group.tagok_szama ?? null;
+  const name       = group.megnevezes ?? '—';
+  const tipusId    = group.csoport_tipus_id;
+  const tipusLabel = group.csoport_tipus_neve ?? TIPUS_LABELS[tipusId] ?? `Típus #${tipusId}`;
+  const tipusKey   = TIPUS_KEY[tipusId] ?? 'default';
+  const jogszint   = group.jogosultsag_szint ?? 1;
+  const jogszintLabel = isOwned ? 'Tulajdonos' : (JOGSZINT_LABELS[jogszint] ?? `Szint ${jogszint}`);
+  const tagokSzama = group.tagok_szama ?? group.csoport_tagsag_count ?? null;
+  const roleKey    = isOwned ? 'owner' : String(jogszint);
+  const createdAt  = group.created_at
+    ? new Date(group.created_at).toLocaleDateString('hu-HU', { year: 'numeric', month: 'short', day: 'numeric' })
+    : null;
 
   return (
     <div
@@ -44,31 +50,71 @@ function GroupCard({ group, isOwned, onDelete, onClick }) {
       onClick={onClick}
       onKeyDown={(e) => e.key === 'Enter' && onClick()}
     >
-      <div className="grp-card-avatar">{name.charAt(0).toUpperCase()}</div>
-      <div className="grp-card-body">
-        <div className="grp-card-name">{name}</div>
-        <div className="grp-card-meta">
-          <span className="grp-badge grp-badge-type">{tipusLabel}</span>
-          {isOwned ? (
-            <span className="grp-badge grp-badge-admin">Admin</span>
-          ) : (
-            <span className="grp-badge grp-badge-member">{jogszintLabel}</span>
+      {/* ── Top row: avatar + name + actions ── */}
+      <div className="grp-card-top">
+        <div className={`grp-card-avatar grp-card-avatar--${tipusKey}`}>
+          {name.charAt(0).toUpperCase()}
+        </div>
+        <div className="grp-card-title-wrap">
+          <span className="grp-card-name">{name}</span>
+          <span className={`grp-badge-tip grp-badge-tip--${tipusKey}`}>{tipusLabel}</span>
+        </div>
+        <div className="grp-card-acts">
+          {isOwned && onDelete && (
+            <button
+              className="grp-icon-btn grp-icon-btn--del"
+              title="Csoport törlése"
+              aria-label="Csoport törlése"
+              onClick={(e) => { e.stopPropagation(); onDelete(group.id); }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14H6L5 6"/>
+                <path d="M10 11v6M14 11v6"/>
+                <path d="M9 6V4h6v2"/>
+              </svg>
+            </button>
           )}
-          {tagokSzama != null && (
-            <span className="grp-badge grp-badge-neutral">👥 {tagokSzama} tag</span>
-          )}
+          <span className="grp-card-arrow" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </span>
         </div>
       </div>
-      {isOwned && onDelete && (
-        <button
-          className="grp-btn grp-btn-danger grp-btn-icon grp-btn-xs"
-          title="Csoport törlése"
-          onClick={(e) => { e.stopPropagation(); onDelete(group.id); }}
-        >
-          🗑
-        </button>
-      )}
-      <div className="grp-card-arrow">›</div>
+
+      {/* ── Separator ── */}
+      <div className="grp-card-sep" />
+
+      {/* ── Info grid: ID / Tagok / Szerepkör / Létrehozva ── */}
+      <div className="grp-card-meta-grid">
+        <div className="grp-meta-item">
+          <span className="grp-meta-label">Azonosító</span>
+          <code className="grp-meta-id">#{group.id}</code>
+        </div>
+        <div className="grp-meta-item">
+          <span className="grp-meta-label">Tagok</span>
+          <span className="grp-meta-stat">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            {tagokSzama != null ? `${tagokSzama} fő` : '—'}
+          </span>
+        </div>
+        <div className="grp-meta-item">
+          <span className="grp-meta-label">Szerepkör</span>
+          <span className={`grp-badge-role grp-badge-role--${roleKey}`}>{jogszintLabel}</span>
+        </div>
+        {createdAt && (
+          <div className="grp-meta-item">
+            <span className="grp-meta-label">Létrehozva</span>
+            <span className="grp-meta-date">{createdAt}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -159,6 +205,24 @@ export default function GroupList() {
           + Új csoport
         </button>
       </div>
+
+      {/* Stats summary */}
+      {!loading && groups.length > 0 && (
+        <div className="grp-stats-row">
+          <div className="grp-stat-chip">
+            <span className="grp-stat-chip-val">{groups.length}</span>
+            <span className="grp-stat-chip-lbl">csoport</span>
+          </div>
+          <div className="grp-stat-chip">
+            <span className="grp-stat-chip-val">{ownedGroups.length}</span>
+            <span className="grp-stat-chip-lbl">saját</span>
+          </div>
+          <div className="grp-stat-chip">
+            <span className="grp-stat-chip-val">{invitedGroups.length}</span>
+            <span className="grp-stat-chip-lbl">meghívott</span>
+          </div>
+        </div>
+      )}
 
       {/* Error alerts */}
       {error && (
